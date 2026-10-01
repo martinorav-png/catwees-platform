@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/mockup/index.html",
+      "permanent": false
+    }
+  ]
+}

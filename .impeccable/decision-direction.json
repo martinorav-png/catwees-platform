@@ -1,0 +1,187 @@
+{
+  "title": "Choose the visual world",
+  "question": "The app should feel like Catwees and Honda. This is the direction to build. Keep it, take an alternate, or re-roll.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Workshop job card",
+      "kicker": "THE ROLL",
+      "lineage": "The paper work order clipped to a Honda at the Catwees hoist",
+      "thesis": "Every screen is a field on the work order that follows your Honda.",
+      "palette": ["#FFFFFF", "#272D33", "#D62629", "#4D5052"],
+      "materials": ["white work-order sheet", "red dealer stamp", "registration plate"],
+      "viewport": "A phone-sized sheet: Honda and Catwees in the header, a red stamp, the plate number as the largest type, notices as ruled lines, one action at the foot.",
+      "risk": "It turns bureaucratic if the plate and the stamp are set timidly.",
+      "raised": [
+        { "from": "Owner's manual", "raise": "A fore-edge of four sections. Only the current tab extends." },
+        { "from": "Cloud edge", "raise": "Red marks only the live edge of the active field. It never floods the sheet." },
+        { "from": "Cyclorama", "raise": "Guest and signed-in are two phases of the same sheet: blank, then stamped with name and plate." },
+        { "from": "Oscilloscope", "raise": "Mileage, time, and year are measured readouts with a unit." },
+        { "from": "Arcade", "raise": "Four states only: empty, filled, error, sent." }
+      ],
+      "wireframe": {
+        "cols": 12,
+        "rows": 12,
+        "regions": [
+          { "label": "Honda + Catwees", "x": 0, "y": 0, "w": 8, "h": 1 },
+          { "label": "Stamp", "x": 8, "y": 0, "w": 4, "h": 1, "accent": true },
+          { "label": "Plate", "x": 0, "y": 1, "w": 12, "h": 2, "accent": true },
+          { "label": "Notice", "x": 0, "y": 3, "w": 11, "h": 2 },
+          { "label": "Notice", "x": 0, "y": 5, "w": 11, "h": 2 },
+          { "label": "Notice", "x": 0, "y": 7, "w": 11, "h": 2 },
+          { "label": "Tabs", "x": 11, "y": 3, "w": 1, "h": 6, "accent": true },
+          { "label": "Action", "x": 0, "y": 10, "w": 12, "h": 2, "accent": true }
+        ]
+      },
+      "comp": ".impeccable/mocks/decision/assigned.webp"
+    },
+    {
+      "id": "model-pick",
+      "label": "Catwees reception",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "The red bar and white sheet of catwees.ee, carried onto the phone",
+      "thesis": "The owner recognizes the Catwees desk before reading a word.",
+      "palette": ["#D62629", "#FFFFFF", "#272D33", "#4D5052"],
+      "materials": ["red navigation bar", "white page", "Honda photography"],
+      "viewport": "Red bar with both logos, a car photograph, then stacked notice rows and a bottom menu.",
+      "risk": "This is the familiar dealer-app look. Most runs in this category land here, and it can slide back into a marketing homepage.",
+      "wireframe": {
+        "cols": 12,
+        "rows": 12,
+        "regions": [
+          { "label": "Red bar", "x": 0, "y": 0, "w": 12, "h": 1, "accent": true },
+          { "label": "Car photo", "x": 0, "y": 1, "w": 12, "h": 4 },
+          { "label": "Greeting", "x": 0, "y": 5, "w": 12, "h": 1 },
+          { "label": "Notice", "x": 0, "y": 6, "w": 12, "h": 2 },
+          { "label": "Notice", "x": 0, "y": 8, "w": 12, "h": 2 },
+          { "label": "Menu", "x": 0, "y": 10, "w": 12, "h": 2 }
+        ]
+      },
+      "comp": ".impeccable/mocks/decision/model-pick.webp"
+    },
+    {
+      "id": "challenger-wayfinding",
+      "label": "Red decision bands",
+      "verdict": "competitive",
+      "lineage": "Airport overhead signs, recoloured to Catwees red",
+      "thesis": "Each screen asks only the next decision, with the plate number at gate scale.",
+      "palette": ["#D62629", "#111111", "#FFFFFF", "#272D33"],
+      "materials": ["overhead sign band", "edge-locked arrow", "monumental plate"],
+      "viewport": "Stacked red bands for service, a claim, and a test drive. The registration number sits below them like a gate number, with the next open slot.",
+      "case": "Clearer on a phone, one decision at a time. Weaker identification: the owner's scene is the Catwees desk, not a concourse.",
+      "risk": "It feels like transit signage if the bands multiply past the one next step.",
+      "wireframe": {
+        "cols": 12,
+        "rows": 12,
+        "regions": [
+          { "label": "Teenindus", "x": 0, "y": 0, "w": 12, "h": 2, "accent": true },
+          { "label": "Kahju", "x": 0, "y": 2, "w": 12, "h": 2 },
+          { "label": "Proovisõit", "x": 0, "y": 4, "w": 12, "h": 2 },
+          { "label": "Plate", "x": 0, "y": 6, "w": 12, "h": 3, "accent": true },
+          { "label": "Next slot", "x": 0, "y": 9, "w": 12, "h": 3 }
+        ]
+      },
+      "comp": ".impeccable/mocks/decision/challenger-wayfinding.webp",
+      "hero": "https://impeccable.style/worlds/cards/wayfinding-cartography-signage-terminal-yellow-wayfinding-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/wayfinding-cartography-signage-terminal-yellow-wayfinding.webp"
+    },
+    {
+      "id": "challenger-manual",
+      "label": "Owner's manual",
+      "verdict": "declined",
+      "lineage": "A tabbed Honda handbook with a coloured divider board",
+      "thesis": "The app is the owner's manual, and booking is a leaf in the service section.",
+      "palette": ["#F4F1EA", "#E8772E", "#272D33", "#D62629"],
+      "materials": ["acetate leaf", "stepped tab rail"],
+      "viewport": "A fore-edge of coloured tabs, the open section filling the page.",
+      "case": "Owners know the book, but a binder is a poor booking form.",
+      "kept": "Only the current section tab extends, and its size shows how much of the relationship it holds.",
+      "risk": "Section colours fight the red-and-charcoal brand.",
+      "hero": "https://impeccable.style/worlds/cards/rw-manual-acetate-tab-board-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/rw-manual-acetate-tab-board.webp"
+    },
+    {
+      "id": "challenger-cloud",
+      "label": "Cloud edge",
+      "verdict": "declined",
+      "lineage": "A white cloud with a narrow spectral fringe",
+      "thesis": "The page stays white, and only a coloured edge marks what is active.",
+      "palette": ["#FFFFFF", "#5C6B73", "#9FD8C8", "#E7A0B4"],
+      "materials": ["white field", "hairline spectral edge"],
+      "viewport": "Wide empty margins and a thin coloured fringe on the active notice.",
+      "case": "The fringe is useful. The pastel cloud is not a Honda owner's scene, and it hides the form.",
+      "kept": "Colour stays on the live edge. The reading field stays achromatic.",
+      "risk": "Pastel edges read as weather, not as a dealer.",
+      "hero": "https://impeccable.style/worlds/cards/clouds-storms-auroras-iridescent-cloud-edge-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/clouds-storms-auroras-iridescent-cloud-edge.webp"
+    },
+    {
+      "id": "challenger-cyc",
+      "label": "Cyclorama",
+      "verdict": "declined",
+      "lineage": "A theatre cyc washing from night to day",
+      "thesis": "Signing in is a lighting cue: the same sheet goes from blank to occupied.",
+      "palette": ["#07070A", "#1C3D8F", "#C47A8A", "#F7F4EF"],
+      "materials": ["horizon wash", "named cue"],
+      "viewport": "A full-bleed dawn behind the owner's name.",
+      "case": "A phase change is right. Cobalt and rose are not Catwees, and they bury the task.",
+      "kept": "Guest and signed-in are named phases of one sheet, not a small avatar swap.",
+      "risk": "Atmosphere replaces the work order.",
+      "hero": "https://impeccable.style/worlds/cards/stagecraft-theater-lighting-cyclorama-dawn-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/stagecraft-theater-lighting-cyclorama-dawn.webp"
+    },
+    {
+      "id": "challenger-scope",
+      "label": "Oscilloscope",
+      "verdict": "declined",
+      "lineage": "A phosphor trace on a service-bench scope",
+      "thesis": "The car's numbers are instrument readouts on a dark graticule.",
+      "palette": ["#0C1210", "#3DFF8A", "#6B7280", "#E6A23C"],
+      "materials": ["phosphor glass", "etched graticule"],
+      "viewport": "One dark screen, mileage and time as glowing readouts.",
+      "case": "Measured numbers belong. A dark instrument bench is not how an owner books a loan car in daylight.",
+      "kept": "Mileage, time, and year are measured against a scale and always carry a unit.",
+      "risk": "Green-on-black reads as a diagnostic toy.",
+      "hero": "https://impeccable.style/worlds/cards/scientific-notation-oscilloscope-signal-bench-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/scientific-notation-oscilloscope-signal-bench.webp"
+    },
+    {
+      "id": "challenger-arcade",
+      "label": "Arcade screen",
+      "verdict": "declined",
+      "lineage": "A pixel-art cabinet with a strict sixteen-colour law",
+      "thesis": "Every state is a sprite swap inside a fixed palette.",
+      "palette": ["#0A0A0A", "#F2F2F2", "#E10600", "#F6D94A"],
+      "materials": ["pixel grid", "scanline"],
+      "viewport": "A tiled playfield with the plate as a score.",
+      "case": "A four-state palette law is worth keeping. An arcade cabinet is the wrong room for a claim.",
+      "kept": "Four ink states only: empty, filled, error, sent.",
+      "risk": "Playfulness undercuts a damage claim and a trade-in.",
+      "hero": "https://impeccable.style/worlds/cards/medium-native-crt-arcade-pixel-glow-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/medium-native-crt-arcade-pixel-glow.webp"
+    }
+  ],
+  "reroll": { "registers": ["safer", "bolder"] },
+  "buildPath": { "value": "code", "toggle": true },
+  "canon": true,
+  "canonCard": {
+    "label": "The category standard",
+    "thesis": "A normal owner app: top bar, photo, white cards, red button, bottom tabs.",
+    "palette": ["#FFFFFF", "#272D33", "#D62629", "#F4F4F1"],
+    "materials": ["white cards", "bottom tab bar", "product photography"],
+    "viewport": "The arrangement a dealer app usually ships, at full craft.",
+    "risk": "Indistinguishable from any other service app by design.",
+    "wireframe": {
+      "cols": 12,
+      "rows": 12,
+      "regions": [
+        { "label": "App bar", "x": 0, "y": 0, "w": 12, "h": 1 },
+        { "label": "Hero card", "x": 1, "y": 1, "w": 10, "h": 3 },
+        { "label": "Cards", "x": 1, "y": 4, "w": 10, "h": 6 },
+        { "label": "Tabs", "x": 0, "y": 10, "w": 12, "h": 2, "accent": true }
+      ]
+    },
+    "comp": ".impeccable/mocks/decision/canon.webp"
+  },
+  "steer": true
+}

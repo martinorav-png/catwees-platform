@@ -1,0 +1,175 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-01T15:50:00Z",
+  "title": "Design System: Catwees",
+  "extensions": {
+    "colorMeta": {
+      "catwees-red": {
+        "role": "primary",
+        "displayName": "Catwees red",
+        "canonical": "#d62629",
+        "tonalRamp": ["#3a090a", "#6e1214", "#9a1a1c", "#b01e21", "#d62629", "#e45a5c", "#f0a0a1", "#f8d4d4"]
+      },
+      "catwees-red-deep": {
+        "role": "primary",
+        "displayName": "Deep red",
+        "canonical": "#b01e21",
+        "tonalRamp": ["#2c0809", "#5c1012", "#8a181a", "#b01e21", "#c4383b", "#d86a6c", "#e8a4a5", "#f6d6d6"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#161616",
+        "tonalRamp": ["#161616", "#2a2a2a", "#3d3d3d", "#5c5c5c", "#8a8a8a", "#b5b5b5", "#d8d8d8", "#f4f3f0"]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "canonical": "#5c5c5c",
+        "tonalRamp": ["#161616", "#2e2e2e", "#454545", "#5c5c5c", "#7a7a7a", "#a3a3a3", "#d0d0d0", "#f4f3f0"]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "#f4f3f0",
+        "tonalRamp": ["#2a2927", "#4a4844", "#6e6b66", "#96938c", "#c4c1ba", "#e0ddd6", "#f4f3f0", "#fbfaf8"]
+      },
+      "sand": {
+        "role": "neutral",
+        "displayName": "Sand",
+        "canonical": "#e7e4de",
+        "tonalRamp": ["#2c2a26", "#4e4a44", "#736e66", "#9a948a", "#c2bbb0", "#e7e4de", "#f3f1ed", "#fbfaf8"]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "White",
+        "canonical": "#ffffff",
+        "tonalRamp": ["#161616", "#3d3d3d", "#5c5c5c", "#8a8a8a", "#b5b5b5", "#d8d8d8", "#f4f3f0", "#ffffff"]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Line",
+        "canonical": "rgba(22, 22, 22, 0.12)",
+        "tonalRamp": ["#161616", "#3d3d3d", "#5c5c5c", "#8a8a8a", "#b5b5b5", "#d4d4d4", "#e8e8e8", "#f7f7f7"]
+      },
+      "scrim-strong": {
+        "role": "neutral",
+        "displayName": "Scrim strong",
+        "canonical": "rgba(0, 0, 0, 0.55)",
+        "tonalRamp": ["#000000", "#1a1a1a", "#333333", "#4d4d4d", "#666666", "#808080", "#999999", "#b3b3b3"]
+      },
+      "scrim-mid": {
+        "role": "neutral",
+        "displayName": "Scrim mid",
+        "canonical": "rgba(0, 0, 0, 0.18)",
+        "tonalRamp": ["#000000", "#242424", "#474747", "#6b6b6b", "#8f8f8f", "#b3b3b3", "#d6d6d6", "#f2f2f2"]
+      },
+      "scrim-fade": {
+        "role": "neutral",
+        "displayName": "Scrim fade",
+        "canonical": "rgba(0, 0, 0, 0.05)",
+        "tonalRamp": ["#000000", "#2b2b2b", "#555555", "#808080", "#aaaaaa", "#d4d4d4", "#eeeeee", "#f7f7f7"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Home hero headline." },
+      "headline": { "displayName": "Headline", "purpose": "Model name in the driving lane." },
+      "title": { "displayName": "Title", "purpose": "Page titles and section headings." },
+      "body": { "displayName": "Body", "purpose": "Paragraphs and form copy." },
+      "label": { "displayName": "Label", "purpose": "Navigation, field labels, footer titles." },
+      "micro": { "displayName": "Micro", "purpose": "Login subline." },
+      "meta": { "displayName": "Meta", "purpose": "Dates, crumbs, and small meta." },
+      "ui": { "displayName": "UI", "purpose": "Wordmark." },
+      "lead": { "displayName": "Lead", "purpose": "Page subcopy." },
+      "lead-lg": { "displayName": "Lead large", "purpose": "Hero subcopy and prices." },
+      "name": { "displayName": "Name", "purpose": "Model names in a compact list." },
+      "card-title": { "displayName": "Card title", "purpose": "Notice and showroom titles." },
+      "panel-title": { "displayName": "Panel title", "purpose": "Side panel headings." },
+      "feature": { "displayName": "Feature", "purpose": "Path and side headings." },
+      "feature-lg": { "displayName": "Feature large", "purpose": "Featured model name." },
+      "sent": { "displayName": "Sent", "purpose": "Confirmation headline." },
+      "hero-phone": { "displayName": "Hero phone", "purpose": "Hero headline at phone width." }
+    },
+    "shadows": [
+      { "name": "header-seam", "value": "0 1px 0 rgba(22, 22, 22, 0.08)", "purpose": "Solid header only, so the hero does not show through." }
+    ],
+    "motion": [
+      { "name": "drive-ease", "value": "1 - exp(-dt / 110)", "purpose": "Scroll-linked car eases toward the target, then the canvas stops." }
+    ],
+    "breakpoints": [
+      { "name": "nav-wordmark", "value": "1100px" },
+      { "name": "phone", "value": "900px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Red pill for the main action, including submit.",
+      "html": "<button class=\"ds-btn-primary\">Kinnita broneering</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 22px; border: 0; border-radius: 999px; background: #d62629; color: #ffffff; font-family: \"IBM Plex Sans\", \"Segoe UI\", sans-serif; font-size: 14px; font-weight: 500; } .ds-btn-primary:hover { background: #b01e21; } .ds-btn-primary:focus-visible { outline: 2px solid #d62629; outline-offset: 3px; }"
+    },
+    {
+      "name": "Ink button",
+      "kind": "button",
+      "refersTo": "button-ink",
+      "description": "Black pill with a white label. Used under the car and for back links.",
+      "html": "<a class=\"ds-btn-ink\" href=\"#\">Broneeri proovisõit</a>",
+      "css": ".ds-btn-ink { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 22px; border-radius: 999px; background: #161616; color: #ffffff; font-family: \"IBM Plex Sans\", \"Segoe UI\", sans-serif; font-size: 14px; font-weight: 500; text-decoration: none; } .ds-btn-ink:hover { background: #2a2a2a; } .ds-btn-ink:focus-visible { outline: 2px solid #d62629; outline-offset: 3px; }"
+    },
+    {
+      "name": "Text field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "White field with a hairline and a red focus border.",
+      "html": "<label class=\"ds-field\"><span>E-post</span><input type=\"email\" placeholder=\"nimi@gmail.com\"></label>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 8px; font-family: \"IBM Plex Sans\", \"Segoe UI\", sans-serif; font-size: 14px; color: #161616; } .ds-field input { min-height: 44px; padding: 12px 14px; border: 1px solid rgba(22, 22, 22, 0.12); border-radius: 12px; background: #ffffff; color: #161616; font: inherit; } .ds-field input:focus { outline: none; border-color: #d62629; }"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "refersTo": "button-primary",
+      "description": "White bar with logos, sentence-case links, and a red pill.",
+      "html": "<nav class=\"ds-nav\"><a href=\"#\">Teated</a><a class=\"is-current\" href=\"#\">Teenindus</a><a class=\"ds-pill\" href=\"#\">Proovisõit</a></nav>",
+      "css": ".ds-nav { display: flex; align-items: center; gap: 8px; font-family: \"IBM Plex Sans\", \"Segoe UI\", sans-serif; } .ds-nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 999px; color: #161616; font-size: 14px; font-weight: 500; text-decoration: none; } .ds-nav a.is-current { color: #d62629; } .ds-nav a.ds-pill { background: #d62629; color: #ffffff; padding: 0 18px; } .ds-nav a:hover { color: #d62629; } .ds-nav a.ds-pill:hover { background: #b01e21; color: #ffffff; } .ds-nav a:focus-visible { outline: 2px solid #d62629; outline-offset: 3px; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "White panel with a 20px radius and a hairline.",
+      "html": "<article class=\"ds-card\"><h2>Broneeri hooldus</h2><p>Vali päev ja kellaaeg.</p></article>",
+      "css": ".ds-card { max-width: 360px; padding: 32px; border: 1px solid rgba(22, 22, 22, 0.12); border-radius: 20px; background: #ffffff; color: #161616; font-family: \"IBM Plex Sans\", \"Segoe UI\", sans-serif; } .ds-card h2 { margin: 0 0 8px; font-size: 28px; font-weight: 500; letter-spacing: -0.03em; } .ds-card p { margin: 0; color: #5c5c5c; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The showroom crossing",
+    "overview": "Catwees is a Honda dealer for owners in Tallinn and Tartu. The page is a full-viewport site: a black-to-white header, a full-bleed photograph, then a lane where the side-view car drives across the model name and the published from-price. The booking control sits under the car, clear of the body.\n\nThe accent is Catwees red, used for the wordmark on a solid header, the current page, the primary action, the selected day or time, and phone and email links. Everything else is ink, muted grey, paper, and white. Type is IBM Plex Sans in sentence case. Corners on actions are pills. Cards are a 20px radius with a hairline, not a thick coloured edge.",
+    "keyCharacteristics": [
+      "Catwees red is the action and the current state, not a frame around every card",
+      "The car crosses the title; the booking button stays below it",
+      "IBM Plex Sans, sentence case, tight negative tracking on large titles",
+      "Shared header on every page: Honda and Catwees logos, wordmark, menu, login, red Proovisõit pill",
+      "Light paper bands and a light footer; the hero is the only full-bleed photograph"
+    ],
+    "rules": [
+      { "name": "The Red Is the Action Rule", "body": "Red marks the thing you can do or the thing that is current. It is not a stripe on a rounded card and it is not a bar above the footer.", "section": "colors" },
+      { "name": "The Sentence Case Rule", "body": "Titles, buttons, and navigation are sentence case. Do not set a kicker in tracked capitals above them.", "section": "typography" },
+      { "name": "The Flat Card Rule", "body": "A card at rest is white, 20px radius, and a hairline. Do not add a thick top border to a rounded card.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use Catwees red (#d62629) for the current page, the solid-header wordmark, primary actions, selected booking states, and tel/mailto links.",
+      "Do keep IBM Plex Sans and sentence case.",
+      "Do keep the booking control below the car in the driving lane.",
+      "Do quote only published from-prices and label demo people and cars as näidis."
+    ],
+    "donts": [
+      "Don't restore the cream Honda omanikule bar.",
+      "Don't put a kicker or eyebrow above a page title.",
+      "Don't put a thick red border on a rounded card or a thick red rule on the footer.",
+      "Don't switch the site to Barlow Condensed, Source Sans, or square job-card chrome.",
+      "Don't colour an ink button’s label red. Tagasi müüki stays white on ink."
+    ]
+  }
+}

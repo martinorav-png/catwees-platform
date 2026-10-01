@@ -1,0 +1,4015 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catwees Honda - Ametlik esindustus Eestis</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ═══════════════════════════════════════════════════════════
+       SWISS INTERNATIONAL STYLE — DESIGN TOKENS
+    ═══════════════════════════════════════════════════════════ */
+    :root {
+      --swiss-black:  #000000;
+      --swiss-white:  #FFFFFF;
+      --swiss-muted:  #F2F2F2;
+      --swiss-red:    #FF3000;
+      --swiss-font:   'Inter', sans-serif;
+      --border-thin:  2px solid #000000;
+      --border-thick: 4px solid #000000;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--swiss-font);
+      color: var(--swiss-black);
+      background: var(--swiss-white);
+      line-height: 1.5;
+    }
+
+    /* ── PATTERNS ── */
+    .swiss-grid-pattern {
+      background-image:
+        linear-gradient(rgba(0,0,0,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    .swiss-dots {
+      background-image: radial-gradient(circle, rgba(0,0,0,.04) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+    .swiss-diagonal {
+      background-image: repeating-linear-gradient(
+        45deg, transparent, transparent 8px,
+        rgba(0,0,0,.02) 8px, rgba(0,0,0,.02) 10px
+      );
+    }
+
+    /* ── PAGE SWITCHING ── */
+    .page { display: none; }
+    .page.active { display: block; }
+    .car-card.hidden { display: none !important; }
+    .filter-empty {
+      display: none;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 36px 40px 64px;
+      border-top: var(--border-thin);
+      color: rgba(0,0,0,.52);
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .filter-empty.is-visible { display: block; }
+
+    /* ═══════════════════════════════════════════════════════════
+       HEADER
+    ═══════════════════════════════════════════════════════════ */
+    header {
+      background: var(--swiss-black);
+      border-bottom: var(--border-thick);
+      position: sticky; top: 0; z-index: 200;
+    }
+    .nav-inner {
+      max-width: 1440px; margin: 0 auto;
+      padding: 0 40px;
+      display: flex; align-items: stretch; height: 68px;
+    }
+    .logo-group {
+      display: flex; align-items: center; gap: 0;
+      cursor: pointer; flex-shrink: 0;
+      border-right: 1px solid rgba(255,255,255,.15);
+      padding-right: 28px; margin-right: 28px;
+    }
+    .logo-group img.honda-logo {
+      height: 28px; width: auto;
+    }
+    .logo-divider {
+      width: 1px; height: 30px;
+      background: rgba(255,255,255,.25);
+      margin: 0 16px;
+    }
+    .logo-group img.catwees-logo {
+      height: 36px; width: auto;
+    }
+    nav {
+      display: flex; align-items: stretch; flex: 1; min-width: 0;
+    }
+    nav a {
+      display: flex; align-items: center;
+      padding: 0 16px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.7);
+      text-decoration: none;
+      cursor: pointer;
+      position: relative;
+      overflow: visible;
+      transition: color 200ms ease-out;
+      min-width: 0;
+    }
+    nav a .nav-label {
+      position: relative;
+      display: flex; flex-direction: column;
+      height: 1.2em; overflow: hidden;
+    }
+    nav a .nav-label span {
+      display: block; transition: transform 200ms ease-out;
+    }
+    nav a .nav-label span:last-child {
+      position: absolute; top: 100%;
+      color: var(--swiss-red);
+      transition: transform 200ms ease-out;
+    }
+    nav a:hover .nav-label span,
+    nav a.active .nav-label span {
+      transform: translateY(-100%);
+    }
+    nav a.active { color: var(--swiss-white); }
+    .nav-cta {
+      display: flex; align-items: center; gap: 0;
+      margin-left: auto;
+      border-left: 1px solid rgba(255,255,255,.15);
+    }
+    .nav-lang {
+      padding: 0 16px;
+      font-size: 11px; font-weight: 700; letter-spacing: .1em;
+      color: rgba(255,255,255,.5);
+      cursor: pointer; background: none; border: none;
+      border-right: 1px solid rgba(255,255,255,.15);
+      height: 100%;
+      transition: color 200ms ease-out;
+    }
+    .nav-lang:hover { color: var(--swiss-white); }
+    .nav-btn {
+      display: flex; align-items: center;
+      padding: 0 20px; height: 100%;
+      font-size: 11px; font-weight: 800;
+      letter-spacing: .12em; text-transform: uppercase;
+      cursor: pointer; border: none; text-decoration: none;
+      transition: background 200ms ease-out, color 200ms ease-out;
+    }
+    .nav-btn-outline {
+      background: transparent;
+      color: rgba(255,255,255,.8);
+      border-left: 1px solid rgba(255,255,255,.15);
+      border-right: 1px solid rgba(255,255,255,.15);
+    }
+    .nav-btn-outline:hover {
+      background: var(--swiss-white);
+      color: var(--swiss-black);
+    }
+    .nav-btn-red {
+      background: var(--swiss-red);
+      color: var(--swiss-white);
+    }
+    .nav-btn-red:hover { background: #cc2500; }
+    html[lang="ru"] nav a,
+    html[lang="ru"] .nav-btn {
+      padding-left: 11px;
+      padding-right: 11px;
+      font-size: 10px;
+      letter-spacing: .035em;
+      white-space: nowrap;
+    }
+    html[lang="ru"] .nav-lang {
+      padding-left: 12px;
+      padding-right: 12px;
+      letter-spacing: .04em;
+    }
+    html[lang="ru"] .logo-group {
+      padding-right: 20px;
+      margin-right: 18px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       SHARED UTILITIES
+    ═══════════════════════════════════════════════════════════ */
+    .container { max-width: 1440px; margin: 0 auto; padding: 0 40px; }
+    .sec-num {
+      display: block;
+      font-size: 11px; font-weight: 900;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: var(--swiss-red);
+      margin-bottom: 12px;
+    }
+    .swiss-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 14px 28px;
+      font-size: 11px; font-weight: 800;
+      letter-spacing: .14em; text-transform: uppercase;
+      border: none; cursor: pointer; text-decoration: none;
+      border-radius: 0;
+      transition: background 200ms ease-out, color 200ms ease-out;
+    }
+    .swiss-btn-black {
+      background: var(--swiss-black);
+      color: var(--swiss-white);
+    }
+    .swiss-btn-black:hover { background: var(--swiss-red); }
+    .swiss-btn-outline {
+      background: transparent;
+      color: var(--swiss-black);
+      border: var(--border-thin);
+    }
+    .swiss-btn-outline:hover {
+      background: var(--swiss-black);
+      color: var(--swiss-white);
+    }
+    .swiss-btn-red {
+      background: var(--swiss-red);
+      color: var(--swiss-white);
+    }
+    .swiss-btn-red:hover { background: #cc2500; }
+    .swiss-btn-white {
+      background: var(--swiss-white);
+      color: var(--swiss-black);
+    }
+    .swiss-btn-white:hover {
+      background: var(--swiss-red);
+      color: var(--swiss-white);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       HOME — HERO SECTION (01)
+    ═══════════════════════════════════════════════════════════ */
+    .hero {
+      background: var(--swiss-black);
+      position: relative; overflow: hidden;
+      min-height: 92vh;
+      display: flex; flex-direction: column;
+    }
+    .hero-grid-overlay {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+      z-index: 1;
+    }
+    .hero-inner {
+      position: relative; z-index: 2;
+      display: flex; align-items: stretch;
+      flex: 1;
+      border-bottom: var(--border-thick);
+    }
+    .hero-left {
+      flex: 0 0 55%;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: 80px 60px 80px 40px;
+      border-right: var(--border-thick);
+      position: relative;
+    }
+    .hero-right {
+      flex: 0 0 45%;
+      position: relative; overflow: hidden;
+    }
+    .hero-right > img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center 40%;
+      opacity: .85;
+    }
+    .hero-badge {
+      position: absolute; top: 28px; right: 28px; z-index: 5;
+    }
+    .hero-badge img {
+      width: 100px; height: auto;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,.4));
+    }
+    .hero-headline {
+      font-size: clamp(5rem, 12vw, 9rem);
+      font-weight: 900;
+      letter-spacing: -.03em;
+      line-height: .95;
+      text-transform: uppercase;
+      color: var(--swiss-white);
+      margin-bottom: 24px;
+    }
+    .hero-headline .line-red { color: var(--swiss-red); }
+    .hero-sub {
+      font-size: 16px; font-style: italic;
+      color: rgba(255,255,255,.5);
+      margin-bottom: 40px;
+      max-width: 400px;
+    }
+    .hero-ctas { display: flex; gap: 0; }
+    .hero-ctas .swiss-btn { border-right: var(--border-thin); }
+    .hero-ctas .swiss-btn:last-child { border-right: none; }
+    .hero-stats {
+      border-top: var(--border-thick);
+      display: grid; grid-template-columns: repeat(3, 1fr);
+    }
+    .hero-stat {
+      padding: 24px 40px;
+      border-right: var(--border-thin);
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-stat:last-child { border-right: none; }
+    .hero-stat-kicker {
+      font-size: 10px; font-weight: 900;
+      letter-spacing: .16em; text-transform: uppercase;
+      color: var(--swiss-red);
+      margin-bottom: 8px;
+    }
+    .hero-stat .num {
+      font-size: 42px; font-weight: 900;
+      color: var(--swiss-white);
+      letter-spacing: -.03em;
+      line-height: 1;
+    }
+    .hero-stat .num em { color: var(--swiss-red); font-style: normal; }
+    .hero-stat .lbl {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: rgba(255,255,255,.35);
+      margin-top: 6px;
+    }
+    .hero-stat-note {
+      color: rgba(255,255,255,.55);
+      font-size: 12px;
+      line-height: 1.5;
+      margin-top: 12px;
+      max-width: 28ch;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       HOME — MODELS SECTION (02)
+    ═══════════════════════════════════════════════════════════ */
+    .models-section {
+      background: var(--swiss-white);
+      border-bottom: var(--border-thick);
+    }
+    .section-header-row {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      padding: 60px 40px 0;
+      max-width: 1440px; margin: 0 auto;
+      border-bottom: var(--border-thin);
+      padding-bottom: 28px;
+      gap: 24px; flex-wrap: wrap;
+    }
+    .section-title-block {}
+    .section-h2 {
+      font-size: clamp(3rem, 7vw, 6rem);
+      font-weight: 900; text-transform: uppercase;
+      letter-spacing: -.03em; line-height: 1;
+    }
+    .count-tag {
+      display: inline-block;
+      border: var(--border-thin);
+      padding: 4px 12px;
+      font-size: 11px; font-weight: 800;
+      letter-spacing: .1em; text-transform: uppercase;
+      margin-left: 16px; vertical-align: middle;
+    }
+    .filter-row {
+      max-width: 1440px; margin: 0 auto;
+      padding: 0 40px;
+      display: flex; gap: 0;
+      border-bottom: var(--border-thin);
+    }
+    .filter-tab {
+      padding: 16px 24px;
+      font-size: 11px; font-weight: 800;
+      letter-spacing: .12em; text-transform: uppercase;
+      cursor: pointer; border: none; background: transparent;
+      border-right: var(--border-thin);
+      color: rgba(0,0,0,.45);
+      transition: background 200ms ease-out, color 200ms ease-out;
+    }
+    .filter-tab:first-child { border-left: none; }
+    .filter-tab:hover { color: var(--swiss-black); box-shadow: inset 0 -3px 0 var(--swiss-red); }
+    .filter-tab.active {
+      background: var(--swiss-black);
+      color: var(--swiss-white);
+      box-shadow: inset 0 -3px 0 var(--swiss-red);
+    }
+    .models-grid {
+      max-width: 1440px; margin: 0 auto;
+      padding: 0 40px 60px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: 1fr;
+      align-items: stretch;
+      gap: 0;
+    }
+    .models-grid .car-card { border-right: var(--border-thin); border-bottom: var(--border-thin); }
+    .models-grid .car-card:nth-child(3n) { border-right: none; }
+    .car-card {
+      background: var(--swiss-white);
+      cursor: pointer;
+      transition: background 200ms ease-out;
+      display: flex; flex-direction: column;
+      height: 100%;
+    }
+    .car-card:hover { background: var(--swiss-black); }
+    .car-card-img {
+      height: 220px; position: relative; overflow: hidden;
+      border-bottom: var(--border-thin);
+      background: var(--swiss-muted);
+    }
+    .car-card:hover .car-card-img { border-bottom-color: rgba(255,255,255,.2); }
+    .car-card-img img {
+      width: 100%; height: 100%;
+      object-fit: contain; padding: 16px 24px;
+      transition: transform 300ms ease-out;
+    }
+    .car-card:hover .car-card-img img { transform: scale(1.04); }
+    .car-card-img .card-badge {
+      position: absolute; top: 0; left: 0;
+      background: var(--swiss-black);
+      color: var(--swiss-white);
+      font-size: 9px; font-weight: 900;
+      letter-spacing: .15em; text-transform: uppercase;
+      padding: 6px 12px;
+    }
+    .card-badge-red { background: var(--swiss-red) !important; }
+    .card-badge-outline {
+      background: transparent !important;
+      color: var(--swiss-black) !important;
+      border: var(--border-thin);
+    }
+    .car-card-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+    .car-brand-label {
+      font-size: 9px; font-weight: 900;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: var(--swiss-red);
+      margin-bottom: 6px;
+    }
+    .car-card:hover .car-brand-label { color: rgba(255,48,0,.8); }
+    .car-card-name {
+      font-size: 22px; font-weight: 900;
+      text-transform: uppercase; letter-spacing: -.01em;
+      margin-bottom: 6px;
+      color: var(--swiss-black);
+      transition: color 200ms ease-out;
+    }
+    .car-card:hover .car-card-name { color: var(--swiss-white); }
+    .car-card-desc {
+      font-size: 12px; color: rgba(0,0,0,.5);
+      margin-bottom: 20px; flex: 1;
+      transition: color 200ms ease-out;
+    }
+    .car-card:hover .car-card-desc { color: rgba(255,255,255,.45); }
+    .car-card-footer {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      border-top: var(--border-thin);
+      padding-top: 16px;
+      margin-top: auto;
+    }
+    .car-card:hover .car-card-footer { border-top-color: rgba(255,255,255,.2); }
+    .car-price {
+      font-size: 20px; font-weight: 900;
+      letter-spacing: -.02em;
+      color: var(--swiss-black);
+      transition: color 200ms ease-out;
+    }
+    .car-card:hover .car-price { color: var(--swiss-white); }
+    .car-price small {
+      font-size: 10px; font-weight: 500;
+      color: rgba(0,0,0,.4);
+      transition: color 200ms ease-out;
+    }
+    .car-card:hover .car-price small { color: rgba(255,255,255,.4); }
+    .car-old-price {
+      font-size: 11px; font-weight: 500;
+      text-decoration: line-through;
+      color: rgba(0,0,0,.35);
+      display: block;
+      transition: color 200ms ease-out;
+    }
+    .car-card:hover .car-old-price { color: rgba(255,255,255,.3); }
+    .card-cta {
+      padding: 10px 16px;
+      font-size: 10px; font-weight: 900;
+      letter-spacing: .14em; text-transform: uppercase;
+      background: var(--swiss-black);
+      color: var(--swiss-white);
+      border: var(--border-thin);
+      cursor: pointer;
+      transition: background 200ms ease-out, color 200ms ease-out, border-color 200ms ease-out;
+    }
+    .car-card:hover .card-cta {
+      background: var(--swiss-red);
+      color: var(--swiss-white);
+      border-color: var(--swiss-red);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       HOME — SERVICE SECTION (03)
+    ═══════════════════════════════════════════════════════════ */
+    .service-section {
+      background: var(--swiss-muted);
+      border-bottom: var(--border-thick);
+    }
+    .service-section.swiss-dots { }
+    .service-inner {
+      max-width: 1440px; margin: 0 auto;
+    }
+    .service-header {
+      padding: 60px 40px 0;
+      border-bottom: var(--border-thin);
+      padding-bottom: 28px;
+    }
+    .service-body {
+      display: grid; grid-template-columns: 1fr 1fr;
+    }
+    .service-panel-left {
+      background: var(--swiss-black);
+      padding: 48px 40px;
+      border-right: var(--border-thick);
+    }
+    .service-panel-left .panel-label {
+      font-size: 10px; font-weight: 900;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: rgba(255,255,255,.35);
+      margin-bottom: 24px; display: block;
+    }
+    .service-list-item {
+      display: flex; align-items: center;
+      padding: 18px 0;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      cursor: pointer;
+      transition: border-bottom-color 200ms ease-out;
+    }
+    .service-list-item:hover { border-bottom-color: var(--swiss-red); }
+    .service-list-item:last-child { border-bottom: none; }
+    .service-list-item.is-selected {
+      border-bottom-color: var(--swiss-red);
+    }
+    .service-list-num {
+      font-size: 11px; font-weight: 900;
+      color: var(--swiss-red);
+      width: 32px; flex-shrink: 0;
+      letter-spacing: .05em;
+    }
+    .service-list-text h4 {
+      font-size: 15px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .05em;
+      color: var(--swiss-white);
+      margin-bottom: 2px;
+      transition: color 200ms ease-out;
+    }
+    .service-list-item:hover .service-list-text h4 { color: var(--swiss-red); }
+    .service-list-item.is-selected .service-list-text h4 { color: var(--swiss-red); }
+    .service-list-text p {
+      font-size: 12px; color: rgba(255,255,255,.4);
+    }
+    .service-arrow {
+      margin-left: auto;
+      font-size: 18px; color: rgba(255,255,255,.2);
+      transition: color 200ms ease-out, transform 200ms ease-out;
+    }
+    .service-list-item:hover .service-arrow {
+      color: var(--swiss-red); transform: translateX(4px);
+    }
+    .service-list-item.is-selected .service-arrow {
+      color: var(--swiss-red);
+      transform: translateX(4px);
+    }
+    .service-panel-right {
+      padding: 48px 40px;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .service-promo-title {
+      font-size: 36px; font-weight: 900;
+      text-transform: uppercase; letter-spacing: -.02em;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .service-promo-body {
+      font-size: 14px; color: rgba(0,0,0,.55);
+      line-height: 1.7; max-width: 360px;
+      margin-bottom: 32px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       HOME — TIMELINE / NÕUANDED (04)
+    ═══════════════════════════════════════════════════════════ */
+    .timeline-section {
+      background: var(--swiss-white);
+      border-bottom: var(--border-thick);
+    }
+    .timeline-header {
+      max-width: 1440px; margin: 0 auto;
+      padding: 60px 40px 28px;
+      border-bottom: var(--border-thin);
+    }
+    .timeline-body {
+      max-width: 1440px; margin: 0 auto;
+      padding: 0 40px 60px;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+    }
+    .tl-step {
+      padding: 48px 40px;
+      border-right: var(--border-thin);
+    }
+    .tl-step:last-child { border-right: none; }
+    .tl-node {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: var(--swiss-red);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 900;
+      color: var(--swiss-white);
+      margin-bottom: 24px;
+      position: relative; z-index: 2;
+      opacity: 0; transform: scale(.5);
+      transition: opacity .4s ease, transform .5s cubic-bezier(.34,1.56,.64,1);
+      transition-delay: var(--d, 0s);
+    }
+    /* Connector lines drawn via pseudo-elements on each step */
+    .tl-step { position: relative; }
+    /* Right half: from node right-edge → step right boundary */
+    .tl-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: calc(40px + 52px); /* stepPaddingLeft + nodeWidth */
+      right: 0;
+      top: calc(48px + 26px); /* stepPaddingTop + nodeRadius = 74px */
+      height: 2px;
+      background: var(--swiss-black);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .5s ease;
+      transition-delay: calc(var(--d, 0s) + .5s);
+      z-index: 0;
+    }
+    /* Left half: from step left boundary → node left-edge */
+    .tl-step:not(:first-child)::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 40px; /* stepPaddingLeft = to node left edge */
+      top: calc(48px + 26px);
+      height: 2px;
+      background: var(--swiss-black);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .3s ease;
+      transition-delay: calc(var(--d, 0s) + .15s);
+      z-index: 0;
+    }
+    .timeline.visible .tl-step::after,
+    .timeline.visible .tl-step::before { transform: scaleX(1); }
+    .tl-content {
+      opacity: 0; transform: translateY(14px);
+      transition: opacity .4s ease, transform .4s ease;
+      transition-delay: calc(var(--d, 0s) + .3s);
+    }
+    .tl-content h4 {
+      font-size: 16px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .05em;
+      margin-bottom: 12px;
+    }
+    .tl-content p { font-size: 13px; color: rgba(0,0,0,.5); line-height: 1.7; }
+    .timeline.visible .tl-node { opacity: 1; transform: scale(1); }
+    .timeline.visible .tl-connector-row { transform: scaleX(1); }
+    .timeline.visible .tl-content { opacity: 1; transform: translateY(0); }
+
+    /* ═══════════════════════════════════════════════════════════
+       HOME — TRUST BAR (05)
+    ═══════════════════════════════════════════════════════════ */
+    .trust-bar {
+      background: var(--swiss-black);
+      border-bottom: var(--border-thick);
+    }
+    .trust-inner {
+      max-width: 1440px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border-top: 4px solid var(--swiss-red);
+    }
+    .trust-item {
+      padding: 48px 40px;
+      border-right: 1px solid rgba(255,255,255,.08);
+    }
+    .trust-item:last-child { border-right: none; }
+    .trust-num {
+      font-size: 56px; font-weight: 900;
+      color: var(--swiss-white);
+      letter-spacing: -.04em; line-height: 1;
+      margin-bottom: 8px;
+    }
+    .trust-num em { color: var(--swiss-red); font-style: normal; }
+    .trust-lbl {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: rgba(255,255,255,.35);
+    }
+    .trust-honda {
+      font-size: 24px; font-weight: 900;
+      color: var(--swiss-red);
+      text-transform: uppercase; letter-spacing: -.01em;
+      line-height: 1; margin-bottom: 8px;
+    }
+    .trust-word {
+      font-size: clamp(1.35rem, 2.8vw, 2rem);
+      font-weight: 900;
+      color: var(--swiss-white);
+      text-transform: uppercase;
+      letter-spacing: -.01em;
+      line-height: .95;
+      margin-bottom: 10px;
+    }
+    .trust-word em {
+      color: var(--swiss-red);
+      font-style: normal;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       HOME — LOCATIONS (06)
+    ═══════════════════════════════════════════════════════════ */
+    .locations-section {
+      background: var(--swiss-white);
+      border-bottom: var(--border-thick);
+    }
+    .locations-section.swiss-grid-pattern {}
+    .locations-header {
+      max-width: 1440px; margin: 0 auto;
+      padding: 60px 40px 28px;
+      border-bottom: var(--border-thin);
+    }
+    .locations-grid {
+      max-width: 1440px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+    }
+    .location-card {
+      padding: 48px 40px;
+      border-right: var(--border-thin);
+      cursor: pointer;
+      transition: background 200ms ease-out;
+    }
+    .location-card:last-child { border-right: none; }
+    .location-card:hover { background: var(--swiss-muted); }
+    .location-city {
+      font-size: clamp(3rem, 6vw, 5rem);
+      font-weight: 900; text-transform: uppercase;
+      letter-spacing: -.03em; line-height: 1;
+      margin-bottom: 28px;
+      border-bottom: var(--border-thin);
+      padding-bottom: 20px;
+    }
+    .location-detail {
+      display: flex; gap: 16px;
+      margin-bottom: 14px; align-items: flex-start;
+    }
+    .location-detail-label {
+      font-size: 9px; font-weight: 900;
+      letter-spacing: .15em; text-transform: uppercase;
+      color: rgba(0,0,0,.35);
+      flex-shrink: 0; width: 80px; margin-top: 2px;
+    }
+    .location-detail-val {
+      font-size: 13px; color: var(--swiss-black); line-height: 1.5;
+    }
+    .location-detail-val a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .location-detail-val a:hover {
+      color: var(--swiss-red);
+    }
+    .location-map-placeholder {
+      height: 120px;
+      border: var(--border-thin);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: rgba(0,0,0,.25);
+      margin-top: 24px;
+      background: var(--swiss-muted);
+    }
+    a.location-map-placeholder,
+    .contact-page-link {
+      height: auto;
+      min-height: 54px;
+      padding: 14px 18px;
+      color: var(--swiss-black);
+      text-decoration: none;
+      background: var(--swiss-white);
+      cursor: pointer;
+      appearance: none;
+      width: 100%;
+    }
+    a.location-map-placeholder:hover,
+    .contact-page-link:hover {
+      border-color: var(--swiss-red);
+      color: var(--swiss-red);
+      background: var(--swiss-white);
+    }
+    .location-map-placeholder + .location-map-placeholder {
+      margin-top: 10px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       HOME — NEWS (07)
+    ═══════════════════════════════════════════════════════════ */
+    .news-section {
+      background: var(--swiss-muted);
+      border-bottom: var(--border-thick);
+    }
+    .news-section.swiss-diagonal {}
+    .news-header {
+      max-width: 1440px; margin: 0 auto;
+      padding: 60px 40px 28px;
+      border-bottom: var(--border-thin);
+      display: flex; align-items: flex-end; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .news-grid {
+      max-width: 1440px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+    }
+    .news-card {
+      background: var(--swiss-white);
+      border-right: var(--border-thin);
+      overflow: hidden;
+      transition: background 200ms ease-out;
+    }
+    .news-card:last-child { border-right: none; }
+    .news-card:hover { background: var(--swiss-black); }
+    .news-img { height: 220px; overflow: hidden; border-bottom: var(--border-thin); }
+    .news-card:hover .news-img { border-bottom-color: rgba(255,255,255,.15); }
+    .news-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 300ms ease-out;
+    }
+    .news-card:hover .news-img img { transform: scale(1.04); }
+    .news-body { padding: 28px; }
+    .news-meta {
+      font-size: 9px; font-weight: 900;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--swiss-red); margin-bottom: 10px;
+      transition: color 200ms ease-out;
+    }
+    .news-title {
+      font-size: 17px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: -.01em;
+      line-height: 1.2; margin-bottom: 10px;
+      color: var(--swiss-black);
+      transition: color 200ms ease-out;
+    }
+    .news-card:hover .news-title { color: var(--swiss-white); }
+    .news-card:hover .news-meta { color: rgba(255,120,80,1); }
+    .news-excerpt {
+      font-size: 12px; color: rgba(0,0,0,.5);
+      line-height: 1.65;
+      transition: color 200ms ease-out;
+    }
+    .news-card:hover .news-excerpt { color: rgba(255,255,255,.4); }
+    .news-link {
+      display: inline-block; margin-top: 16px;
+      font-size: 10px; font-weight: 900;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: var(--swiss-black);
+      text-decoration: none;
+      border-bottom: 2px solid var(--swiss-black);
+      padding-bottom: 2px;
+      transition: color 200ms ease-out, border-color 200ms ease-out;
+    }
+    .news-card:hover .news-link {
+      color: var(--swiss-red);
+      border-color: var(--swiss-red);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       PAGE HERO (inner pages)
+    ═══════════════════════════════════════════════════════════ */
+    .page-hero {
+      background: var(--swiss-black);
+      border-bottom: 4px solid var(--swiss-red);
+      position: relative; overflow: hidden;
+    }
+    .page-hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+    }
+    .page-hero-inner {
+      max-width: 1440px; margin: 0 auto;
+      padding: 60px 40px 48px;
+      position: relative; z-index: 2;
+    }
+    .breadcrumb {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .15em; text-transform: uppercase;
+      color: rgba(255,255,255,.3);
+      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .breadcrumb a {
+      color: rgba(255,255,255,.4); text-decoration: none; cursor: pointer;
+      transition: color 200ms ease-out;
+    }
+    .breadcrumb a:hover { color: var(--swiss-white); }
+    .breadcrumb span { color: rgba(255,255,255,.2); }
+    .page-title {
+      font-size: clamp(4rem, 10vw, 8rem);
+      font-weight: 900; text-transform: uppercase;
+      letter-spacing: -.03em; line-height: .95;
+      color: var(--swiss-white);
+      margin-bottom: 20px;
+    }
+    .page-sub {
+      font-size: 14px; color: rgba(255,255,255,.4);
+      max-width: 520px; line-height: 1.65;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       FILTER BAR (used cars / laopakkumised)
+    ═══════════════════════════════════════════════════════════ */
+    .filter-bar-swiss {
+      background: var(--swiss-white);
+      border-bottom: var(--border-thin);
+      max-width: 1440px; margin: 0 auto;
+      padding: 28px 40px;
+      display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end;
+    }
+    .filter-group-swiss {
+      display: flex; flex-direction: column; gap: 6px;
+      min-width: 140px; flex: 1;
+    }
+    .filter-group-swiss label {
+      font-size: 9px; font-weight: 900;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: rgba(0,0,0,.4);
+    }
+    .filter-group-swiss select,
+    .filter-group-swiss input {
+      border: var(--border-thin);
+      border-radius: 0;
+      padding: 10px 12px;
+      font-size: 13px; color: var(--swiss-black);
+      background: var(--swiss-white); font-family: var(--swiss-font);
+      outline: none;
+      transition: border-color 200ms ease-out;
+      -webkit-appearance: none;
+    }
+    .filter-group-swiss select:focus,
+    .filter-group-swiss input:focus { border-color: var(--swiss-red); }
+
+    /* ═══════════════════════════════════════════════════════════
+       OFFER BANNER
+    ═══════════════════════════════════════════════════════════ */
+    .offer-banner {
+      background: var(--swiss-black);
+      border-bottom: var(--border-thin);
+      max-width: 1440px; margin: 0 auto;
+      padding: 48px 40px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 24px;
+    }
+    .offer-tag {
+      display: inline-block;
+      background: var(--swiss-red);
+      color: var(--swiss-white);
+      font-size: 9px; font-weight: 900;
+      letter-spacing: .18em; text-transform: uppercase;
+      padding: 6px 14px; margin-bottom: 12px;
+    }
+    .offer-title {
+      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      font-weight: 900; text-transform: uppercase;
+      letter-spacing: -.02em;
+      color: var(--swiss-white);
+      margin-bottom: 8px;
+    }
+    .offer-desc { font-size: 13px; color: rgba(255,255,255,.45); max-width: 420px; }
+
+    /* ═══════════════════════════════════════════════════════════
+       BOOKING FORM (Teenindus)
+    ═══════════════════════════════════════════════════════════ */
+    .booking-section-swiss {
+      background: var(--swiss-white);
+      border-bottom: var(--border-thick);
+    }
+    .booking-inner {
+      max-width: 1440px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+    }
+    .booking-left {
+      background: var(--swiss-black);
+      padding: 60px 40px;
+      border-right: var(--border-thick);
+    }
+    .booking-left .panel-label {
+      font-size: 10px; font-weight: 900;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: rgba(255,255,255,.3);
+      margin-bottom: 32px; display: block;
+    }
+    .booking-left .service-list-item {
+      border-bottom-color: rgba(255,255,255,.08);
+    }
+    .booking-right { padding: 60px 40px; }
+    .booking-right h3 {
+      font-size: 28px; font-weight: 900;
+      text-transform: uppercase; letter-spacing: -.01em;
+      margin-bottom: 32px;
+    }
+    .form-row-swiss {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0; border-bottom: var(--border-thin);
+      margin-bottom: 0;
+    }
+    .form-group-swiss {
+      display: flex; flex-direction: column; gap: 0;
+      border-bottom: var(--border-thin);
+    }
+    .form-group-swiss:last-child { border-right: none; }
+    .form-group-swiss label {
+      font-size: 9px; font-weight: 900;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: rgba(0,0,0,.35);
+      padding: 12px 0 4px;
+    }
+    .form-group-swiss input,
+    .form-group-swiss select,
+    .form-group-swiss textarea {
+      border: none; border-radius: 0;
+      padding: 8px 0 12px;
+      font-size: 14px; color: var(--swiss-black);
+      font-family: var(--swiss-font);
+      outline: none; background: transparent;
+      resize: vertical;
+      border-bottom: var(--border-thin);
+      transition: border-bottom-color 200ms ease-out;
+    }
+    .form-group-swiss input:focus,
+    .form-group-swiss select:focus,
+    .form-group-swiss textarea:focus {
+      border-bottom-color: var(--swiss-red);
+    }
+    .service-types-swiss {
+      display: grid; grid-template-columns: 1fr 1fr;
+      border: var(--border-thin);
+      margin: 24px 0;
+    }
+    .service-type-btn {
+      padding: 16px;
+      text-align: center; cursor: pointer;
+      font-size: 11px; font-weight: 800;
+      letter-spacing: .1em; text-transform: uppercase;
+      border-right: var(--border-thin);
+      border-bottom: var(--border-thin);
+      color: rgba(0,0,0,.5);
+      transition: background 200ms ease-out, color 200ms ease-out;
+    }
+    .service-type-btn:nth-child(2n) { border-right: none; }
+    .service-type-btn:nth-last-child(-n+2) { border-bottom: none; }
+    .service-type-btn:hover { background: var(--swiss-muted); color: var(--swiss-black); }
+    .service-type-btn.selected {
+      background: var(--swiss-black);
+      color: var(--swiss-white);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       ABOUT PAGE
+    ═══════════════════════════════════════════════════════════ */
+    .about-intro-swiss {
+      max-width: 1440px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      border-bottom: var(--border-thick);
+    }
+    .about-img-panel {
+      height: 500px;
+      border-right: var(--border-thick);
+      overflow: hidden;
+    }
+    .about-img-panel img {
+      width: 100%; height: 100%; object-fit: cover; object-position: 52% 46%;
+    }
+    .about-text-panel { padding: 60px 40px; }
+    .about-text-panel h2 {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 900; text-transform: uppercase;
+      letter-spacing: -.02em; line-height: 1;
+      margin-bottom: 24px;
+    }
+    .about-text-panel p {
+      font-size: 14px; color: rgba(0,0,0,.6);
+      line-height: 1.75; margin-bottom: 16px;
+    }
+    .values-section {
+      background: var(--swiss-muted);
+      border-bottom: var(--border-thick);
+    }
+    .values-section.swiss-dots {}
+    .values-header {
+      max-width: 1440px; margin: 0 auto;
+      padding: 60px 40px 28px;
+      border-bottom: var(--border-thin);
+    }
+    .values-grid {
+      max-width: 1440px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+    }
+    .value-card-swiss {
+      padding: 40px;
+      border-right: var(--border-thin);
+      border-bottom: var(--border-thin);
+      background: var(--swiss-white);
+      transition: background 200ms ease-out;
+    }
+    .value-card-swiss:hover { background: var(--swiss-black); }
+    .value-card-swiss:nth-child(3n) { border-right: none; }
+    .value-icon {
+      width: 40px; height: 40px;
+      border: var(--border-thin);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: var(--swiss-black);
+      transition: border-color 200ms ease-out, color 200ms ease-out, background 200ms ease-out;
+    }
+    .value-card-swiss:hover .value-icon {
+      border-color: var(--swiss-red);
+      color: var(--swiss-red);
+      background: rgba(255,48,0,.08);
+    }
+    .value-card-swiss h4 {
+      font-size: 14px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .05em;
+      margin-bottom: 10px;
+      transition: color 200ms ease-out;
+    }
+    .value-card-swiss:hover h4 { color: var(--swiss-white); }
+    .value-card-swiss p {
+      font-size: 12px; color: rgba(0,0,0,.5);
+      line-height: 1.65;
+      transition: color 200ms ease-out;
+    }
+    .value-card-swiss:hover p { color: rgba(255,255,255,.4); }
+
+    /* ═══════════════════════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════════════════════ */
+    footer {
+      background: var(--swiss-black);
+      border-top: 4px solid var(--swiss-red);
+    }
+    .footer-top {
+      max-width: 1440px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .footer-brand {
+      padding: 60px 40px;
+      border-right: 1px solid rgba(255,255,255,.08);
+    }
+    .footer-logos {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 24px;
+      max-width: 220px;
+    }
+    .footer-logos img {
+      display: block;
+      object-fit: contain;
+      object-position: left center;
+    }
+    .footer-logos img.footer-catwees {
+      width: 118px;
+      height: 46px;
+    }
+    .footer-logos img.footer-honda {
+      width: 132px;
+      height: 32px;
+      opacity: .72;
+    }
+    .footer-brand p {
+      font-size: 13px; color: rgba(255,255,255,.3);
+      line-height: 1.7; max-width: 260px; margin-bottom: 24px;
+    }
+    .footer-col {
+      padding: 60px 32px;
+      border-right: 1px solid rgba(255,255,255,.08);
+    }
+    .footer-col:last-child { border-right: none; }
+    .footer-col h4 {
+      font-size: 9px; font-weight: 900;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: rgba(255,255,255,.25); margin-bottom: 20px;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .footer-col ul li a {
+      font-size: 13px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .05em;
+      color: rgba(255,255,255,.5); text-decoration: none; cursor: pointer;
+      transition: color 200ms ease-out;
+    }
+    .footer-col ul li a:hover { color: var(--swiss-white); }
+    .footer-bottom {
+      max-width: 1440px; margin: 0 auto;
+      padding: 20px 40px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 11px; color: rgba(255,255,255,.2);
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-bottom a { color: rgba(255,255,255,.2); text-decoration: none; transition: color 200ms ease-out; }
+    .footer-bottom a:hover { color: rgba(255,255,255,.5); }
+    .footer-bottom-links { display: flex; gap: 24px; }
+
+    /* ═══════════════════════════════════════════════════════════
+       FLOAT BTN
+    ═══════════════════════════════════════════════════════════ */
+    .float-btn {
+      position: fixed; bottom: 28px; right: 28px; z-index: 300;
+      display: none;
+      background: var(--swiss-red);
+      color: var(--swiss-white);
+      padding: 14px 24px;
+      font-size: 11px; font-weight: 900;
+      letter-spacing: .12em; text-transform: uppercase;
+      cursor: pointer; text-decoration: none;
+      border: none; border-radius: 0;
+      transition: background 200ms ease-out;
+    }
+    .float-btn:hover { background: var(--swiss-black); }
+
+    /* ═══════════════════════════════════════════════════════════
+       SECTION DIVIDERS
+    ═══════════════════════════════════════════════════════════ */
+    .section-pad-inner {
+      max-width: 1440px; margin: 0 auto;
+      padding: 60px 40px;
+    }
+    .inner-page-content {
+      background: var(--swiss-muted);
+      border-bottom: var(--border-thick);
+    }
+    .inner-page-content.swiss-dots {}
+
+    /* ═══════════════════════════════════════════════════════════
+       SCROLLING TICKER
+    ═══════════════════════════════════════════════════════════ */
+    .ticker-strip {
+      background: var(--swiss-red);
+      border-bottom: var(--border-thick);
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+    }
+    .ticker-track {
+      display: inline-flex;
+      animation: tickerScroll 32s linear infinite;
+    }
+    .ticker-strip:hover .ticker-track { animation-play-state: paused; }
+    .ticker-item {
+      padding: 12px 36px;
+      font-size: 11px; font-weight: 900;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--swiss-white);
+      flex-shrink: 0;
+    }
+    .ticker-dot {
+      padding: 12px 0;
+      color: rgba(255,255,255,.35);
+      font-size: 11px; flex-shrink: 0;
+    }
+    @keyframes tickerScroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       RED CTA STRIP
+    ═══════════════════════════════════════════════════════════ */
+    .cta-strip {
+      background: var(--swiss-red);
+      border-top: var(--border-thick);
+      border-bottom: var(--border-thick);
+    }
+    .cta-strip-inner {
+      max-width: 1440px; margin: 0 auto;
+      padding: 72px 40px;
+      display: flex; align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap; gap: 48px;
+    }
+    .cta-strip-left {}
+    .cta-strip-eyebrow {
+      font-size: 10px; font-weight: 900;
+      letter-spacing: .22em; text-transform: uppercase;
+      color: rgba(255,255,255,.55);
+      margin-bottom: 16px; display: block;
+    }
+    .cta-strip-headline {
+      font-size: clamp(2.4rem, 5vw, 4.5rem);
+      font-weight: 900; text-transform: uppercase;
+      letter-spacing: -.03em; line-height: .95;
+      color: var(--swiss-white);
+    }
+    .cta-strip-right {
+      display: flex; flex-direction: column;
+      align-items: flex-start; gap: 16px;
+    }
+    .cta-strip-desc {
+      font-size: 14px; color: rgba(255,255,255,.65);
+      max-width: 320px; line-height: 1.65;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       OFFER BANNER WRAPPER
+    ═══════════════════════════════════════════════════════════ */
+    .offer-banner-wrap {
+      background: var(--swiss-black);
+      border-bottom: var(--border-thin);
+    }
+
+    /* warranty strip replaced by simple border bar */
+    .swiss-strip {
+      background: var(--swiss-black);
+      border-bottom: var(--border-thick);
+    }
+    .swiss-strip-inner {
+      max-width: 1440px; margin: 0 auto;
+      display: flex; flex-wrap: wrap;
+    }
+    .swiss-strip-item {
+      padding: 16px 28px;
+      font-size: 10px; font-weight: 800;
+      letter-spacing: .16em; text-transform: uppercase;
+      color: rgba(255,255,255,.5);
+      border-right: 1px solid rgba(255,255,255,.1);
+    }
+    .swiss-strip-item:last-child { border-right: none; }
+    .swiss-strip-item em { color: var(--swiss-red); font-style: normal; }
+
+    /* 2026 craft pass: dealership-first, quieter depth, mobile-safe rhythm */
+    :root {
+      --swiss-red: #E30613;
+      --swiss-muted: #F4F4F1;
+      --swiss-font: 'IBM Plex Sans', sans-serif;
+      --display-font: 'IBM Plex Sans Condensed', 'IBM Plex Sans', sans-serif;
+      --ink-soft: rgba(0,0,0,.62);
+      --white-soft: rgba(255,255,255,.72);
+      --line-soft: rgba(0,0,0,.12);
+      --border-thin: 1px solid #000000;
+      --border-thick: 3px solid #000000;
+    }
+
+    body {
+      font-feature-settings: "liga" 1, "kern" 1;
+      text-rendering: geometricPrecision;
+    }
+
+    .swiss-grid-pattern,
+    .swiss-dots,
+    .swiss-diagonal,
+    .hero-grid-overlay,
+    .page-hero::after {
+      background-image: none !important;
+    }
+
+    .hero-headline,
+    .section-h2,
+    .page-title,
+    .service-promo-title,
+    .cta-strip-headline,
+    .offer-title,
+    .car-card-name,
+    .location-city,
+    .news-title,
+    .booking-right h3,
+    .value-card-swiss h4 {
+      font-family: var(--display-font);
+      letter-spacing: 0;
+    }
+
+    header {
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+
+    .nav-inner {
+      height: 74px;
+    }
+
+    nav a,
+    .nav-btn,
+    .nav-lang,
+    .swiss-btn,
+    .filter-tab,
+    .sec-num,
+    .panel-label,
+    .car-brand-label,
+    .card-badge,
+    .ticker-item,
+    .swiss-strip-item {
+      letter-spacing: .08em;
+    }
+
+    .hero {
+      min-height: calc(100vh - 74px);
+      isolation: isolate;
+      background: #090909;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,.72) 0%, rgba(0,0,0,.50) 34%, rgba(0,0,0,.18) 68%),
+        linear-gradient(0deg, rgba(0,0,0,.82) 0%, rgba(0,0,0,0) 38%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: auto 0 0;
+      z-index: 2;
+      height: 34%;
+      background: linear-gradient(0deg, rgba(0,0,0,.78), rgba(0,0,0,0));
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      min-height: calc(100vh - 210px);
+      border-bottom: 1px solid rgba(255,255,255,.14);
+      overflow: hidden;
+    }
+
+    .hero-left {
+      flex: 0 0 48%;
+      z-index: 3;
+      border-right: none;
+      padding: clamp(72px, 10vh, 124px) 40px 96px;
+      max-width: 720px;
+    }
+
+    .hero-right {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background: #111;
+    }
+
+    .hero-right img {
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      max-height: none;
+      opacity: .9;
+      object-fit: cover;
+      object-position: 78% 48%;
+      transform: scale(1.12) translateY(-9%);
+    }
+
+    .hero-badge {
+      top: clamp(128px, 18vh, 210px);
+      right: clamp(34px, 6vw, 88px);
+      bottom: auto;
+      z-index: 4;
+      padding: 10px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.96), rgba(245,245,239,.88)),
+        repeating-linear-gradient(45deg, rgba(0,0,0,.045) 0 1px, transparent 1px 5px);
+      border: 1px solid rgba(255,255,255,.72);
+      box-shadow:
+        0 18px 34px rgba(0,0,0,.32),
+        0 2px 2px rgba(0,0,0,.16),
+        inset 0 0 0 1px rgba(0,0,0,.08);
+      transform: rotate(-7deg);
+      transform-origin: center;
+      mix-blend-mode: normal;
+    }
+
+    .hero-badge::before {
+      content: '';
+      position: absolute;
+      inset: 7px;
+      background:
+        radial-gradient(circle at 22% 18%, rgba(255,255,255,.5), transparent 18%),
+        repeating-linear-gradient(0deg, rgba(255,255,255,.16) 0 1px, rgba(0,0,0,.03) 1px 2px);
+      opacity: .42;
+      pointer-events: none;
+      mix-blend-mode: soft-light;
+    }
+
+    .hero-badge::after {
+      content: '';
+      position: absolute;
+      top: -7px;
+      left: 50%;
+      width: 42px;
+      height: 13px;
+      transform: translateX(-50%) rotate(3deg);
+      background: rgba(255,255,255,.42);
+      border: 1px solid rgba(255,255,255,.5);
+      box-shadow: 0 2px 7px rgba(0,0,0,.16);
+      backdrop-filter: blur(2px);
+    }
+
+    .hero-badge img {
+      position: static;
+      width: 82px;
+      height: auto;
+      max-height: none;
+      opacity: 1;
+      filter: none;
+      display: block;
+      object-fit: contain;
+      transform: none;
+      animation: none;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-headline {
+      font-size: clamp(4.5rem, 10.2vw, 9.2rem);
+      line-height: .86;
+      margin-bottom: 28px;
+      max-width: 6ch;
+    }
+
+    .hero-sub {
+      color: var(--white-soft);
+      font-style: normal;
+      font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+      max-width: 540px;
+      line-height: 1.45;
+    }
+
+    .hero-proof {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
+      width: min(560px, 100%);
+      margin: 0 0 34px;
+      border-top: 1px solid rgba(255,255,255,.22);
+      border-bottom: 1px solid rgba(255,255,255,.22);
+    }
+
+    .hero-proof span {
+      padding: 14px 16px;
+      border-right: 1px solid rgba(255,255,255,.18);
+      color: rgba(255,255,255,.78);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .hero-proof span:last-child {
+      border-right: none;
+    }
+
+    .hero-ctas {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .hero-ctas .swiss-btn {
+      min-height: 48px;
+      border: 1px solid rgba(255,255,255,.24);
+    }
+
+    .hero-ctas .swiss-btn-outline {
+      border: 1px solid rgba(255,255,255,.36) !important;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+    }
+
+    .hero-stats {
+      position: relative;
+      z-index: 3;
+      border-top: 0;
+      background:
+        linear-gradient(90deg, rgba(227,6,19,.18) 0 1px, transparent 1px 100%),
+        rgba(0,0,0,.78);
+      background-size: 25% 100%, auto;
+      backdrop-filter: blur(12px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.16);
+    }
+
+    .hero-stat {
+      min-height: 116px;
+      border-right: 1px solid rgba(255,255,255,.14);
+      justify-content: flex-start;
+      isolation: isolate;
+    }
+
+    .hero-stat::after {
+      content: attr(data-index);
+      position: absolute;
+      right: 22px;
+      bottom: -10px;
+      z-index: -1;
+      color: rgba(255,255,255,.045);
+      font-family: var(--display-font);
+      font-size: clamp(4.4rem, 8vw, 8rem);
+      font-weight: 700;
+      line-height: .8;
+      letter-spacing: -.04em;
+    }
+
+    .hero-stat-kicker {
+      font-family: var(--display-font);
+      letter-spacing: .06em;
+    }
+
+    .hero-stat .num {
+      font-family: var(--display-font);
+      font-size: clamp(2.05rem, 4vw, 4.5rem);
+      letter-spacing: -.01em;
+      line-height: .9;
+      text-transform: uppercase;
+    }
+
+    .hero-stat:nth-child(3) .num {
+      font-size: clamp(1.85rem, 3.2vw, 3.6rem);
+      white-space: nowrap;
+    }
+
+    .hero-stat .lbl {
+      margin-top: 10px;
+      max-width: 32ch;
+      color: rgba(255,255,255,.64);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .02em;
+      line-height: 1.45;
+      text-transform: none;
+    }
+
+    .hero-stat-note {
+      color: rgba(255,255,255,.36);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      line-height: 1.4;
+      margin-top: auto;
+      padding-top: 18px;
+      text-transform: uppercase;
+    }
+
+    @keyframes loadFadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes loadHeroImage {
+      from { opacity: 0; transform: scale(1.18) translateY(-9%); filter: saturate(.8) contrast(.92); }
+      to { opacity: .9; transform: scale(1.12) translateY(-9%); filter: saturate(1) contrast(1); }
+    }
+
+    @keyframes loadHeader {
+      from { transform: translateY(-100%); }
+      to { transform: translateY(0); }
+    }
+
+    @keyframes loadLine {
+      from { transform: scaleX(0); opacity: 0; }
+      to { transform: scaleX(1); opacity: 1; }
+    }
+
+    header {
+      animation: loadHeader .55s cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    .hero-right > img {
+      animation: loadHeroImage 1.2s cubic-bezier(.2,.8,.2,1) .08s both;
+    }
+
+    .hero-left .sec-num,
+    .hero-headline,
+    .hero-sub,
+    .hero-proof,
+    .hero-ctas {
+      opacity: 0;
+      animation: loadFadeUp .7s cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    .hero-left .sec-num { animation-delay: .18s; }
+    .hero-headline { animation-delay: .28s; }
+    .hero-sub { animation-delay: .42s; }
+    .hero-proof { animation-delay: .54s; transform-origin: left center; }
+    .hero-ctas { animation-delay: .66s; }
+
+    .hero-proof::before,
+    .hero-proof::after {
+      transform-origin: left center;
+      animation: loadLine .85s cubic-bezier(.2,.8,.2,1) .62s both;
+    }
+
+    .hero-stat {
+      opacity: 0;
+      animation: loadFadeUp .65s cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    .hero-stat:nth-child(1) { animation-delay: .76s; }
+    .hero-stat:nth-child(2) { animation-delay: .86s; }
+    .hero-stat:nth-child(3) { animation-delay: .96s; }
+
+    /* Home decision hub: quiet first screen, deliberate second click */
+    .hero {
+      min-height: calc(100vh - 74px);
+    }
+
+    .hero::before {
+      background:
+        linear-gradient(90deg, rgba(0,0,0,.86) 0%, rgba(0,0,0,.70) 42%, rgba(0,0,0,.40) 100%),
+        linear-gradient(0deg, rgba(0,0,0,.62) 0%, rgba(0,0,0,.10) 48%);
+    }
+
+    .hero::after {
+      display: none;
+    }
+
+    .hero-inner {
+      min-height: calc(100vh - 74px);
+      border-bottom: none;
+    }
+
+    .hero-left {
+      flex: 0 0 58%;
+      max-width: 880px;
+      min-width: 0;
+      padding: clamp(54px, 7vh, 88px) 40px 46px;
+    }
+
+    .hero-right img {
+      opacity: .68;
+      filter: saturate(.88) contrast(.96) brightness(.84);
+      object-position: 74% 52%;
+      transition: opacity 420ms ease, filter 420ms ease;
+    }
+
+    .hero-right > img.hero-slide-layer {
+      animation: none;
+      opacity: .68;
+      transform: scale(1.06);
+      will-change: object-position, opacity;
+      transition: object-position 1050ms cubic-bezier(.22,.78,.18,1), opacity 360ms ease;
+    }
+
+    .hero-slide-layer.is-panning {
+      object-position: 68% 52%;
+    }
+
+    .hero-slide-layer.is-loading-next {
+      opacity: .30;
+    }
+
+    .hero-badge,
+    .hero-proof,
+    .hero-ctas,
+    .hero-stats {
+      display: none;
+    }
+
+    .hero-headline {
+      max-width: 9ch;
+      font-size: clamp(3.1rem, 7.2vw, 6.8rem);
+      line-height: .88;
+      margin-bottom: 18px;
+      text-shadow: 0 2px 18px rgba(0,0,0,.34);
+    }
+
+    .hero-word-swap {
+      position: relative;
+      display: inline-grid;
+      min-width: 5.2ch;
+      min-height: 1em;
+      overflow: hidden;
+      vertical-align: top;
+    }
+
+    .hero-word-swap span {
+      grid-area: 1 / 1;
+      display: block;
+      will-change: transform, opacity;
+      animation: heroWordSwap 4.4s cubic-bezier(.2,.8,.2,1) infinite;
+    }
+
+    .hero-word-swap .word-catwees {
+      color: var(--swiss-white);
+    }
+
+    .hero-word-swap .word-honda {
+      color: var(--swiss-red);
+      animation-delay: -2.2s;
+    }
+
+    @keyframes heroWordSwap {
+      0%, 38% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      48%, 90% {
+        opacity: 0;
+        transform: translateY(-112%);
+      }
+      91% {
+        opacity: 0;
+        transform: translateY(112%);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero-word-swap span {
+        animation: none;
+      }
+
+      .hero-word-swap .word-honda {
+        opacity: 0;
+      }
+    }
+
+    .hero-sub {
+      max-width: 620px;
+      margin-bottom: 22px;
+      color: rgba(255,255,255,.92);
+      text-shadow: 0 1px 12px rgba(0,0,0,.40);
+    }
+
+    .hero-auth-line {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 28px;
+      color: rgba(255,255,255,.78);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .hero-auth-line::before {
+      content: '';
+      width: 42px;
+      height: 2px;
+      background: var(--swiss-red);
+    }
+
+    .hero-decision {
+      position: relative;
+      z-index: 10;
+      width: min(920px, calc(100vw - 80px));
+    }
+
+    .hero-choice-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
+      border: 1px solid rgba(255,255,255,.34);
+      background: rgba(0,0,0,.62);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 24px 60px rgba(0,0,0,.26);
+    }
+
+    .hero-choice {
+      min-height: 116px;
+      padding: 18px 24px 20px;
+      border: 0;
+      border-right: 1px solid rgba(255,255,255,.20);
+      background: transparent;
+      color: var(--swiss-white);
+      cursor: pointer;
+      text-align: left;
+      position: relative;
+      transition: background 220ms ease, color 220ms ease, transform 220ms ease, box-shadow 220ms ease;
+    }
+
+    .hero-choice::after {
+      content: 'Ava valik ->';
+      position: absolute;
+      right: 20px;
+      bottom: 18px;
+      color: rgba(255,255,255,.82);
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .hero-choice:last-child {
+      border-right: none;
+    }
+
+    .hero-choice small {
+      display: block;
+      margin-bottom: 18px;
+      color: var(--swiss-red);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .hero-choice strong {
+      display: block;
+      font-family: var(--display-font);
+      font-size: clamp(1.55rem, 3vw, 2.9rem);
+      font-weight: 700;
+      letter-spacing: -.01em;
+      line-height: .92;
+      text-transform: uppercase;
+    }
+
+    .hero-choice span {
+      display: block;
+      max-width: 22ch;
+      margin-top: 12px;
+      color: rgba(255,255,255,.76);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .hero-choice:hover,
+    .hero-choice.is-active {
+      background: var(--swiss-white);
+      color: var(--swiss-black);
+      transform: translateY(-2px);
+      box-shadow: inset 0 -4px 0 var(--swiss-red);
+    }
+
+    .hero-choice:hover span,
+    .hero-choice.is-active span {
+      color: rgba(0,0,0,.58);
+    }
+
+    .hero-choice:hover::after,
+    .hero-choice.is-active::after {
+      color: var(--swiss-red);
+    }
+
+    .hero-panel-shell {
+      position: relative;
+      overflow: visible;
+      min-height: 0;
+    }
+
+    .hero-menu-panel {
+      display: none;
+      grid-template-columns: minmax(220px, .65fr) minmax(0, 1fr);
+      gap: 0;
+      opacity: 0;
+      transform: translateY(-10px);
+      pointer-events: none;
+      border: 1px solid rgba(0,0,0,.26);
+      border-top: none;
+      background: #F4F4F1;
+      color: var(--swiss-black);
+      box-shadow: 0 28px 54px rgba(0,0,0,.34);
+    }
+
+    .hero-menu-panel.is-active {
+      display: grid;
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+      animation: heroMenuPop 260ms cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    @keyframes heroMenuPop {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-menu-copy {
+      padding: 24px;
+      border-right: 1px solid rgba(0,0,0,.14);
+    }
+
+    .hero-menu-copy b {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--swiss-red);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .hero-menu-copy p {
+      color: rgba(0,0,0,.74);
+      font-size: 13px;
+      line-height: 1.58;
+    }
+
+    .hero-menu-links {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .hero-menu-link {
+      min-height: 124px;
+      padding: 20px;
+      border: 0;
+      border-right: 1px solid rgba(0,0,0,.14);
+      background: transparent;
+      color: var(--swiss-black);
+      cursor: pointer;
+      text-align: left;
+      text-decoration: none;
+      transition: background 180ms ease, color 180ms ease;
+    }
+
+    .hero-menu-link:last-child {
+      border-right: none;
+    }
+
+    .hero-menu-link strong {
+      display: block;
+      font-family: var(--display-font);
+      font-size: clamp(1.2rem, 1.75vw, 1.72rem);
+      line-height: .95;
+      text-transform: uppercase;
+    }
+
+    .hero-menu-link span {
+      display: block;
+      margin-top: 12px;
+      color: rgba(0,0,0,.68);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .hero-menu-link:hover {
+      background: var(--swiss-red);
+      color: var(--swiss-white);
+    }
+
+    .hero-menu-link:hover span {
+      color: rgba(255,255,255,.72);
+    }
+
+    .ticker-strip {
+      display: none;
+    }
+
+    .swiss-strip {
+      border-bottom: 1px solid rgba(0,0,0,.16);
+    }
+
+    .swiss-strip-inner {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .swiss-strip-item {
+      color: rgba(255,255,255,.64);
+      text-align: center;
+    }
+
+    .section-header-row,
+    .service-header,
+    .timeline-header,
+    .locations-header,
+    .news-header,
+    .values-header {
+      padding-top: clamp(48px, 7vw, 92px);
+    }
+
+    .section-h2 {
+      font-size: clamp(3.25rem, 8vw, 7.5rem);
+      line-height: .9;
+    }
+
+    .models-grid {
+      gap: 0;
+      padding-bottom: 76px;
+    }
+
+    .car-card {
+      min-height: 454px;
+    }
+
+    .car-card:hover {
+      background: #111;
+    }
+
+    .car-card-img {
+      height: 240px;
+      background: linear-gradient(135deg, #fff 0%, #f3f3f0 100%);
+    }
+
+    .car-card-img img {
+      padding: 22px clamp(18px, 4vw, 42px);
+    }
+
+    .card-badge,
+    .card-badge-outline {
+      top: 14px !important;
+      left: 14px !important;
+      border: 1px solid currentColor;
+      background: rgba(255,255,255,.92) !important;
+      color: var(--swiss-black) !important;
+    }
+
+    .card-badge-red {
+      background: var(--swiss-red) !important;
+      color: var(--swiss-white) !important;
+      border-color: var(--swiss-red);
+    }
+
+    .car-card-body {
+      padding: 26px;
+    }
+
+    .car-card-desc,
+    .service-promo-body,
+    .page-sub,
+    .offer-desc,
+    .cta-strip-desc {
+      color: var(--ink-soft);
+    }
+
+    .card-cta,
+    .float-btn {
+      min-width: 88px;
+    }
+
+    .service-section {
+      background: #F4F4F1;
+    }
+
+    .service-body,
+    .booking-inner {
+      grid-template-columns: minmax(360px, .9fr) minmax(0, 1.1fr);
+    }
+
+    .service-panel-right {
+      background: #fff;
+    }
+
+    .tl-node {
+      border-radius: 0;
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .tl-step:not(:last-child)::after,
+    .tl-step::before {
+      display: none;
+    }
+
+    .location-map-placeholder:not(a):not(.contact-page-link) {
+      background: #151515;
+      color: rgba(255,255,255,.42);
+    }
+
+    .value-icon {
+      color: var(--swiss-red);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .nav-inner {
+        padding: 0 22px;
+      }
+
+      nav {
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .nav-cta {
+        display: none;
+      }
+
+      .hero-left {
+        flex-basis: 72%;
+      }
+
+      .models-grid,
+      .news-grid,
+      .values-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .models-grid .car-card,
+      .models-grid .car-card:nth-child(3n) {
+        border-right: var(--border-thin);
+      }
+
+      .models-grid .car-card:nth-child(2n) {
+        border-right: none;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .nav-inner {
+        height: auto;
+        min-height: 68px;
+        padding: 0 16px;
+      }
+
+      .logo-group {
+        margin-right: 12px;
+        padding-right: 12px;
+      }
+
+      .logo-group img.honda-logo {
+        height: 22px;
+      }
+
+      .logo-group img.catwees-logo {
+        height: 28px;
+      }
+
+      nav a {
+        padding: 0 12px;
+        white-space: nowrap;
+      }
+
+      .container,
+      .section-header-row,
+      .filter-row,
+      .models-grid,
+      .timeline-body,
+      .locations-header,
+      .news-header,
+      .service-header,
+      .values-header,
+      .section-pad-inner {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .hero::before {
+        background:
+          linear-gradient(0deg, rgba(0,0,0,.94) 0%, rgba(0,0,0,.62) 54%, rgba(0,0,0,.28) 100%);
+      }
+
+      .hero-inner {
+        min-height: calc(100svh - 68px);
+      }
+
+      .hero-left {
+        flex: 1 1 auto;
+        width: 100%;
+        min-width: 0;
+        padding: 42px 18px 28px;
+      }
+
+      .hero-headline {
+        font-size: clamp(2.65rem, 13.5vw, 3.9rem);
+        max-width: none;
+        margin-bottom: 14px;
+      }
+
+      .hero-sub {
+        font-size: .95rem;
+        line-height: 1.38;
+        margin-bottom: 16px;
+        max-width: min(31ch, calc(100vw - 36px));
+      }
+
+      .hero-auth-line {
+        margin-bottom: 18px;
+        font-size: 10px;
+      }
+
+      .hero-badge {
+        top: 118px;
+        right: 18px;
+        bottom: auto;
+        transform: rotate(-6deg) scale(.9);
+      }
+
+      .hero-right > img {
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        max-height: none;
+        opacity: .46;
+        object-position: 72% 45%;
+      }
+
+      .hero-stats,
+      .swiss-strip-inner,
+      .service-body,
+      .timeline-body,
+      .locations-grid,
+      .news-grid,
+      .values-grid,
+      .booking-inner,
+      .footer-top {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-stat,
+      .swiss-strip-item,
+      .service-panel-left,
+      .booking-left,
+      .location-card,
+      .news-card,
+      .value-card-swiss,
+      .footer-brand,
+      .footer-col {
+        border-right: none;
+      }
+
+      .hero-stat {
+        min-height: 150px;
+        border-bottom: 1px solid rgba(255,255,255,.14);
+      }
+
+      .hero-stat:last-child {
+        border-bottom: none;
+      }
+
+      .hero-decision {
+        width: calc(100vw - 36px);
+      }
+
+      .hero-choice-grid,
+      .hero-menu-panel,
+      .hero-menu-links {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-choice,
+      .hero-menu-copy,
+      .hero-menu-link {
+        border-right: none;
+      }
+
+      .hero-choice {
+        min-height: 78px;
+        padding: 14px 24px 13px;
+        border-bottom: 1px solid rgba(255,255,255,.18);
+      }
+
+      .hero-choice::after {
+        position: static;
+        display: block;
+        margin-top: 10px;
+      }
+
+      .hero-choice small {
+        margin-bottom: 8px;
+        font-size: 9px;
+      }
+
+      .hero-choice strong {
+        font-size: clamp(1.35rem, 6vw, 1.75rem);
+      }
+
+      .hero-choice span {
+        display: none;
+      }
+
+      .hero-choice:last-child,
+      .hero-menu-link:last-child {
+        border-bottom: none;
+      }
+
+      .hero-menu-copy,
+      .hero-menu-link {
+        border-bottom: 1px solid rgba(0,0,0,.14);
+      }
+
+      .hero-menu-panel.is-active {
+        max-height: none;
+      }
+
+      .models-grid,
+      .models-grid .car-card:first-child {
+        grid-template-columns: 1fr;
+        grid-column: auto;
+      }
+
+      .models-grid .car-card,
+      .models-grid .car-card:nth-child(2n),
+      .models-grid .car-card:nth-child(3n) {
+        border-right: none;
+      }
+
+      .filter-row {
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .filter-tab {
+        flex: 0 0 auto;
+      }
+
+      .form-row-swiss {
+        grid-template-columns: 1fr;
+      }
+
+      .float-btn {
+        left: 18px;
+        right: 18px;
+        bottom: 18px;
+        text-align: center;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════ HEADER ════════════════ -->
+<header>
+  <div class="nav-inner">
+    <div class="logo-group" onclick="showPage('home')">
+      <img class="honda-logo" src="honda%20POD%20logo%20png%20valge.png" alt="Honda" />
+      <div class="logo-divider"></div>
+      <img class="catwees-logo" src="Catwees%20logo%20png%20valge%20tekst.png" alt="Catwees" />
+    </div>
+    <nav>
+      <a data-page="home" class="active" onclick="showPage('home')"><span class="nav-label"><span>Uued Hondad</span><span>Uued Hondad</span></span></a>
+      <a data-page="laopakkumised" onclick="showPage('laopakkumised')"><span class="nav-label"><span>Laopakkumised</span><span>Laopakkumised</span></span></a>
+      <a data-page="eripakkumised" onclick="showPage('eripakkumised')"><span class="nav-label"><span>Eripakkumised</span><span>Eripakkumised</span></span></a>
+      <a data-page="kasutatud" onclick="showPage('kasutatud')"><span class="nav-label"><span>Kasutatud autod</span><span>Kasutatud autod</span></span></a>
+      <a data-page="teenindus" onclick="showPage('teenindus')"><span class="nav-label"><span>Teenindus</span><span>Teenindus</span></span></a>
+      <a data-page="meist" onclick="showPage('meist')"><span class="nav-label"><span>Meist</span><span>Meist</span></span></a>
+    </nav>
+    <div class="nav-cta">
+      <button class="nav-lang">RU</button>
+      <span class="nav-btn nav-btn-outline" onclick="showPage('teenindus')">Broneeri Teenindus</span>
+      <span class="nav-btn nav-btn-red" onclick="showPage('home')">Proovisõit</span>
+    </div>
+  </div>
+</header>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE: HOME
+════════════════════════════════════════════════════════════ -->
+<div class="page active" id="page-home">
+
+  <!-- 01. HERO -->
+  <section class="hero">
+    <div class="hero-grid-overlay"></div>
+    <div class="hero-inner">
+      <div class="hero-left">
+        <h1 class="hero-headline" aria-label="Catwees Honda">
+          <span class="hero-word-swap" aria-hidden="true">
+            <span class="word-catwees">CATWEES</span>
+            <span class="word-honda">HONDA</span>
+          </span>
+        </h1>
+        <p class="hero-sub">Catwees on vanim ja suurim ainult Honda mudeleid müüv ja hooldav ettevõte Eestis.</p>
+        <div class="hero-decision" aria-label="Vali Honda teekond Catweesis">
+          <div class="hero-choice-grid" role="tablist" aria-label="Avalehe põhivalikud">
+            <button class="hero-choice" type="button" role="tab" aria-selected="false" aria-controls="hero-panel-models" data-hero-menu="models">
+              <small>01 / Uus Honda</small>
+              <strong>UUED AUTOD</strong>
+              <span>Laos autod, mudelite info ja Honda.ee mudelivalik ühes kohas.</span>
+            </button>
+            <button class="hero-choice" type="button" role="tab" aria-selected="false" aria-controls="hero-panel-used" data-hero-menu="used">
+              <small>02 / Kontrollitud valik</small>
+              <strong>Kasutatud autod</strong>
+              <span>Vali Tallinn või Tartu enne kui liigud pakkumiste juurde.</span>
+            </button>
+            <button class="hero-choice" type="button" role="tab" aria-selected="false" aria-controls="hero-panel-service" data-hero-menu="service">
+              <small>03 / Honda hooldus</small>
+              <strong>Teenindus</strong>
+              <span>Honda sertifitseeritud hooldus samas Catweesi võrgus.</span>
+            </button>
+          </div>
+          <div class="hero-panel-shell">
+            <div class="hero-menu-panel" id="hero-panel-models" role="tabpanel" data-hero-panel="models">
+              <div class="hero-menu-copy">
+                <b>Uus Honda Catweesist</b>
+                <p>Alusta Catweesi valikust. Kui tahad võrrelda kogu ametlikku mudelirivi, saad edasi minna Honda.ee mudelivalikusse.</p>
+              </div>
+              <div class="hero-menu-links">
+                <button class="hero-menu-link" type="button" onclick="showPage('laopakkumised')"><strong>Laos autod</strong><span>Laopakkumised: kohe saadaval Honda mudelid Tallinnas ja Tartus.</span></button>
+                <button class="hero-menu-link" type="button" onclick="document.getElementById('home-models-section').scrollIntoView({behavior:'smooth'})"><strong>Mudelite info</strong><span>CR-V, ZR-V, HR-V, Civic, Jazz ja e:Ny1 Catweesi vaates.</span></button>
+                <a class="hero-menu-link" href="https://www.honda.ee/cars/new" target="_blank" rel="noopener"><strong>Honda.ee</strong><span>Ametlik Honda mudelivalik uues aknas.</span></a>
+              </div>
+            </div>
+            <div class="hero-menu-panel" id="hero-panel-used" role="tabpanel" data-hero-panel="used">
+              <div class="hero-menu-copy">
+                <b>Kasutatud Honda</b>
+                <p>Vali esindus esmalt. Nii jääb esimene klikk rahulikuks ja kasutaja ei kaota konteksti.</p>
+              </div>
+              <div class="hero-menu-links">
+                <button class="hero-menu-link" type="button" onclick="showPage('kasutatud')"><strong>Tallinn</strong><span>Vaata Pärnu mnt valikut ja küsi proovisõitu.</span></button>
+                <button class="hero-menu-link" type="button" onclick="showPage('kasutatud')"><strong>Tartu</strong><span>Vaata Ringtee esinduse kasutatud Hondasid.</span></button>
+                <button class="hero-menu-link" type="button" onclick="showPage('kasutatud')"><strong>Kogu valik</strong><span>Kui asukoht pole oluline, alusta kogu nimekirjast.</span></button>
+              </div>
+            </div>
+            <div class="hero-menu-panel" id="hero-panel-service" role="tabpanel" data-hero-panel="service">
+              <div class="hero-menu-copy">
+                <b>Honda teenindus Catweesis</b>
+                <p>Catwees ei ole mitme margi töökoda. Meie fookus on Honda, garantiist igapäevase hoolduseni.</p>
+              </div>
+              <div class="hero-menu-links">
+                <button class="hero-menu-link" type="button" onclick="showPage('teenindus')"><strong>Tallinn</strong><span>Broneeri hooldus Pärnu mnt 555 esinduses.</span></button>
+                <button class="hero-menu-link" type="button" onclick="showPage('teenindus')"><strong>Tartu</strong><span>Broneeri hooldus Ringtee 77 esinduses.</span></button>
+                <button class="hero-menu-link" type="button" onclick="showPage('teenindus')"><strong>Honda garantii</strong><span>Sertifitseeritud hooldus ja tootja standardid.</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-right">
+        <img class="hero-slide-layer" src="hero-crv-2026.jpg" alt="Honda sõiduauto maanteel" data-hero-slideshow />
+        <div class="hero-badge">
+          <img src="https://catwees.ee/wp-content/themes/catwees/img/6aastat.png" alt="6 aastat garantii" />
+        </div>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <article class="hero-stat" data-index="01">
+        <div class="hero-stat-kicker">Proovisõidu algus</div>
+        <div class="num">Tallinn</div>
+        <div class="lbl">Pärnu mnt 555 - vali mudel, küsi võtmed ja tee päris linnaring.</div>
+        <div class="hero-stat-note">Esindus + teenindus</div>
+      </article>
+      <article class="hero-stat" data-index="02">
+        <div class="hero-stat-kicker">Lõuna-Eesti rada</div>
+        <div class="num">Tartu</div>
+        <div class="lbl">Ringtee 77 - CR-V, ZR-V, HR-V ja Jazz ootavad võrdlust samal päeval.</div>
+        <div class="hero-stat-note">Müük + järelhooldus</div>
+      </article>
+      <article class="hero-stat" data-index="03">
+        <div class="hero-stat-kicker">Honda jõuallikad</div>
+        <div class="num"><em>e:HEV</em> / e:PHEV</div>
+        <div class="lbl">Hübriid, pistikhübriid ja elektriline Honda valik ühe Catweesi tiimi juures.</div>
+        <div class="hero-stat-note">Ametlik garantii</div>
+      </article>
+    </div>
+  </section>
+
+  <!-- STRIP -->
+  <div class="swiss-strip">
+    <div class="swiss-strip-inner">
+      <div class="swiss-strip-item"><em>Honda</em> ametlik garantii</div>
+      <div class="swiss-strip-item">Sertifitseeritud tehnikud</div>
+      <div class="swiss-strip-item">Proovisõit tasuta</div>
+      <div class="swiss-strip-item">Paindlik finantseerimine</div>
+      <div class="swiss-strip-item">Tallinn &amp; Tartu</div>
+    </div>
+  </div>
+
+  <!-- TICKER -->
+  <div class="ticker-strip">
+    <div class="ticker-track">
+      <span class="ticker-item">Honda e:HEV</span><span class="ticker-dot">·</span>
+      <span class="ticker-item">Ametlik Honda esindustus</span><span class="ticker-dot">·</span>
+      <span class="ticker-item">Tallinn &amp; Tartu</span><span class="ticker-dot">·</span>
+      <span class="ticker-item">Proovisõit tasuta</span><span class="ticker-dot">·</span>
+      <span class="ticker-item">6 aastat garantii</span><span class="ticker-dot">·</span>
+      <span class="ticker-item">Honda e:PHEV</span><span class="ticker-dot">·</span>
+      <span class="ticker-item">Paindlik finantseerimine</span><span class="ticker-dot">·</span>
+      <span class="ticker-item">Sertifitseeritud tehnikud</span><span class="ticker-dot">·</span>
+      <span class="ticker-item">Honda e:HEV</span><span class="ticker-dot">·</span>
+      <span class="ticker-item">Ametlik Honda esindustus</span><span class="ticker-dot">·</span>
+      <span class="ticker-item">Tallinn &amp; Tartu</span><span class="ticker-dot">·</span>
+      <span class="ticker-item">Proovisõit tasuta</span><span class="ticker-dot">·</span>
+      <span class="ticker-item">6 aastat garantii</span><span class="ticker-dot">·</span>
+      <span class="ticker-item">Honda e:PHEV</span><span class="ticker-dot">·</span>
+      <span class="ticker-item">Paindlik finantseerimine</span><span class="ticker-dot">·</span>
+      <span class="ticker-item">Sertifitseeritud tehnikud</span><span class="ticker-dot">·</span>
+    </div>
+  </div>
+
+  <!-- 02. MUDELID -->
+  <section class="models-section" id="home-models-section">
+    <div class="section-header-row">
+      <div class="section-title-block">
+        <h2 class="section-h2">MUDELID<span class="count-tag" id="model-count">6</span></h2>
+      </div>
+      <p style="font-size:14px;color:rgba(0,0,0,.45);max-width:380px;">Leia endale sobiv sõiduk meie laiast mudelivalikust.</p>
+    </div>
+    <div class="filter-row" id="home-filter-tabs">
+      <button class="filter-tab active" data-filter="all">Kõik</button>
+      <button class="filter-tab" data-filter="suv">SUV</button>
+      <button class="filter-tab" data-filter="hubriid">Hübriid</button>
+      <button class="filter-tab" data-filter="elekter">Elekter</button>
+      <button class="filter-tab" data-filter="sedaan">Sedaan</button>
+      <button class="filter-tab" data-filter="eripakkumine">Eripakkumised</button>
+    </div>
+    <div class="models-grid" id="home-models-grid">
+
+      <div class="car-card" data-categories="suv hubriid">
+        <div class="car-card-img">
+          <img src="https://catwees.ee/wp-content/uploads/2023/06/CRV_PHEV_ADVANCE.jpg" alt="Honda CR-V e:PHEV" />
+          <span class="card-badge card-badge-outline">UUS</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-brand-label">Honda</div>
+          <div class="car-card-name">CR-V e:PHEV</div>
+          <div class="car-card-desc">Plug-in hübriid · 7-kohaline · AWD</div>
+          <div class="car-card-footer">
+            <div class="car-price">45 500 € <small>/ alates</small></div>
+            <button class="card-cta">Vaata</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="car-card" data-categories="suv hubriid">
+        <div class="car-card-img">
+          <img src="https://catwees.ee/wp-content/uploads/2023/06/ZR-V_ADVANCE.jpg" alt="Honda ZR-V" />
+          <span class="card-badge">LAOS</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-brand-label">Honda</div>
+          <div class="car-card-name">ZR-V e:HEV</div>
+          <div class="car-card-desc">Compact SUV · Täishübriid · Sport</div>
+          <div class="car-card-footer">
+            <div class="car-price">38 900 € <small>/ alates</small></div>
+            <button class="card-cta">Vaata</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="car-card" data-categories="suv hubriid eripakkumine">
+        <div class="car-card-img">
+          <img src="https://catwees.ee/wp-content/uploads/2021/03/HR-V-thumbnail.jpg" alt="Honda HR-V" />
+          <span class="card-badge card-badge-red">ERIPAKKUMINE</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-brand-label">Honda</div>
+          <div class="car-card-name">HR-V e:HEV</div>
+          <div class="car-card-desc">Compact SUV · Täishübriid · 4 värvi</div>
+          <div class="car-card-footer">
+            <div class="car-price">
+              <span class="car-old-price">31 500 €</span>
+              29 900 €
+            </div>
+            <button class="card-cta">Vaata</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="car-card" data-categories="sedaan hubriid">
+        <div class="car-card-img">
+          <img src="https://catwees.ee/wp-content/uploads/2022/03/Civic-ikoon-1.jpg" alt="Honda Civic" />
+          <span class="card-badge card-badge-outline">UUS</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-brand-label">Honda</div>
+          <div class="car-card-name">Civic e:HEV</div>
+          <div class="car-card-desc">Sedaan · Täishübriid · Sport disain</div>
+          <div class="car-card-footer">
+            <div class="car-price">33 200 € <small>/ alates</small></div>
+            <button class="card-cta">Vaata</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="car-card" data-categories="suv elekter">
+        <div class="car-card-img">
+          <img src="https://catwees.ee/wp-content/uploads/2023/07/eNY1_ADVANCE.jpg" alt="Honda e:Ny1" />
+          <span class="card-badge card-badge-red">ELEKTER</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-brand-label">Honda</div>
+          <div class="car-card-name">e:Ny1</div>
+          <div class="car-card-desc">Täiselektriline · SUV · 412 km läbisõit</div>
+          <div class="car-card-footer">
+            <div class="car-price">43 500 € <small>/ alates</small></div>
+            <button class="card-cta">Vaata</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="car-card" data-categories="sedaan hubriid">
+        <div class="car-card-img">
+          <img src="https://catwees.ee/wp-content/uploads/2025/11/26YM_Prelude_ADVANCE_EU_f34_stu_NH_904M_001-1.jpg" alt="Honda Prelude" />
+          <span class="card-badge">UUS 2026</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-brand-label">Honda</div>
+          <div class="car-card-name">Prelude e:HEV</div>
+          <div class="car-card-desc">Coupe hübriid · Sport · Uus mudel</div>
+          <div class="car-card-footer">
+            <div class="car-price">Küsi hind</div>
+            <button class="card-cta">Vaata</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 03. TEENINDUS -->
+  <section class="service-section swiss-dots">
+    <div class="service-inner">
+      <div class="service-header">
+        <h2 class="section-h2">TEENINDUS</h2>
+      </div>
+      <div class="service-body">
+        <div class="service-panel-left">
+          <span class="panel-label">Meie teenused</span>
+          <div class="service-list-item">
+            <span class="service-list-num">01</span>
+            <div class="service-list-text">
+              <h4>Korraline hooldus</h4>
+              <p>Oli, filtrid, plaanilised kontrollid</p>
+            </div>
+            <span class="service-arrow">→</span>
+          </div>
+          <div class="service-list-item">
+            <span class="service-list-num">02</span>
+            <div class="service-list-text">
+              <h4>Rehvivahetus &amp; hoiustamine</h4>
+              <p>Suve- ja talverehvid, tasakaalustus</p>
+            </div>
+            <span class="service-arrow">→</span>
+          </div>
+          <div class="service-list-item">
+            <span class="service-list-num">03</span>
+            <div class="service-list-text">
+              <h4>Elektri- ja hübriidsüsteemid</h4>
+              <p>e:HEV ja PHEV diagnostika</p>
+            </div>
+            <span class="service-arrow">→</span>
+          </div>
+          <div class="service-list-item">
+            <span class="service-list-num">04</span>
+            <div class="service-list-text">
+              <h4>Diagnostika &amp; garantiitööd</h4>
+              <p>Tarkvara uuendused, garantiitööd</p>
+            </div>
+            <span class="service-arrow">→</span>
+          </div>
+          <div class="service-list-item">
+            <span class="service-list-num">05</span>
+            <div class="service-list-text">
+              <h4>Asendusauto</h4>
+              <p>Saadaval teeninduse ajaks</p>
+            </div>
+            <span class="service-arrow">→</span>
+          </div>
+        </div>
+        <div class="service-panel-right">
+          <div>
+            <span class="sec-num">Broneeri aeg</span>
+            <h2 class="service-promo-title">Teie auto on<br/>heades kätes</h2>
+            <p class="service-promo-body">Catweesi sertifitseeritud tehnikud hooldavad teie Hondat vastavalt tootja standarditele. Tallinn ja Tartu.</p>
+            <span class="swiss-btn swiss-btn-black" onclick="showPage('teenindus')">Broneeri teenindus</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04. NÕUANDED / TIMELINE -->
+  <section class="timeline-section">
+    <div class="timeline-header">
+      <h2 class="section-h2">NÕUANDED</h2>
+    </div>
+    <div class="timeline" id="timeline-home">
+      <div class="timeline-body">
+        <div class="tl-step" style="--d:0s">
+          <div class="tl-node">1</div>
+          <div class="tl-content">
+            <h4>Uue või kasutatud auto ostmine</h4>
+            <p>Liisingu abil, vana autoga sissemakseks või ühekorraga välja — auto ostmiseks on just nii mitu erinevat võimalust.</p>
+          </div>
+        </div>
+        <div class="tl-step" style="--d:0.9s">
+          <div class="tl-node">2</div>
+          <div class="tl-content">
+            <h4>Ohutus ja turvalisus</h4>
+            <p>Honda turvalisus väljendub pühendumuses pakkuda sõidukeid, mis on ohutud sõitjatele, kaasliiklejatele ja jalakäijatele.</p>
+          </div>
+        </div>
+        <div class="tl-step" style="--d:1.8s">
+          <div class="tl-node">3</div>
+          <div class="tl-content">
+            <h4>Auto hooldamine</h4>
+            <p>Ostule järgneva Honda järelteeninduse võtmesõnaks on mugavus, et luua järjepidevus regulaarsetes hooldustes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05. TRUST BAR -->
+  <section class="trust-bar">
+    <div class="trust-inner">
+      <div class="trust-item">
+        <div class="trust-word">Vali mudel</div>
+        <div class="trust-lbl">Laos või tellimisel</div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-word">Sõida läbi</div>
+        <div class="trust-lbl">Tallinnas või Tartus</div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-word"><em>Hoia</em> korras</div>
+        <div class="trust-lbl">Honda sertifitseeritud hooldus</div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-word">Tule tagasi</div>
+        <div class="trust-lbl">Üks tiim kogu auto elukaareks</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06. ASUKOHAD -->
+  <section class="locations-section swiss-grid-pattern">
+    <div class="locations-header">
+      <h2 class="section-h2">ESINDUSED</h2>
+    </div>
+    <div class="locations-grid">
+      <div class="location-card">
+        <div class="location-city">TALLINN</div>
+        <div class="location-detail">
+          <span class="location-detail-label">Aadress</span>
+          <span class="location-detail-val">Pärnu mnt 555, 10603 Tallinn</span>
+        </div>
+        <div class="location-detail">
+          <span class="location-detail-label">Telefon</span>
+          <span class="location-detail-val">+372 612 3456</span>
+        </div>
+        <div class="location-detail">
+          <span class="location-detail-label">Lahtiolekuajad</span>
+          <span class="location-detail-val">E–R 8:00–18:00 · L 9:00–15:00</span>
+        </div>
+        <div class="location-map-placeholder">Google Maps</div>
+      </div>
+      <div class="location-card">
+        <div class="location-city">TARTU</div>
+        <div class="location-detail">
+          <span class="location-detail-label">Aadress</span>
+          <span class="location-detail-val">Ringtee 77, 50106 Tartu</span>
+        </div>
+        <div class="location-detail">
+          <span class="location-detail-label">Telefon</span>
+          <span class="location-detail-val">+372 712 3456</span>
+        </div>
+        <div class="location-detail">
+          <span class="location-detail-label">Lahtiolekuajad</span>
+          <span class="location-detail-val">E–R 8:00–18:00 · L 9:00–15:00</span>
+        </div>
+        <div class="location-map-placeholder">Google Maps</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07. UUDISED -->
+  <section class="news-section swiss-diagonal">
+    <div class="news-header">
+      <div>
+        <h2 class="section-h2">UUDISED</h2>
+      </div>
+      <a href="#" class="swiss-btn swiss-btn-outline">Kõik uudised</a>
+    </div>
+    <div class="news-grid">
+      <div class="news-card">
+        <div class="news-img"><img src="https://catwees.ee/wp-content/uploads/2026/04/Honda_EE_3100x1330_Suvine.jpg" alt="Suvine pakkumine" /></div>
+        <div class="news-body">
+          <div class="news-meta">Aprill 2026 · Pakkumised</div>
+          <h4 class="news-title">Suvine Honda kampaania — eripakkumised laomudelitele</h4>
+          <p class="news-excerpt">Kevad toob kaasa suurepäraseid pakkumisi laos olevatele Honda mudelitele.</p>
+          <a href="#" class="news-link">Loe rohkem</a>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-img"><img src="https://catwees.ee/wp-content/uploads/2026/03/suverehvide-pakkumised.jpg" alt="Suverehvide pakkumised" /></div>
+        <div class="news-body">
+          <div class="news-meta">Märts 2026 · Teenindus</div>
+          <h4 class="news-title">Kevadine rehvivahetus — broneeri aeg ette</h4>
+          <p class="news-excerpt">Kevad on käes! Broneeri rehvivahetus õigeaegselt ja säästa ootamisaega.</p>
+          <a href="#" class="news-link">Loe rohkem</a>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-img"><img src="https://catwees.ee/wp-content/uploads/2019/12/HONDA-Jazz.jpg" alt="Honda Jazz" /></div>
+        <div class="news-body">
+          <div class="news-meta">Veebruar 2026 · Uued mudelid</div>
+          <h4 class="news-title">Honda Jazz e:HEV — rohkem ruumi, vähem kütust</h4>
+          <p class="news-excerpt">Linnamaastur uues kuues. Jazz e:HEV on nüüd saadaval mõlemas esinduses.</p>
+          <a href="#" class="news-link">Loe rohkem</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA — PROOVISÕIT -->
+  <section class="cta-strip">
+    <div class="cta-strip-inner">
+      <div class="cta-strip-left">
+        <span class="cta-strip-eyebrow">Proovisõit</span>
+        <h2 class="cta-strip-headline">Tule proovi.<br/>Sõida ära.</h2>
+      </div>
+      <div class="cta-strip-right">
+        <p class="cta-strip-desc">Broneeri tasuta proovisõit meie esinduses. Tallinn või Tartu — teie valik. Ilma kohustuseta.</p>
+        <div style="display:flex;gap:0;">
+          <span class="swiss-btn swiss-btn-white" onclick="showPage('teenindus')" style="border-right:2px solid rgba(0,0,0,.2);">Broneeri proovisõit</span>
+          <span class="swiss-btn swiss-btn-black" onclick="showPage('laopakkumised')">Vaata laopakkumisi</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /page-home -->
+
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE: LAOPAKKUMISED
+════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-laopakkumised">
+
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <div class="breadcrumb"><a onclick="showPage('home')">Avaleht</a><span>/</span> Laopakkumised</div>
+      <h1 class="page-title">LAOPAKKUMISED</h1>
+      <p class="page-sub">Kohe saadaolevad Honda mudelid meie Tallinna ja Tartu laost — kiire üleandmine, kindel hind.</p>
+    </div>
+  </div>
+
+  <div style="background:var(--swiss-white);border-bottom:var(--border-thick);">
+    <div class="filter-bar-swiss" data-card-filter="laopakkumised">
+      <div class="filter-group-swiss"><label>Mudel</label><select data-filter-field="model"><option value="all">Kõik mudelid</option><option value="cr-v">CR-V</option><option value="zr-v">ZR-V</option><option value="hr-v">HR-V</option><option value="civic">Civic</option><option value="jazz">Jazz</option></select></div>
+      <div class="filter-group-swiss"><label>Asukoht</label><select data-filter-field="location"><option value="all">Tallinn &amp; Tartu</option><option value="tallinn">Tallinn</option><option value="tartu">Tartu</option></select></div>
+      <div class="filter-group-swiss"><label>Hind kuni</label><select data-filter-field="price"><option value="all">Kõik hinnad</option><option value="30000">kuni 30 000 €</option><option value="40000">kuni 40 000 €</option><option value="50000">kuni 50 000 €</option></select></div>
+      <div class="filter-group-swiss"><label>Jõuallikas</label><select data-filter-field="powertrain"><option value="all">Kõik</option><option value="hybrid">Hübriid</option><option value="plug-in-hybrid">Plug-in hübriid</option><option value="electric">Elekter</option></select></div>
+      <button class="swiss-btn swiss-btn-black" type="button" data-filter-submit style="align-self:flex-end;">Otsi</button>
+    </div>
+    <div class="models-grid" data-filter-grid="laopakkumised" style="padding-top:0;">
+
+      <div class="car-card" data-model="cr-v" data-location="tallinn" data-price="47200" data-powertrain="plug-in-hybrid">
+        <div class="car-card-img">
+          <img src="https://catwees.ee/wp-content/uploads/2023/06/CRV_PHEV_ADVANCE.jpg" alt="CR-V" />
+          <span class="card-badge card-badge-red">LAOS — TALLINN</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-brand-label">Honda · 2025 · Plug-in hübriid</div>
+          <div class="car-card-name">CR-V e:PHEV Advance</div>
+          <div class="car-card-desc">Platinum White · AWD · 7-kohaline</div>
+          <div class="car-card-footer">
+            <div class="car-price">47 200 €</div>
+            <button class="card-cta">Vaata</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="car-card" data-model="zr-v" data-location="tartu" data-price="39500" data-powertrain="hybrid">
+        <div class="car-card-img">
+          <img src="https://catwees.ee/wp-content/uploads/2023/06/ZR-V_ADVANCE.jpg" alt="ZR-V" />
+          <span class="card-badge card-badge-red">LAOS — TARTU</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-brand-label">Honda · 2025 · Hübriid</div>
+          <div class="car-card-name">ZR-V e:HEV Advance</div>
+          <div class="car-card-desc">Sonic Grey · FWD · Sport pakett</div>
+          <div class="car-card-footer">
+            <div class="car-price">39 500 €</div>
+            <button class="card-cta">Vaata</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="car-card" data-model="hr-v" data-location="tallinn" data-price="29900" data-powertrain="hybrid">
+        <div class="car-card-img">
+          <img src="https://catwees.ee/wp-content/uploads/2021/03/HR-V-thumbnail.jpg" alt="HR-V" />
+          <span class="card-badge card-badge-red">LAOS — TALLINN</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-brand-label">Honda · 2024 · Hübriid</div>
+          <div class="car-card-name">HR-V e:HEV Elegance</div>
+          <div class="car-card-desc">Lunar Silver · FWD · Nahkistmed</div>
+          <div class="car-card-footer">
+            <div class="car-price"><span class="car-old-price">31 500 €</span>29 900 €</div>
+            <button class="card-cta">Vaata</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="car-card" data-model="civic" data-location="tartu" data-price="34800" data-powertrain="hybrid">
+        <div class="car-card-img">
+          <img src="https://catwees.ee/wp-content/uploads/2022/03/Civic-ikoon-1.jpg" alt="Civic" />
+          <span class="card-badge card-badge-red">LAOS — TARTU</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-brand-label">Honda · 2025 · Hübriid</div>
+          <div class="car-card-name">Civic e:HEV Advance</div>
+          <div class="car-card-desc">Crystal Black · FWD · Bose heli</div>
+          <div class="car-card-footer">
+            <div class="car-price">34 800 €</div>
+            <button class="card-cta">Vaata</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="car-card" data-model="e-ny1" data-location="tallinn" data-price="44900" data-powertrain="electric">
+        <div class="car-card-img">
+          <img src="https://catwees.ee/wp-content/uploads/2023/07/eNY1_ADVANCE.jpg" alt="e:Ny1" />
+          <span class="card-badge card-badge-red">LAOS — TALLINN</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-brand-label">Honda · 2025 · Elekter</div>
+          <div class="car-card-name">e:Ny1 Advance</div>
+          <div class="car-card-desc">Aegean Blue · AWD · 412 km</div>
+          <div class="car-card-footer">
+            <div class="car-price">44 900 €</div>
+            <button class="card-cta">Vaata</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="car-card" data-model="jazz" data-location="tallinn" data-price="26400" data-powertrain="hybrid">
+        <div class="car-card-img">
+          <img src="https://catwees.ee/wp-content/uploads/2019/12/HONDA-Jazz.jpg" alt="Jazz" />
+          <span class="card-badge card-badge-red">LAOS — TALLINN</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-brand-label">Honda · 2024 · Hübriid</div>
+          <div class="car-card-name">Jazz e:HEV Elegance</div>
+          <div class="car-card-desc">Premium Crystal Red · FWD</div>
+          <div class="car-card-footer">
+            <div class="car-price"><span class="car-old-price">27 900 €</span>26 400 €</div>
+            <button class="card-cta">Vaata</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="filter-empty" data-filter-empty="laopakkumised">Selle filtriga laopakkumisi ei leitud.</div>
+  </div>
+
+</div><!-- /page-laopakkumised -->
+
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE: ERIPAKKUMISED
+════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-eripakkumised">
+
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <div class="breadcrumb"><a onclick="showPage('home')">Avaleht</a><span>/</span> Eripakkumised</div>
+      <h1 class="page-title">ERIPAKKUMISED</h1>
+      <p class="page-sub">Piiratud aja pakkumised ja kampaaniad — säästke kuni 3 000 € valitud mudelitelt.</p>
+    </div>
+  </div>
+
+  <div class="offer-banner-wrap">
+    <div class="offer-banner" style="border-bottom:none;">
+      <div>
+        <span class="offer-tag">Suvekampaania 2026</span>
+        <h2 class="offer-title">Kuni 3 000 € soodustust<br/>laos olevatele mudelitele</h2>
+        <p class="offer-desc">Kampaania kehtib kuni 30. juunini 2026. Piiratud arv sõidukeid. Tingimused esinduses.</p>
+      </div>
+      <button class="swiss-btn swiss-btn-white" onclick="showPage('laopakkumised')">Vaata laopakkumisi</button>
+    </div>
+  </div>
+
+  <div style="background:var(--swiss-white);border-bottom:var(--border-thick);">
+    <div class="models-grid" style="padding-top:0;">
+
+      <div class="car-card">
+        <div class="car-card-img">
+          <img src="https://catwees.ee/wp-content/uploads/2021/03/HR-V-thumbnail.jpg" alt="HR-V" />
+          <span class="card-badge card-badge-red">−1 600 €</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-brand-label">Honda · Eripakkumine</div>
+          <div class="car-card-name">HR-V e:HEV</div>
+          <div class="car-card-desc">Compact SUV · Täishübriid · Kohe laos</div>
+          <div class="car-card-footer">
+            <div class="car-price"><span class="car-old-price">31 500 €</span>29 900 €</div>
+            <button class="card-cta">Vaata</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="car-card">
+        <div class="car-card-img">
+          <img src="https://catwees.ee/wp-content/uploads/2019/12/HONDA-Jazz.jpg" alt="Jazz" />
+          <span class="card-badge card-badge-red">−1 500 €</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-brand-label">Honda · Eripakkumine</div>
+          <div class="car-card-name">Jazz e:HEV</div>
+          <div class="car-card-desc">Linnamaastur · Täishübriid · Kohe laos</div>
+          <div class="car-card-footer">
+            <div class="car-price"><span class="car-old-price">27 900 €</span>26 400 €</div>
+            <button class="card-cta">Vaata</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="car-card">
+        <div class="car-card-img">
+          <img src="https://catwees.ee/wp-content/uploads/2026/03/suverehvide-pakkumised.jpg" alt="Suverehvid" />
+          <span class="card-badge">TEENINDUS</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-brand-label">Teenindus · Kampaania</div>
+          <div class="car-card-name">Suverehvide vahetus</div>
+          <div class="car-card-desc">Rehvivahetus + tasakaalustus · Honda mudelitele</div>
+          <div class="car-card-footer">
+            <div class="car-price"><span class="car-old-price">89 €</span>69 €</div>
+            <button class="card-cta" onclick="showPage('teenindus')">Broneeri</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="car-card">
+        <div class="car-card-img">
+          <img src="https://catwees.ee/wp-content/uploads/2023/06/CRV_PHEV_ADVANCE.jpg" alt="CR-V liising" />
+          <span class="card-badge">FINANTSEERIMINE</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-brand-label">Honda · Liisingpakkumine</div>
+          <div class="car-card-name">CR-V e:PHEV liising</div>
+          <div class="car-card-desc">0% intress · 12 kuud · Sissemakse alates 20%</div>
+          <div class="car-card-footer">
+            <div class="car-price">alates 549 € <small>/ kuus</small></div>
+            <button class="card-cta">Küsi</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /page-eripakkumised -->
+
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE: KASUTATUD AUTOD
+════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-kasutatud">
+
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <div class="breadcrumb"><a onclick="showPage('home')">Avaleht</a><span>/</span> Kasutatud autod</div>
+      <h1 class="page-title">KASUTATUD<br/>AUTOD</h1>
+      <p class="page-sub">Hoolikalt valitud kasutatud Honda mudelid — tehniline ülevaatus tehtud, garantii olemas.</p>
+    </div>
+  </div>
+
+  <div style="background:var(--swiss-white);border-bottom:var(--border-thick);">
+    <div class="filter-bar-swiss">
+      <div class="filter-group-swiss"><label>Mudel</label><select><option>Kõik mudelid</option><option>CR-V</option><option>HR-V</option><option>Civic</option><option>Jazz</option><option>Accord</option></select></div>
+      <div class="filter-group-swiss"><label>Aasta alates</label><select><option>Kõik</option><option>2022</option><option>2021</option><option>2020</option><option>2019</option></select></div>
+      <div class="filter-group-swiss"><label>Läbisõit kuni</label><select><option>Kõik</option><option>kuni 20 000 km</option><option>kuni 50 000 km</option><option>kuni 100 000 km</option></select></div>
+      <div class="filter-group-swiss"><label>Hind kuni</label><select><option>Kõik</option><option>kuni 15 000 €</option><option>kuni 25 000 €</option><option>kuni 35 000 €</option></select></div>
+      <button class="swiss-btn swiss-btn-black" style="align-self:flex-end;">Otsi</button>
+    </div>
+    <div class="models-grid" style="padding-top:0;">
+
+      <div class="car-card">
+        <div class="car-card-img">
+          <img src="https://catwees.ee/wp-content/uploads/2023/06/CRV_PHEV_ADVANCE.jpg" alt="CR-V" />
+          <span class="card-badge card-badge-outline">SERTIFITSEERITUD</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-brand-label">2022 · 28 400 km · Hübriid</div>
+          <div class="car-card-name">Honda CR-V e:HEV</div>
+          <div class="car-card-desc">Elegance · Platinum White · 1 omanik</div>
+          <div class="car-card-footer">
+            <div class="car-price">34 500 €</div>
+            <button class="card-cta">Vaata</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="car-card">
+        <div class="car-card-img">
+          <img src="https://catwees.ee/wp-content/uploads/2022/03/Civic-ikoon-1.jpg" alt="Civic" />
+          <span class="card-badge card-badge-outline">SERTIFITSEERITUD</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-brand-label">2022 · 41 200 km · Hübriid</div>
+          <div class="car-card-name">Honda Civic e:HEV</div>
+          <div class="car-card-desc">Elegance · Crystal Black · 1 omanik</div>
+          <div class="car-card-footer">
+            <div class="car-price">26 900 €</div>
+            <button class="card-cta">Vaata</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="car-card">
+        <div class="car-card-img">
+          <img src="https://catwees.ee/wp-content/uploads/2021/03/HR-V-thumbnail.jpg" alt="HR-V" />
+          <span class="card-badge">HEA HIND</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-brand-label">2021 · 63 800 km · Hübriid</div>
+          <div class="car-card-name">Honda HR-V e:HEV</div>
+          <div class="car-card-desc">Executive · Lunar Silver · 2 omanikku</div>
+          <div class="car-card-footer">
+            <div class="car-price">21 400 €</div>
+            <button class="card-cta">Vaata</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="car-card">
+        <div class="car-card-img">
+          <img src="https://catwees.ee/wp-content/uploads/2019/12/HONDA-Jazz.jpg" alt="Jazz" />
+          <span class="card-badge">HEA HIND</span>
+        </div>
+        <div class="car-card-body">
+          <div class="car-brand-label">2020 · 52 100 km · Hübriid</div>
+          <div class="car-card-name">Honda Jazz e:HEV</div>
+          <div class="car-card-desc">Comfort · Premium Red · 1 omanik</div>
+          <div class="car-card-footer">
+            <div class="car-price">17 800 €</div>
+            <button class="card-cta">Vaata</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /page-kasutatud -->
+
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE: TEENINDUS
+════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-teenindus">
+
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <div class="breadcrumb"><a onclick="showPage('home')">Avaleht</a><span>/</span> Teenindus</div>
+      <h1 class="page-title">TEENINDUS</h1>
+      <p class="page-sub">Broneeri aeg Honda sertifitseeritud teenindusesse. Tallinn ja Tartu.</p>
+    </div>
+  </div>
+
+  <section class="booking-section-swiss">
+    <div class="booking-inner">
+      <div class="booking-left">
+        <span class="panel-label">Meie teenused</span>
+        <div class="service-list-item is-selected" role="button" tabindex="0" data-booking-service="hooldus" aria-pressed="true">
+          <span class="service-list-num">01</span>
+          <div class="service-list-text">
+            <h4>Korraline hooldus</h4>
+            <p>Oli, filtrid, pidurid, tehnoülevaatus</p>
+          </div>
+          <span class="service-arrow">→</span>
+        </div>
+        <div class="service-list-item" role="button" tabindex="0" data-booking-service="rehvid" aria-pressed="false">
+          <span class="service-list-num">02</span>
+          <div class="service-list-text">
+            <h4>Rehvivahetus &amp; hoiustamine</h4>
+            <p>Suve- ja talverehvid, tasakaalustus</p>
+          </div>
+          <span class="service-arrow">→</span>
+        </div>
+        <div class="service-list-item" role="button" tabindex="0" data-booking-service="hybrid" aria-pressed="false">
+          <span class="service-list-num">03</span>
+          <div class="service-list-text">
+            <h4>Elektri- ja hübriidsüsteemid</h4>
+            <p>e:HEV, PHEV ja BEV diagnostika</p>
+          </div>
+          <span class="service-arrow">→</span>
+        </div>
+        <div class="service-list-item" role="button" tabindex="0" data-booking-service="diagnostika" aria-pressed="false">
+          <span class="service-list-num">04</span>
+          <div class="service-list-text">
+            <h4>Diagnostika &amp; garantiitööd</h4>
+            <p>Honda ametlik garantiiremont ja tarkvarauuendused</p>
+          </div>
+          <span class="service-arrow">→</span>
+        </div>
+        <div class="service-list-item" role="button" tabindex="0" data-booking-service="keretood" aria-pressed="false">
+          <span class="service-list-num">05</span>
+          <div class="service-list-text">
+            <h4>Kere- ja viimistlustööd</h4>
+            <p>Kriimustused, värvimised, poleerimised</p>
+          </div>
+          <span class="service-arrow">→</span>
+        </div>
+        <div class="service-list-item" role="button" tabindex="0" data-booking-service="asendusauto" aria-pressed="false">
+          <span class="service-list-num">06</span>
+          <div class="service-list-text">
+            <h4>Asendusauto</h4>
+            <p>Tasuta asendusauto teeninduse ajaks</p>
+          </div>
+          <span class="service-arrow">→</span>
+        </div>
+      </div>
+      <div class="booking-right">
+        <h3>Broneeri aeg</h3>
+        <div class="form-row-swiss">
+          <div class="form-group-swiss" style="border-right:var(--border-thin);padding-right:20px;margin-right:0;">
+            <label>Eesnimi</label>
+            <input type="text" placeholder="Martin" />
+          </div>
+          <div class="form-group-swiss" style="padding-left:20px;">
+            <label>Perekonnanimi</label>
+            <input type="text" placeholder="Tamm" />
+          </div>
+        </div>
+        <div class="form-row-swiss">
+          <div class="form-group-swiss" style="border-right:var(--border-thin);padding-right:20px;">
+            <label>Telefon</label>
+            <input type="tel" placeholder="+372 5123 4567" />
+          </div>
+          <div class="form-group-swiss" style="padding-left:20px;">
+            <label>E-post</label>
+            <input type="email" placeholder="martin@email.ee" />
+          </div>
+        </div>
+        <div class="form-group-swiss">
+          <label>Auto registreerimisnumber</label>
+          <input type="text" placeholder="123ABC" />
+        </div>
+        <div class="form-group-swiss">
+          <label>Asukoht</label>
+          <select><option>Tallinn</option><option>Tartu</option></select>
+        </div>
+        <div style="margin-top:24px;">
+          <div style="font-size:9px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:rgba(0,0,0,.35);margin-bottom:8px;">Teenus</div>
+          <div class="service-types-swiss">
+            <div class="service-type-btn selected" data-service-type="hooldus">Korraline hooldus</div>
+            <div class="service-type-btn" data-service-type="rehvid">Rehvivahetus</div>
+            <div class="service-type-btn" data-service-type="hybrid">Elektri- ja hübriidsüsteemid</div>
+            <div class="service-type-btn" data-service-type="diagnostika">Diagnostika / garantii</div>
+            <div class="service-type-btn" data-service-type="keretood">Keretööd</div>
+            <div class="service-type-btn" data-service-type="asendusauto">Asendusauto</div>
+          </div>
+        </div>
+        <div class="form-group-swiss">
+          <label>Lisainfo</label>
+          <textarea rows="3" placeholder="Kirjeldage probleemi või lisasoove..."></textarea>
+        </div>
+        <button class="swiss-btn swiss-btn-black" style="width:100%;margin-top:24px;">Saada broneering</button>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--swiss-white);border-bottom:var(--border-thick);">
+    <div class="locations-header" style="border-bottom:var(--border-thin);padding-bottom:28px;">
+      <h2 class="section-h2">TEENINDUSKESKUSED</h2>
+    </div>
+    <div class="locations-grid">
+      <div class="location-card">
+        <div class="location-city">TALLINN</div>
+        <div class="location-detail"><span class="location-detail-label">Aadress</span><span class="location-detail-val">Pärnu mnt 555, 10603 Tallinn</span></div>
+        <div class="location-detail"><span class="location-detail-label">Teeninduse tel</span><span class="location-detail-val">+372 612 3456</span></div>
+        <div class="location-detail"><span class="location-detail-label">Lahtiolekuajad</span><span class="location-detail-val">E–R 8:00–18:00 · L 9:00–14:00</span></div>
+        <div class="location-map-placeholder">Google Maps</div>
+      </div>
+      <div class="location-card">
+        <div class="location-city">TARTU</div>
+        <div class="location-detail"><span class="location-detail-label">Aadress</span><span class="location-detail-val">Ringtee 77, 50106 Tartu</span></div>
+        <div class="location-detail"><span class="location-detail-label">Teeninduse tel</span><span class="location-detail-val">+372 712 3456</span></div>
+        <div class="location-detail"><span class="location-detail-label">Lahtiolekuajad</span><span class="location-detail-val">E–R 8:00–18:00 · L 9:00–14:00</span></div>
+        <div class="location-map-placeholder">Google Maps</div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /page-teenindus -->
+
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE: MEIST
+════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-meist">
+
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <div class="breadcrumb"><a onclick="showPage('home')">Avaleht</a><span>/</span> Meist</div>
+      <h1 class="page-title">MEIST</h1>
+      <p class="page-sub">Catwees on ametlik Honda esindustus Eestis alates 2000. aastast — kaks esindust, üks eesmärk.</p>
+    </div>
+  </div>
+
+  <div class="about-intro-swiss">
+    <div class="about-img-panel">
+      <img src="hero-crv-2026.jpg" alt="Honda CR-V Catwees esinduses" />
+    </div>
+    <div class="about-text-panel">
+      <span class="sec-num">Meie lugu</span>
+      <h2>Üle 25 aasta Eesti<br/>Honda eksperdid</h2>
+      <p>Catwees alustas tegevust 2000. aastal Tallinnas, eesmärgiga tuua Eesti turule Honda uusimad mudelid koos tasemel teenindusega. Täna töötab meil üle 30 spetsialisti kahes esinduses — Tallinnas ja Tartus.</p>
+      <p>Meie tehnikud läbivad regulaarselt Honda koolitusi Euroopas ning on sertifitseeritud kõigi praeguste mudelite hooldamiseks, kaasa arvatud e:HEV, PHEV ja täiselektriliste sõidukite süsteemid.</p>
+      <p>Honda esindusena järgime rangelt tootja standardeid — nii müügis kui teeninduses. Teie auto on alati heades kätes.</p>
+    </div>
+  </div>
+
+  <section class="values-section swiss-dots">
+    <div class="values-header">
+      <h2 class="section-h2">VÄÄRTUSED</h2>
+    </div>
+    <div class="values-grid">
+      <div class="value-card-swiss">
+        <div class="value-icon">★</div>
+        <h4>Honda sertifitseering</h4>
+        <p>Kõik meie tehnikud on läbinud Honda ametliku väljaõppe ja regulaarsed koolitused.</p>
+      </div>
+      <div class="value-card-swiss">
+        <div class="value-icon">◆</div>
+        <h4>Aus hinnakujundus</h4>
+        <p>Selge hinnakirjaga, ilma peidetud tasudeta. Läbipaistvus igas tehingus.</p>
+      </div>
+      <div class="value-card-swiss">
+        <div class="value-icon">●</div>
+        <h4>Kaks asukohta</h4>
+        <p>Tallinn ja Tartu — lähim esindus on teile alati käepärast.</p>
+      </div>
+      <div class="value-card-swiss">
+        <div class="value-icon">⚡</div>
+        <h4>Elektri- ja hübriidekspertiis</h4>
+        <p>e:HEV, PHEV ja BEV — kõikide Honda elektrisüsteemide spetsialistid.</p>
+      </div>
+      <div class="value-card-swiss">
+        <div class="value-icon">▲</div>
+        <h4>Asendusauto</h4>
+        <p>Teeninduse ajaks saate asendusauto, et elu saaks edasi minna.</p>
+      </div>
+      <div class="value-card-swiss">
+        <div class="value-icon">■</div>
+        <h4>Klienditugi</h4>
+        <p>Meie klienditoe meeskond on valmis aitama igal tööpäeval.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--swiss-white);border-bottom:var(--border-thick);">
+    <div class="locations-header" style="border-bottom:var(--border-thin);padding-bottom:28px;">
+      <h2 class="section-h2">KONTAKT</h2>
+    </div>
+    <div class="locations-grid">
+      <div class="location-card">
+        <div class="location-city">TALLINN</div>
+        <div class="location-detail"><span class="location-detail-label">Aadress</span><span class="location-detail-val">Karamelli 6, 11318 Tallinn</span></div>
+        <div class="location-detail"><span class="location-detail-label">Keskus</span><span class="location-detail-val"><a href="tel:+3726503300">6 503 300</a></span></div>
+        <div class="location-detail"><span class="location-detail-label">Teenindus</span><span class="location-detail-val"><a href="tel:+3726503320">6 503 320</a></span></div>
+        <div class="location-detail"><span class="location-detail-label">E-post</span><span class="location-detail-val"><a href="mailto:tallinn@catwees.ee">tallinn@catwees.ee</a></span></div>
+        <div class="location-detail"><span class="location-detail-label">Ajad</span><span class="location-detail-val">E-R 8.00 - 18.00 · L-P suletud</span></div>
+        <button class="location-map-placeholder contact-page-link" type="button" onclick="showPage('muugikonsultandid')">Müügikonsultandid</button>
+      </div>
+      <div class="location-card">
+        <div class="location-city">TARTU</div>
+        <div class="location-detail"><span class="location-detail-label">Aadress</span><span class="location-detail-val">Tehnika 3, 50104 Tartu</span></div>
+        <div class="location-detail"><span class="location-detail-label">Keskus</span><span class="location-detail-val"><a href="tel:+3727300385">7 300 385</a></span></div>
+        <div class="location-detail"><span class="location-detail-label">Teenindus</span><span class="location-detail-val"><a href="tel:+3727300383">7 300 383</a></span></div>
+        <div class="location-detail"><span class="location-detail-label">E-post</span><span class="location-detail-val"><a href="mailto:tartu@catwees.ee">tartu@catwees.ee</a></span></div>
+        <div class="location-detail"><span class="location-detail-label">Ajad</span><span class="location-detail-val">E-R 8.00 - 18.00 · L-P suletud</span></div>
+        <button class="location-map-placeholder contact-page-link" type="button" onclick="showPage('muugikonsultandid')">Müügikonsultandid</button>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /page-meist -->
+
+<div class="page" id="page-uldkontaktid">
+  <section class="page-hero">
+    <div class="page-hero-inner">
+      <div class="breadcrumb"><a onclick="showPage('home')">Avaleht</a><span>/</span><a onclick="showPage('meist')"> Meist</a><span>/</span> Üldkontaktid</div>
+      <h1 class="page-title">Üldkontaktid</h1>
+      <p class="page-sub">Catweesi Tallinna ja Tartu keskuste kontaktid, aadressid ja lahtiolekuajad.</p>
+    </div>
+  </section>
+
+  <section style="background:var(--swiss-white);border-bottom:var(--border-thick);">
+    <div class="locations-header">
+      <h2 class="section-h2">Tallinn ja Tartu</h2>
+    </div>
+    <div class="locations-grid">
+      <div class="location-card">
+        <div class="location-city">Tallinn</div>
+        <div class="location-detail"><span class="location-detail-label">Aadress</span><span class="location-detail-val">Karamelli 6, 11318 Tallinn</span></div>
+        <div class="location-detail"><span class="location-detail-label">Keskus</span><span class="location-detail-val"><a href="tel:+3726503300">6 503 300</a></span></div>
+        <div class="location-detail"><span class="location-detail-label">Teenindus</span><span class="location-detail-val"><a href="tel:+3726503320">6 503 320</a></span></div>
+        <div class="location-detail"><span class="location-detail-label">E-post</span><span class="location-detail-val"><a href="mailto:tallinn@catwees.ee">tallinn@catwees.ee</a></span></div>
+        <div class="location-detail"><span class="location-detail-label">Teenindus</span><span class="location-detail-val">E-R 8.00 - 18.00 · L-P suletud</span></div>
+        <button class="location-map-placeholder contact-page-link" type="button" onclick="showPage('muugikonsultandid')">Tallinna müügikonsultandid</button>
+      </div>
+      <div class="location-card">
+        <div class="location-city">Tartu</div>
+        <div class="location-detail"><span class="location-detail-label">Aadress</span><span class="location-detail-val">Tehnika 3, 50104 Tartu</span></div>
+        <div class="location-detail"><span class="location-detail-label">Keskus</span><span class="location-detail-val"><a href="tel:+3727300385">7 300 385</a></span></div>
+        <div class="location-detail"><span class="location-detail-label">Teenindus</span><span class="location-detail-val"><a href="tel:+3727300383">7 300 383</a></span></div>
+        <div class="location-detail"><span class="location-detail-label">E-post</span><span class="location-detail-val"><a href="mailto:tartu@catwees.ee">tartu@catwees.ee</a></span></div>
+        <div class="location-detail"><span class="location-detail-label">Müük</span><span class="location-detail-val">E-R 8.00 - 18.00 · L 10.00 - 15.00 · P suletud</span></div>
+        <div class="location-detail"><span class="location-detail-label">Teenindus</span><span class="location-detail-val">E-R 8.00 - 18.00 · L-P suletud</span></div>
+        <button class="location-map-placeholder contact-page-link" type="button" onclick="showPage('muugikonsultandid')">Tartu müügikonsultandid</button>
+      </div>
+    </div>
+  </section>
+</div><!-- /page-uldkontaktid -->
+
+<div class="page" id="page-muugikonsultandid">
+  <section class="page-hero">
+    <div class="page-hero-inner">
+      <div class="breadcrumb"><a onclick="showPage('home')">Avaleht</a><span>/</span><a onclick="showPage('meist')"> Meist</a><span>/</span> Müügikonsultandid</div>
+      <h1 class="page-title">Müügikonsultandid</h1>
+      <p class="page-sub">Uute ja kasutatud autode müügikontaktid Tallinna ja Tartu keskustes.</p>
+    </div>
+  </section>
+
+  <section style="background:var(--swiss-white);border-bottom:var(--border-thick);">
+    <div class="locations-header">
+      <h2 class="section-h2">Tallinn</h2>
+    </div>
+    <div class="locations-grid">
+      <div class="location-card">
+        <div class="location-city">Tõnis Lepp</div>
+        <div class="location-detail"><span class="location-detail-label">Roll</span><span class="location-detail-val">Müügikonsultant, uued autod</span></div>
+        <div class="location-detail"><span class="location-detail-label">E-post</span><span class="location-detail-val"><a href="mailto:tonis.lepp@catwees.ee">tonis.lepp@catwees.ee</a></span></div>
+        <div class="location-detail"><span class="location-detail-label">Mobiil</span><span class="location-detail-val"><a href="tel:+37255955335">55955335</a></span></div>
+      </div>
+      <div class="location-card">
+        <div class="location-city">Silver Kattai</div>
+        <div class="location-detail"><span class="location-detail-label">Roll</span><span class="location-detail-val">Müügikonsultant, uued autod</span></div>
+        <div class="location-detail"><span class="location-detail-label">E-post</span><span class="location-detail-val"><a href="mailto:silver.kattai@catwees.ee">silver.kattai@catwees.ee</a></span></div>
+        <div class="location-detail"><span class="location-detail-label">Mobiil</span><span class="location-detail-val"><a href="tel:+3725068118">5068118</a></span></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--swiss-white);border-bottom:var(--border-thick);">
+    <div class="locations-header">
+      <h2 class="section-h2">Tartu</h2>
+    </div>
+    <div class="locations-grid">
+      <div class="location-card">
+        <div class="location-city">Aivar Ruugla</div>
+        <div class="location-detail"><span class="location-detail-label">Roll</span><span class="location-detail-val">Müügikonsultant, uued autod</span></div>
+        <div class="location-detail"><span class="location-detail-label">E-post</span><span class="location-detail-val"><a href="mailto:aivar.ruugla@catwees.ee">aivar.ruugla@catwees.ee</a></span></div>
+        <div class="location-detail"><span class="location-detail-label">Telefon</span><span class="location-detail-val"><a href="tel:+3727300388">7300388</a></span></div>
+        <div class="location-detail"><span class="location-detail-label">Mobiil</span><span class="location-detail-val"><a href="tel:+3725067232">5067232</a></span></div>
+      </div>
+      <div class="location-card">
+        <div class="location-city">Ranno Reiman</div>
+        <div class="location-detail"><span class="location-detail-label">Roll</span><span class="location-detail-val">Müügikonsultant, uued ja kasutatud autod</span></div>
+        <div class="location-detail"><span class="location-detail-label">E-post</span><span class="location-detail-val"><a href="mailto:ranno.reiman@catwees.ee">ranno.reiman@catwees.ee</a></span></div>
+        <div class="location-detail"><span class="location-detail-label">Telefon</span><span class="location-detail-val"><a href="tel:+3727300945">7300945</a></span></div>
+        <div class="location-detail"><span class="location-detail-label">Mobiil</span><span class="location-detail-val"><a href="tel:+3725146987">5146987</a></span></div>
+      </div>
+      <div class="location-card">
+        <div class="location-city">Taavi Siruli</div>
+        <div class="location-detail"><span class="location-detail-label">Roll</span><span class="location-detail-val">Tartu keskuse juhataja</span></div>
+        <div class="location-detail"><span class="location-detail-label">E-post</span><span class="location-detail-val"><a href="mailto:taavi.siruli@catwees.ee">taavi.siruli@catwees.ee</a></span></div>
+        <div class="location-detail"><span class="location-detail-label">Telefon</span><span class="location-detail-val"><a href="tel:+3727300385">7300385</a></span></div>
+      </div>
+    </div>
+  </section>
+</div><!-- /page-muugikonsultandid -->
+
+
+<!-- ════════════════ FOOTER ════════════════ -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="footer-logos">
+        <img class="footer-catwees" src="Catwees%20logo%20png%20valge%20tekst.png" alt="Catwees" />
+        <img class="footer-honda" src="honda%20POD%20logo%20png%20valge.png" alt="Honda" />
+      </div>
+      <p>Ametlik Honda esindustus Eestis. Kogenud meeskond, kaks asukohta, üks eesmärk.</p>
+      <button class="swiss-btn swiss-btn-red" onclick="showPage('meist')" style="font-size:10px;padding:12px 20px;">Võtke ühendust</button>
+    </div>
+    <div class="footer-col">
+      <h4>Autod</h4>
+      <ul>
+        <li><a onclick="showPage('home')">Uued Hondad</a></li>
+        <li><a onclick="showPage('kasutatud')">Kasutatud autod</a></li>
+        <li><a onclick="showPage('laopakkumised')">Laopakkumised</a></li>
+        <li><a onclick="showPage('eripakkumised')">Eripakkumised</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Teenindus</h4>
+      <ul>
+        <li><a onclick="showPage('teenindus')">Broneeri aeg</a></li>
+        <li><a onclick="showPage('teenindus')">Hooldus</a></li>
+        <li><a onclick="showPage('teenindus')">Rehvivahetus</a></li>
+        <li><a onclick="showPage('teenindus')">Garantii</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Ettevõte</h4>
+      <ul>
+        <li><a onclick="showPage('meist')">Meist</a></li>
+        <li><a href="#">Uudised</a></li>
+        <li><a onclick="showPage('meist')">Kontakt</a></li>
+        <li><a href="#">Tagasiside</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Catwees OÜ. Kõik õigused kaitstud.</span>
+    <div class="footer-bottom-links">
+      <a href="#">Privaatsuspoliitika</a>
+      <a href="#">Küpsised</a>
+      <a href="#">Saidikaart</a>
+    </div>
+  </div>
+</footer>
+
+<a class="float-btn" onclick="showPage('teenindus')">Broneeri teenindus</a>
+
+<script>
+  /* ── PAGE ROUTER ── */
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+
+    const page = document.getElementById('page-' + id);
+    if (page) {
+      page.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    const navLink = document.querySelector('nav a[data-page="' + id + '"]');
+    if (navLink) navLink.classList.add('active');
+  }
+
+  /* ── LANGUAGE TOGGLE ── */
+  const ruTranslations = new Map([
+    ['Uued Hondad', 'Новые Honda'],
+    ['Laopakkumised', 'В наличии'],
+    ['Eripakkumised', 'Спецпредложения'],
+    ['Kasutatud autod', 'С пробегом'],
+    ['Teenindus', 'Сервис'],
+    ['Meist', 'О нас'],
+    ['Broneeri Teenindus', 'Запись в сервис'],
+    ['Proovisõit', 'Тест-драйв'],
+    ['Catwees on vanim ja suurim ainult Honda mudeleid müüv ja hooldav ettevõte Eestis.', 'Catwees - старейшая и крупнейшая в Эстонии компания, специализирующаяся только на продаже и обслуживании автомобилей Honda.'],
+    ['01 / Uus Honda', '01 / Новая Honda'],
+    ['UUED AUTOD', 'НОВЫЕ АВТО'],
+    ['Laos autod, mudelite info ja Honda.ee mudelivalik ühes kohas.', 'Автомобили в наличии, информация о моделях и выбор Honda.ee в одном месте.'],
+    ['02 / Kontrollitud valik', '02 / Проверенный выбор'],
+    ['Vali Tallinn või Tartu enne kui liigud pakkumiste juurde.', 'Выберите Таллинн или Тарту перед переходом к предложениям.'],
+    ['03 / Honda hooldus', '03 / Обслуживание Honda'],
+    ['Honda sertifitseeritud hooldus samas Catweesi võrgus.', 'Сертифицированное обслуживание Honda в сети Catwees.'],
+    ['Uus Honda Catweesist', 'Новая Honda от Catwees'],
+    ['Alusta Catweesi valikust. Kui tahad võrrelda kogu ametlikku mudelirivi, saad edasi minna Honda.ee mudelivalikusse.', 'Начните с выбора Catwees. Если хотите сравнить весь официальный модельный ряд, перейдите к моделям на Honda.ee.'],
+    ['Laos autod', 'Авто в наличии'],
+    ['Laopakkumised: kohe saadaval Honda mudelid Tallinnas ja Tartus.', 'Предложения со склада: модели Honda, доступные сразу в Таллинне и Тарту.'],
+    ['Mudelite info', 'Информация о моделях'],
+    ['CR-V, ZR-V, HR-V, Civic, Jazz ja e:Ny1 Catweesi vaates.', 'CR-V, ZR-V, HR-V, Civic, Jazz и e:Ny1 в подборке Catwees.'],
+    ['Ametlik Honda mudelivalik uues aknas.', 'Официальный модельный ряд Honda откроется в новом окне.'],
+    ['Kasutatud Honda', 'Honda с пробегом'],
+    ['Vali esindus esmalt. Nii jääb esimene klikk rahulikuks ja kasutaja ei kaota konteksti.', 'Сначала выберите центр. Так путь остается понятным и без потери контекста.'],
+    ['Tallinn', 'Таллинн'],
+    ['Tartu', 'Тарту'],
+    ['Kogu valik', 'Весь выбор'],
+    ['Kui asukoht pole oluline, alusta kogu nimekirjast.', 'Если место не важно, начните со всего списка.'],
+    ['Honda teenindus Catweesis', 'Сервис Honda в Catwees'],
+    ['Catwees ei ole mitme margi töökoda. Meie fookus on Honda, garantiist igapäevase hoolduseni.', 'Catwees не является мультибрендовым сервисом. Наш фокус - Honda: от гарантии до регулярного обслуживания.'],
+    ['Honda garantii', 'Гарантия Honda'],
+    ['Sertifitseeritud hooldus ja tootja standardid.', 'Сертифицированное обслуживание и стандарты производителя.'],
+    ['Proovisõidu algus', 'Начало тест-драйва'],
+    ['Esindus + teenindus', 'Продажи + сервис'],
+    ['Lõuna-Eesti rada', 'Маршрут Южной Эстонии'],
+    ['Müük + järelhooldus', 'Продажи + обслуживание'],
+    ['Honda jõuallikad', 'Силовые установки Honda'],
+    ['Ametlik garantii', 'Официальная гарантия'],
+    ['Honda ametlik garantii', 'Официальная гарантия Honda'],
+    ['Sertifitseeritud tehnikud', 'Сертифицированные техники'],
+    ['Proovisõit tasuta', 'Бесплатный тест-драйв'],
+    ['Paindlik finantseerimine', 'Гибкое финансирование'],
+    ['Tallinn & Tartu', 'Таллинн и Тарту'],
+    ['Ametlik Honda esindustus', 'Официальный дилер Honda'],
+    ['6 aastat garantii', '6 лет гарантии'],
+    ['MUDELID', 'МОДЕЛИ'],
+    ['Leia endale sobiv sõiduk meie laiast mudelivalikust.', 'Найдите подходящий автомобиль в нашем широком модельном ряду.'],
+    ['Kõik', 'Все'],
+    ['Hübriid', 'Гибрид'],
+    ['Elekter', 'Электро'],
+    ['Sedaan', 'Седан'],
+    ['Vaata', 'Смотреть'],
+    ['/ alates', '/ от'],
+    ['Plug-in hübriid · 7-kohaline · AWD', 'Подключаемый гибрид · 7 мест · AWD'],
+    ['Compact SUV · Täishübriid · Sport', 'Компактный SUV · Полный гибрид · Sport'],
+    ['Compact SUV · Täishübriid · 4 värvi', 'Компактный SUV · Полный гибрид · 4 цвета'],
+    ['Sedaan · Täishübriid · Sport disain', 'Седан · Полный гибрид · Спортивный дизайн'],
+    ['Elektriline SUV · 412 km sõiduulatus', 'Электрический SUV · запас хода 412 км'],
+    ['TEENINDUS', 'СЕРВИС'],
+    ['Broneeri teenindus', 'Записаться на сервис'],
+    ['NÕUANDED', 'СОВЕТЫ'],
+    ['ESINDUSED', 'ЦЕНТРЫ'],
+    ['TALLINN', 'ТАЛЛИНН'],
+    ['TARTU', 'ТАРТУ'],
+    ['Aadress', 'Адрес'],
+    ['Telefon', 'Телефон'],
+    ['Teeninduse tel', 'Тел. сервиса'],
+    ['E-post', 'Э-почта'],
+    ['Lahtiolekuajad', 'Часы работы'],
+    ['Ajad', 'Время'],
+    ['Keskus', 'Центр'],
+    ['Müük', 'Продажи'],
+    ['Müügikonsultandid', 'Консультанты по продажам'],
+    ['UUDISED', 'НОВОСТИ'],
+    ['Kõik uudised', 'Все новости'],
+    ['Broneeri proovisõit', 'Записаться на тест-драйв'],
+    ['Vaata laopakkumisi', 'Смотреть автомобили в наличии'],
+    ['Avaleht', 'Главная'],
+    ['LAOPAKKUMISED', 'АВТО В НАЛИЧИИ'],
+    ['Kohe saadaolevad Honda mudelid meie Tallinna ja Tartu laost — kiire üleandmine, kindel hind.', 'Модели Honda, доступные сразу со склада в Таллинне и Тарту: быстрая передача и фиксированная цена.'],
+    ['Mudel', 'Модель'],
+    ['Asukoht', 'Местоположение'],
+    ['Hind kuni', 'Цена до'],
+    ['Jõuallikas', 'Силовая установка'],
+    ['Kõik mudelid', 'Все модели'],
+    ['Tallinn & Tartu', 'Таллинн и Тарту'],
+    ['Kõik hinnad', 'Все цены'],
+    ['kuni 30 000 €', 'до 30 000 €'],
+    ['kuni 40 000 €', 'до 40 000 €'],
+    ['kuni 50 000 €', 'до 50 000 €'],
+    ['Plug-in hübriid', 'Подключаемый гибрид'],
+    ['Otsi', 'Искать'],
+    ['Selle filtriga laopakkumisi ei leitud.', 'По этому фильтру автомобили не найдены.'],
+    ['ERIPAKKUMISED', 'СПЕЦПРЕДЛОЖЕНИЯ'],
+    ['Piiratud aja pakkumised ja kampaaniad — säästke kuni 3 000 € valitud mudelitelt.', 'Предложения и кампании на ограниченное время: экономия до 3 000 € на выбранных моделях.'],
+    ['Broneeri', 'Записаться'],
+    ['Küsi', 'Спросить'],
+    ['KASUTATUD', 'АВТО'],
+    ['AUTOD', 'С ПРОБЕГОМ'],
+    ['KASUTATUD AUTOD', 'АВТО С ПРОБЕГОМ'],
+    ['Hoolikalt valitud kasutatud Honda mudelid — tehniline ülevaatus tehtud, garantii olemas.', 'Тщательно отобранные Honda с пробегом: техническая проверка выполнена, гарантия есть.'],
+    ['Broneeri aeg Honda sertifitseeritud teenindusesse. Tallinn ja Tartu.', 'Запишитесь в сертифицированный сервис Honda. Таллинн и Тарту.'],
+    ['Vali teenus', 'Выберите услугу'],
+    ['Perioodiline hooldus', 'Периодическое обслуживание'],
+    ['Diagnostika', 'Диагностика'],
+    ['Rehvitööd', 'Шинные работы'],
+    ['Garantii', 'Гарантия'],
+    ['Keretööd', 'Кузовные работы'],
+    ['BRONEERI AEG', 'ЗАПИСАТЬСЯ'],
+    ['Saada broneering', 'Отправить бронь'],
+    ['TEENINDUSKESKUSED', 'СЕРВИСНЫЕ ЦЕНТРЫ'],
+    ['MEIST', 'О НАС'],
+    ['Catwees on ametlik Honda esindustus Eestis alates 2000. aastast — kaks esindust, üks eesmärk.', 'Catwees - официальный дилер Honda в Эстонии с 2000 года: два центра, одна цель.'],
+    ['Meie lugu', 'Наша история'],
+    ['Üle 25 aasta Eesti', 'Более 25 лет'],
+    ['Honda eksperdid', 'эксперты Honda в Эстонии'],
+    ['Üle 25 aasta Eesti Honda eksperdid', 'Более 25 лет эксперты Honda в Эстонии'],
+    ['Catwees alustas tegevust 2000. aastal Tallinnas, eesmärgiga tuua Eesti turule Honda uusimad mudelid koos tasemel teenindusega. Täna töötab meil üle 30 spetsialisti kahes esinduses — Tallinnas ja Tartus.', 'Catwees начал работу в 2000 году в Таллинне, чтобы предлагать рынку Эстонии новейшие модели Honda вместе с качественным сервисом. Сегодня у нас работает более 30 специалистов в двух центрах - в Таллинне и Тарту.'],
+    ['Meie tehnikud läbivad regulaarselt Honda koolitusi Euroopas ning on sertifitseeritud kõigi praeguste mudelite hooldamiseks, kaasa arvatud e:HEV, PHEV ja täiselektriliste sõidukite süsteemid.', 'Наши техники регулярно проходят обучение Honda в Европе и сертифицированы для обслуживания всех текущих моделей, включая системы e:HEV, PHEV и полностью электрические автомобили.'],
+    ['Honda esindusena järgime rangelt tootja standardeid — nii müügis kui teeninduses. Teie auto on alati heades kätes.', 'Как дилер Honda мы строго соблюдаем стандарты производителя как в продажах, так и в сервисе. Ваш автомобиль всегда в надежных руках.'],
+    ['VÄÄRTUSED', 'ЦЕННОСТИ'],
+    ['Honda sertifitseering', 'Сертификация Honda'],
+    ['Aus hinnakujundus', 'Честное ценообразование'],
+    ['Kiire teenindus', 'Быстрый сервис'],
+    ['Kaasaegne tehnika', 'Современная техника'],
+    ['Personaalne lähenemine', 'Персональный подход'],
+    ['Asendusauto', 'Подменный автомобиль'],
+    ['KONTAKT', 'КОНТАКТ'],
+    ['Üldkontaktid', 'Общие контакты'],
+    ['Catweesi Tallinna ja Tartu keskuste kontaktid, aadressid ja lahtiolekuajad.', 'Контакты, адреса и часы работы центров Catwees в Таллинне и Тарту.'],
+    ['Tallinn ja Tartu', 'Таллинн и Тарту'],
+    ['Tallinna müügikonsultandid', 'Консультанты по продажам в Таллинне'],
+    ['Tartu müügikonsultandid', 'Консультанты по продажам в Тарту'],
+    ['Uute ja kasutatud autode müügikontaktid Tallinna ja Tartu keskustes.', 'Контакты по продаже новых и подержанных автомобилей в центрах Таллинна и Тарту.'],
+    ['Roll', 'Роль'],
+    ['Mobiil', 'Мобильный'],
+    ['Müügikonsultant, uued autod', 'Консультант по продажам, новые автомобили'],
+    ['Müügikonsultant, uued ja kasutatud autod', 'Консультант по продажам, новые и подержанные автомобили'],
+    ['Tartu keskuse juhataja', 'Руководитель центра Тарту'],
+    ['Võtke ühendust', 'Свяжитесь с нами'],
+    ['Broneeri aeg', 'Записаться'],
+    ['Hooldus', 'Обслуживание'],
+    ['Rehvivahetus', 'Замена шин'],
+    ['Kontakt', 'Контакт']
+  ]);
+
+  function normalizeLanguageKey(value) {
+    return value.trim().replace(/\s+/g, ' ');
+  }
+
+  function applyLanguage(lang) {
+    document.documentElement.lang = lang === 'ru' ? 'ru' : 'et';
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        if (node.parentElement && node.parentElement.closest('script, style, noscript, svg')) {
+          return NodeFilter.FILTER_REJECT;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+
+    nodes.forEach(node => {
+      if (!node.__etText) node.__etText = node.nodeValue;
+      const etText = node.__etText;
+      const key = normalizeLanguageKey(etText);
+      const translated = ruTranslations.get(key);
+      if (lang === 'ru' && translated) {
+        const prefix = etText.match(/^\s*/)[0];
+        const suffix = etText.match(/\s*$/)[0];
+        node.nodeValue = prefix + translated + suffix;
+      } else {
+        node.nodeValue = etText;
+      }
+    });
+
+    document.querySelectorAll('.nav-lang').forEach(btn => {
+      btn.textContent = lang === 'ru' ? 'EE' : 'RU';
+      btn.setAttribute('aria-label', lang === 'ru' ? 'Vaheta eesti keelele' : 'Переключить на русский');
+    });
+    localStorage.setItem('catwees-lang', lang);
+  }
+
+  document.querySelectorAll('.nav-lang').forEach(btn => {
+    btn.type = 'button';
+    btn.addEventListener('click', () => {
+      const nextLang = document.documentElement.lang === 'ru' ? 'et' : 'ru';
+      applyLanguage(nextLang);
+    });
+  });
+  applyLanguage(localStorage.getItem('catwees-lang') === 'ru' ? 'ru' : 'et');
+
+  /* ── HERO DECISION MENUS ── */
+  const heroDecision = document.querySelector('.hero-decision');
+  if (heroDecision) {
+    heroDecision.addEventListener('click', function(e) {
+      const choice = e.target.closest('[data-hero-menu]');
+      if (!choice) return;
+
+      const target = choice.dataset.heroMenu;
+      this.querySelectorAll('[data-hero-menu]').forEach(btn => {
+        const active = btn === choice;
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+      this.querySelectorAll('[data-hero-panel]').forEach(panel => {
+        panel.classList.toggle('is-active', panel.dataset.heroPanel === target);
+      });
+    });
+  }
+
+  /* ── HERO IMAGE ROTATION ── */
+  const heroSlide = document.querySelector('[data-hero-slideshow]');
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (heroSlide && !reduceMotion) {
+    const heroSlides = [
+      'hero-crv-2026.jpg',
+      'honda-hero-crv.jpg',
+      'honda-hero-zrv.jpg',
+      'honda-hero-hrv.jpg',
+      'honda-hero-jazz.jpg'
+    ];
+    const heroPreloads = heroSlides.map(src => {
+      const img = new Image();
+      img.src = src;
+      return img;
+    });
+
+    let heroSlideIndex = 0;
+    let heroSlideBusy = false;
+
+    async function advanceHeroSlide() {
+      if (heroSlideBusy) return;
+      heroSlideBusy = true;
+      heroSlideIndex = (heroSlideIndex + 1) % heroSlides.length;
+      const preload = heroPreloads[heroSlideIndex];
+      if (preload && preload.decode) {
+        try { await preload.decode(); } catch (e) {}
+      }
+
+      heroSlide.classList.add('is-panning');
+      window.setTimeout(() => {
+        heroSlide.classList.add('is-loading-next');
+        heroSlide.src = heroSlides[heroSlideIndex];
+        heroSlide.classList.remove('is-panning');
+        window.setTimeout(() => {
+          heroSlide.classList.remove('is-loading-next');
+        }, 120);
+        heroSlideBusy = false;
+      }, 1040);
+    }
+
+    setInterval(advanceHeroSlide, 5200);
+  }
+
+  /* ── HOME FILTER TABS ── */
+  const filterTabs = document.getElementById('home-filter-tabs');
+  if (filterTabs) {
+    filterTabs.addEventListener('click', function(e) {
+      const tab = e.target.closest('.filter-tab');
+      if (!tab) return;
+      this.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const filter = tab.dataset.filter;
+      const cards = document.querySelectorAll('#home-models-grid .car-card');
+      let visible = 0;
+      cards.forEach(card => {
+        const cats = (card.dataset.categories || '').split(' ');
+        const show = filter === 'all' || cats.includes(filter);
+        card.classList.toggle('hidden', !show);
+        if (show) visible++;
+      });
+      const countTag = document.getElementById('model-count');
+      if (countTag) countTag.textContent = visible;
+    });
+  }
+
+  /* ── TIMELINE INTERSECTIONOBSERVER ── */
+  document.querySelectorAll('[data-card-filter]').forEach(filterBar => {
+    const filterName = filterBar.dataset.cardFilter;
+    const grid = document.querySelector('[data-filter-grid="' + filterName + '"]');
+    const empty = document.querySelector('[data-filter-empty="' + filterName + '"]');
+    if (!grid) return;
+
+    function applyCardFilters() {
+      const selected = {};
+      filterBar.querySelectorAll('[data-filter-field]').forEach(field => {
+        selected[field.dataset.filterField] = field.value;
+      });
+
+      let visible = 0;
+      grid.querySelectorAll('.car-card').forEach(card => {
+        const matches = Object.entries(selected).every(([key, value]) => {
+          if (!value || value === 'all') return true;
+          if (key === 'price') return Number(card.dataset.price || 0) <= Number(value);
+          return card.dataset[key] === value;
+        });
+        card.classList.toggle('hidden', !matches);
+        if (matches) visible++;
+      });
+
+      if (empty) empty.classList.toggle('is-visible', visible === 0);
+    }
+
+    filterBar.addEventListener('change', applyCardFilters);
+    filterBar.addEventListener('click', function(e) {
+      if (!e.target.closest('[data-filter-submit]')) return;
+      applyCardFilters();
+    });
+  });
+
+  const timeline = document.getElementById('timeline-home');
+  if (timeline) {
+    new IntersectionObserver((entries, obs) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.25 }).observe(timeline);
+  }
+
+  /* ── SERVICE TYPE SELECTOR ── */
+  function selectBookingService(service) {
+    if (!service) return;
+
+    document.querySelectorAll('[data-booking-service]').forEach(item => {
+      const active = item.dataset.bookingService === service;
+      item.classList.toggle('is-selected', active);
+      item.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+
+    document.querySelectorAll('.service-type-btn[data-service-type]').forEach(btn => {
+      btn.classList.toggle('selected', btn.dataset.serviceType === service);
+    });
+  }
+
+  const bookingServiceList = document.querySelector('.booking-left');
+  if (bookingServiceList) {
+    bookingServiceList.addEventListener('click', function(e) {
+      const item = e.target.closest('[data-booking-service]');
+      if (!item) return;
+      selectBookingService(item.dataset.bookingService);
+    });
+
+    bookingServiceList.addEventListener('keydown', function(e) {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      const item = e.target.closest('[data-booking-service]');
+      if (!item) return;
+      e.preventDefault();
+      selectBookingService(item.dataset.bookingService);
+    });
+  }
+
+  document.querySelectorAll('.service-types-swiss').forEach(group => {
+    group.addEventListener('click', function(e) {
+      const btn = e.target.closest('.service-type-btn');
+      if (!btn) return;
+      selectBookingService(btn.dataset.serviceType);
+    });
+  });
+</script>
+
+</body>
+</html>

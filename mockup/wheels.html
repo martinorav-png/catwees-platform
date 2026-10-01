@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wheel circles</title>
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: #f4f3f0;
+      color: #161616;
+    }
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 16px 20px;
+      background: #fff;
+      border-bottom: 1px solid rgba(22, 22, 22, 0.12);
+    }
+    h1 { margin: 0; font-size: 18px; font-weight: 600; }
+    p { margin: 4px 0 0; color: #5c5c5c; font-size: 14px; max-width: 720px; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; }
+    button {
+      min-height: 40px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(22, 22, 22, 0.16);
+      background: #fff;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button.on { background: #161616; color: #fff; border-color: #161616; }
+    button.primary { background: #d62629; color: #fff; border-color: #d62629; }
+    main { padding: 20px; }
+    .stage {
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+      background: #fff;
+      border-radius: 16px;
+      line-height: 0;
+      cursor: crosshair;
+      touch-action: none;
+    }
+    img, canvas { display: block; max-width: 100%; height: auto; }
+    canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .meta { margin-top: 12px; font-variant-numeric: tabular-nums; }
+    textarea {
+      display: block;
+      width: min(720px, 100%);
+      margin-top: 12px;
+      min-height: 148px;
+      padding: 12px 14px;
+      border: 1px solid rgba(22, 22, 22, 0.16);
+      border-radius: 12px;
+      background: #fff;
+      font: 13px/1.5 ui-monospace, Consolas, monospace;
+      color: #161616;
+      resize: vertical;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1 id="title">Prelude</h1>
+      <p>Press on the centre of the hub, drag out to the outside of the tyre, then release. Do the rear wheel, then the front. Copy values and paste them in the chat if the spin is still off.</p>
+    </div>
+    <div class="row">
+      <button type="button" id="rear" class="on">Rear wheel</button>
+      <button type="button" id="front">Front wheel</button>
+      <button type="button" id="prev">Previous car</button>
+      <button type="button" id="next">Next car</button>
+      <button type="button" id="save" class="primary">Save circles</button>
+      <button type="button" id="copy">Copy values</button>
+    </div>
+  </header>
+  <main>
+    <div class="stage" id="stage">
+      <img loading="lazy" id="photo" src="assets/cars/prelude.png" alt="">
+      <canvas id="overlay"></canvas>
+    </div>
+    <p class="meta" id="meta"></p>
+    <textarea id="values" readonly aria-label="Wheel circle values"></textarea>
+  </main>
+  <script>
+    const cars = [
+      ["prelude.png", "Prelude"],
+      ["crv.png", "CR-V Hybrid"],
+      ["zrv.png", "ZR-V"],
+      ["hrv.png", "HR-V"],
+      ["civic.png", "Civic Hybrid"],
+      ["jazz.png", "Jazz Hybrid"]
+    ];
+    const wheels = {
+      "prelude.png": [[0.2206, 0.6554, 0.2056], [0.7366, 0.6455, 0.2054]],
+      "crv.png": [[0.2381, 0.7486, 0.2026], [0.7667, 0.7441, 0.2005]],
+      "zrv.png": [[0.2437, 0.5994, 0.1542], [0.7548, 0.5938, 0.1600]],
+      "hrv.png": [[0.2453, 0.5864, 0.1587], [0.7453, 0.5883, 0.1624]],
+      "civic.png": [[0.2302, 0.6199, 0.1725], [0.7556, 0.6199, 0.1696]],
+      "jazz.png": [[0.2493, 0.5949, 0.1494], [0.7484, 0.6098, 0.1396]]
+    };
+    let car = 0;
+    let slot = 0;
+    let drag = null;
+
+    const photo = document.getElementById("photo");
+    const overlay = document.getElementById("overlay");
+    const ctx = overlay.getContext("2d");
+    const title = document.getElementById("title");
+    const meta = document.getElementById("meta");
+    const rear = document.getElementById("rear");
+    const front = document.getElementById("front");
+
+    function norm(event) {
+      const rect = photo.getBoundingClientRect();
+      return {
+        x: (event.clientX - rect.left) / rect.width,
+        y: (event.clientY - rect.top) / rect.height
+      };
+    }
+
+    function radius(from, to) {
+      const dx = (to.x - from.x) * photo.naturalWidth;
+      const dy = (to.y - from.y) * photo.naturalHeight;
+      return Math.hypot(dx, dy) / photo.naturalHeight;
+    }
+
+    function paint() {
+      const rect = photo.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      overlay.width = Math.round(rect.width * dpr);
+      overlay.height = Math.round(rect.height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, rect.width, rect.height);
+      const file = cars[car][0];
+      wheels[file].forEach((wheel, index) => {
+        if (!wheel) return;
+        const cx = wheel[0] * rect.width;
+        const cy = wheel[1] * rect.height;
+        const rad = wheel[2] * rect.height;
+        ctx.beginPath();
+        ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+        ctx.lineWidth = index === slot ? 3 : 2;
+        ctx.strokeStyle = index === slot ? "#d62629" : "#161616";
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+        ctx.fillStyle = "#f5d90a";
+        ctx.fill();
+      });
+      const current = wheels[file][slot];
+      document.getElementById("values").value = circleText();
+      const bits = cars.map(([name], index) => (index === car ? "[" + cars[index][1] + "]" : cars[index][1]));
+      meta.textContent = bits.join("   ") + (current
+        ? "    centre " + current[0].toFixed(3) + ", " + current[1].toFixed(3) + "    radius " + Math.round(current[2] * photo.naturalHeight) + " px"
+        : "    this wheel is not set");
+    }
+
+    function circleText() {
+      return cars.map(([file, name]) => {
+        const pair = wheels[file];
+        const fmt = (wheel) => wheel ? wheel.map((n) => Number(n).toFixed(4)).join(" ") : "missing";
+        return name + "\n  rear  " + fmt(pair[0]) + "\n  front " + fmt(pair[1]);
+      }).join("\n");
+    }
+
+    function show() {
+      title.textContent = cars[car][1];
+      rear.classList.toggle("on", slot === 0);
+      front.classList.toggle("on", slot === 1);
+      photo.alt = cars[car][1];
+      photo.src = "assets/cars/" + cars[car][0];
+    }
+
+    photo.addEventListener("load", paint);
+    window.addEventListener("resize", paint);
+    rear.addEventListener("click", () => { slot = 0; show(); });
+    front.addEventListener("click", () => { slot = 1; show(); });
+    document.getElementById("prev").addEventListener("click", () => { car = (car + cars.length - 1) % cars.length; show(); });
+    document.getElementById("next").addEventListener("click", () => { car = (car + 1) % cars.length; show(); });
+
+    overlay.addEventListener("pointerdown", (event) => {
+      overlay.setPointerCapture(event.pointerId);
+      const point = norm(event);
+      drag = point;
+      wheels[cars[car][0]][slot] = [point.x, point.y, 0.02];
+      paint();
+    });
+    overlay.addEventListener("pointermove", (event) => {
+      if (!drag) return;
+      const point = norm(event);
+      const file = cars[car][0];
+      wheels[file][slot] = [drag.x, drag.y, Math.max(0.02, radius(drag, point))];
+      paint();
+    });
+    async function saveCircles() {
+      const payload = {};
+      const missing = [];
+      cars.forEach(([file, name]) => {
+        const pair = wheels[file];
+        if (pair[0] && pair[1]) payload[file] = pair;
+        else missing.push(name);
+      });
+      const response = await fetch("assets/wheels.json", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      meta.textContent = response.ok
+        ? "Saved. The homepage uses these circles." + (missing.length ? " Still missing: " + missing.join(", ") + "." : "")
+        : "Save failed.";
+    }
+
+    overlay.addEventListener("pointerup", () => {
+      drag = null;
+      if (slot === 0 && wheels[cars[car][0]][0]) slot = 1;
+      rear.classList.toggle("on", slot === 0);
+      front.classList.toggle("on", slot === 1);
+      paint();
+      saveCircles();
+    });
+
+    document.getElementById("save").addEventListener("click", () => saveCircles());
+    document.getElementById("copy").addEventListener("click", async () => {
+      const text = circleText();
+      const box = document.getElementById("values");
+      box.value = text;
+      box.focus();
+      box.select();
+      try {
+        await navigator.clipboard.writeText(text);
+        meta.textContent = "Copied. Paste it in the chat.";
+      } catch (err) {
+        meta.textContent = "Select the box below and copy it, then paste it in the chat.";
+      }
+    });
+
+    fetch("assets/wheels.json", { cache: "no-store" })
+      .then((response) => response.ok ? response.json() : null)
+      .then((saved) => {
+        if (!saved) return;
+        cars.forEach(([file]) => {
+          if (saved[file] && saved[file].length === 2) wheels[file] = saved[file];
+        });
+        paint();
+      })
+      .catch(() => {});
+    show();
+  </script>
+</body>
+</html>
