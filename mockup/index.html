@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#161616">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <link rel="stylesheet" href="fonts.css?v=plex">
-  <link rel="stylesheet" href="styles.css?v=gmail">
+  <link rel="stylesheet" href="styles.css?v=phone3">
 </head>
 <body>
   <a class="skip" href="#sisu">Sisu juurde</a>
@@ -45,7 +45,10 @@
   <div id="status" class="vh" aria-live="polite"></div>
   <main id="sisu">
     <section class="hero">
-      <img class="hero-photo" src="../catweessite2026/hero-crv-2026.jpg" alt="Honda CR-V maanteel">
+      <picture>
+        <source media="(max-width: 900px)" srcset="assets/hero-crv-phone.jpg">
+        <img class="hero-photo" src="../catweessite2026/hero-crv-2026.jpg" alt="Honda CR-V maanteel">
+      </picture>
       <div class="hero-copy">
         <h1 class="hero-headline" id="plate-num"><span class="vh" id="plate-sr">Registreerimismärk puudub. </span><span id="plate-glyphs">Sinu Honda.</span></h1>
         <p class="hero-sub" id="plate-meta">Logi sisse, et näha oma Honda teateid.</p>
@@ -171,6 +174,6 @@
     </div>
     <div class="footer-bottom">Näidis. Mari Tamm ja auto 482 MHT ei ole päris klient. Kontaktid ja avaldatud hinnad on catwees.ee andmed 30.09.2026.</div>
   </footer>
-  <script src="app.js?v=gmail"></script>
+  <script src="app.js?v=phone3"></script>
 </body>
 </html>

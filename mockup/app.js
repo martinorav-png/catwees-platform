@@ -76,7 +76,8 @@
     const stamp = $("stamp");
     if (!state.auth) {
       setPlate("Sinu Honda", "Logi sisse, et näha oma Honda teateid.", "Registreerimismärk puudub.");
-      $("stamp-name").textContent = "Logi sisse Gmailiga";
+      $("stamp-name").innerHTML = "Logi sisse <span class=\"stamp-gmail\">Gmailiga</span>";
+      stamp.setAttribute("aria-label", "Logi sisse Gmailiga");
       stamp.classList.remove("is-in");
       return;
     }
@@ -87,6 +88,7 @@
       "Registreerimismärk " + car.plate + ", Honda " + car.model + " " + car.year + ", " + formatKm(car.km) + "."
     );
     $("stamp-name").textContent = USER.name;
+    stamp.setAttribute("aria-label", USER.name);
     stamp.classList.add("is-in");
     if (animate) {
       pulse($("stamp"));
@@ -864,8 +866,10 @@
       const scaled = shown * fleet.length;
       const index = Math.min(fleet.length - 1, Math.floor(scaled));
       const local = scaled - index;
-      ensureImage(index);
-      ensureImage(index + 1);
+      if (rect.top < window.innerHeight * 0.72) {
+        ensureImage(index);
+        ensureImage(index + 1);
+      }
       const item = fleet[index];
       const img = images[item.src];
       const ready = img && img.complete && img.naturalWidth;
@@ -922,7 +926,6 @@
         wake();
       })
       .catch(() => {});
-    ensureImage(0);
     wake();
   }
 })();

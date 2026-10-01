@@ -223,6 +223,10 @@ header.is-overlay:not(.is-solid) .nav-btn:hover { background: var(--red); color:
   background: var(--ink);
   overflow: hidden;
 }
+.hero picture {
+  position: absolute;
+  inset: 0;
+}
 .hero-photo {
   position: absolute;
   inset: 0;
@@ -729,18 +733,139 @@ footer {
 }
 
 @media (max-width: 900px) {
-  .nav-inner { flex-wrap: wrap; row-gap: 8px; padding: 12px 16px; }
-  .nav-left { display: contents; }
-  .logo-group { order: 1; }
-  .nav-cta { order: 2; margin-left: auto; }
-  .site-nav { order: 3; width: 100%; }
-  .page-hero { padding: 36px 0 40px; }
-  .split, .assist { margin-top: 28px; margin-bottom: 48px; }
-  .hero-copy { padding: 0 20px 48px; }
-  .hero-headline { font-size: clamp(2.8rem, 12vw, 4rem); }
-  .lineup, .notice, .split, .paths, .assist, .footer-top, .choices.three, .showroom { grid-template-columns: 1fr; }
-  .switch { grid-template-columns: 1fr 1fr; gap: 12px; }
-  .lineup, .notice, .section-header-row, .page-hero-inner, .split, .paths, .assist, .switch, .showroom, .footer-top { padding-left: 16px; padding-right: 16px; }
-  .model-card.feature img, .model-card img { height: 200px; }
-  .notice { gap: 12px; }
+  .nav-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "logos pill"
+      "menu menu"
+      "login login";
+    align-items: center;
+    column-gap: 12px;
+    row-gap: 2px;
+    min-height: 0;
+    padding: 12px 16px 8px;
+  }
+  .nav-left, .nav-cta { display: contents; }
+  .logo-group { grid-area: logos; min-height: 44px; align-content: center; }
+  .stamp {
+    grid-area: login;
+    justify-self: start;
+    min-height: 44px;
+    padding: 0 4px;
+  }
+  .stamp-name { font-size: 15px; }
+  header .nav-btn {
+    grid-area: pill;
+    min-height: 44px;
+    padding: 0 16px;
+    font-size: 15px;
+    margin: 0;
+  }
+  .site-nav {
+    grid-area: menu;
+    width: auto;
+    min-width: 0;
+    justify-content: space-between;
+    gap: 4px;
+    overflow: visible;
+  }
+  .site-nav a {
+    flex: 1;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 4px;
+    font-size: 15px;
+  }
+  header:has(.stamp.is-in) .nav-inner {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas:
+      "logos login pill"
+      "menu menu menu";
+  }
+  header:has(.stamp.is-in) .stamp {
+    justify-self: end;
+    max-width: 128px;
+    padding: 0 8px;
+  }
+  header:has(.stamp.is-in) .stamp-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .page-hero { padding: 28px 0 32px; }
+  .section-header-row { padding-top: 40px; }
+  .split, .assist { margin-top: 20px; margin-bottom: 40px; }
+  .split-main, .split-side, .thread-col, .contact { padding: 20px; }
+  .hero-copy { padding: 0 20px 72px; }
+  .hero-headline { font-size: clamp(2.6rem, 11vw, 3.6rem); }
+  .hero-sub { font-size: 16px; }
+  .lineup, .split, .paths, .assist, .choices.three { grid-template-columns: 1fr; }
+  .switch { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .switch button {
+    white-space: normal;
+    line-height: 1.2;
+    min-height: 44px;
+    padding: 8px 12px;
+    font-size: 15px;
+  }
+  .notice {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    align-items: start;
+    padding-top: 22px;
+    padding-bottom: 22px;
+  }
+  .notice time { font-size: 13px; }
+  .notice h3 { font-size: 20px; }
+  .notice .act { justify-self: start; min-height: 44px; }
+  .showroom {
+    display: flex;
+    grid-template-columns: none;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 16px;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--sand) transparent;
+    padding-bottom: 8px;
+  }
+  .showroom li {
+    flex: 0 0 82%;
+    scroll-snap-align: start;
+    min-height: 0;
+    padding: 20px 16px 18px;
+    grid-template-rows: 150px auto auto;
+  }
+  .showroom img { width: 100%; max-height: 150px; height: 150px; }
+  .showroom-text::before { height: 150px; }
+  .showroom b { margin-top: 14px; font-size: 20px; }
+  .showroom span { font-size: 15px; }
+  .footer-top { grid-template-columns: 1fr; gap: 28px; }
+  .footer-brand { grid-column: auto; }
+  .footer-bottom { padding-left: 16px; padding-right: 16px; }
+  .lineup, .notice, .section-header-row, .page-hero-inner, .split, .paths, .assist, .switch, .showroom, .footer-top, .models { padding-left: 16px; padding-right: 16px; }
+  .drive { height: calc(100dvh * 4); }
+  .drive-copy { top: 172px; padding: 0 20px; }
+  .drive-car { top: 64%; }
+  .hero { min-height: 100dvh; }
+  .hero-photo { object-position: 72% center; }
+  .drive-name { font-size: clamp(2.4rem, 11vw, 3.4rem); }
+  .drive-price { font-size: 16px; }
+  .drive-book {
+    white-space: nowrap;
+    min-height: 52px;
+    padding: 0 22px;
+    font-size: 16px;
+    bottom: max(24px, 4vh);
+  }
+  .split-main { order: 1; }
+  .split-side { order: 2; }
+  .cal-bar { min-height: 52px; }
+  .cal-bar strong { font-size: 16px; font-weight: 600; }
+  .day, .time { min-height: 48px; font-size: 16px; }
+  .week span { font-size: 13px; }
+  .model-card.feature img, .model-card img { height: 180px; }
+  .path { min-height: 148px; padding: 22px; }
+  .path strong { font-size: 26px; }
 }
