@@ -19,6 +19,17 @@
     ["CR-V Hybrid", "43 900"],
     ["Prelude", "49 900"]
   ];
+  const NOTICES = [
+    { iso: "2026-09-30", personal: false, title: "Teenindus on avatud", body: "Tallinn ja Tartu, esmaspäevast reedeni 8:00–18:00. Laupäev ja pühapäev on teenindus suletud.", href: "teenindus.html?n=4", act: "Broneeri hooldus" },
+    { iso: "2026-09-28", personal: true, title: "Kutsume autot vahetama", body: "Sinu CR-V on 2022. aastast. Uue CR-V Hybridiga saab sõita Tallinnas ja Tartus.", href: "muuk.html?n=4", act: "Vaata autosid" },
+    { iso: "2026-09-22", personal: true, title: "Tehas kutsub garantiitööd tegema", body: "Honda on märkinud sinu CR-V-le garantiikontrolli. Aja kinnitab teeninduslett.", href: "teenindus.html?n=4", act: "Broneeri hooldus" },
+    { iso: "2026-09-18", personal: false, title: "Talverehvide hooaeg", body: "Rehvivahetuse aja saab jätta Catweesi teenindusse. Hinda kinnitab teeninduslett.", href: "teenindus.html?n=4", act: "Broneeri hooldus" },
+    { iso: "2026-09-12", personal: true, title: "Kutsume keregarantii kontrolli", body: "Keregarantii kontroll on sinu Honda jaoks avatud Tallinnas ja Tartus.", href: "teenindus.html?n=4", act: "Broneeri hooldus" },
+    { iso: "2026-09-02", personal: false, title: "Uus Prelude", body: "catwees.ee avaldab hinna: alates 49 900 €. Proovisõidu kinnitab müügiosakond.", href: "proovisoit.html?n=4", act: "Broneeri proovisõit" },
+    { iso: "2026-06-20", personal: false, title: "Jaanipüha lahtiolekuajad", body: "Jaanipüha teenindus oli suletud. See teade on vanem kui kaks kuud.", href: "teenindus.html?n=4", act: "Teenindus" },
+    { iso: "2020-12-20", personal: false, title: "2020. aasta pühade lahtiolekuajad", body: "Vana pühadeteade. Catwees saab selle oma adminkeskkonnas kustutada, siin seda vaikimisi ei näidata.", href: "teenindus.html?n=4", act: "Teenindus" }
+  ];
+  let showOlder = false;
 
   const state = {
     auth: sessionStorage.getItem("catwees-auth") === "1",
@@ -75,9 +86,9 @@
   function paintIdentity(animate) {
     const stamp = $("stamp");
     if (!state.auth) {
-      setPlate("Sinu Honda", "Logi sisse, et näha oma Honda teateid.", "Registreerimismärk puudub.");
-      $("stamp-name").innerHTML = "Logi sisse <span class=\"stamp-gmail\">Gmailiga</span>";
-      stamp.setAttribute("aria-label", "Logi sisse Gmailiga");
+      setPlate("Sinu Honda", "Logi sisse, et näha rohkem.", "Registreerimismärk puudub.");
+      $("stamp-name").textContent = "Sisene";
+      stamp.setAttribute("aria-label", "Sisene");
       stamp.classList.remove("is-in");
       return;
     }
@@ -144,19 +155,60 @@
     select.replaceChildren(blank, ...rest);
   }
 
+  function noticeArticle(item) {
+    const article = document.createElement("article");
+    article.className = "notice " + (item.personal ? "is-personal" : "is-general");
+    const time = document.createElement("time");
+    time.dateTime = item.iso;
+    const parts = item.iso.split("-");
+    time.textContent = parts[2] + "." + parts[1] + "." + parts[0];
+    const body = document.createElement("div");
+    const kind = document.createElement("span");
+    kind.className = "notice-kind";
+    kind.textContent = item.personal ? "Sulle" : "Kõigile";
+    const heading = document.createElement("h3");
+    heading.textContent = item.title;
+    const copy = document.createElement("p");
+    copy.textContent = item.body;
+    body.append(kind, heading, copy);
+    const link = document.createElement("a");
+    link.className = "act";
+    link.href = item.href;
+    link.textContent = item.act;
+    article.append(time, body, link);
+    return article;
+  }
+
+  function renderNotices() {
+    const root = $("notices");
+    if (!root) return;
+    const cutoff = new Date(TODAY.getFullYear(), TODAY.getMonth() - 2, TODAY.getDate());
+    const visible = NOTICES
+      .filter((item) => state.auth || !item.personal)
+      .slice()
+      .sort((a, b) => (a.iso < b.iso ? 1 : a.iso > b.iso ? -1 : 0));
+    const recent = [];
+    const older = [];
+    visible.forEach((item) => {
+      const date = new Date(item.iso + "T00:00:00");
+      if (date >= cutoff) recent.push(item);
+      else older.push(item);
+    });
+    const list = showOlder ? recent.concat(older) : recent;
+    root.replaceChildren(...list.map(noticeArticle));
+    const button = $("notices-older");
+    if (!button) return;
+    button.hidden = older.length === 0;
+    button.textContent = showOlder ? "Peida vanemad teated" : "Näita vanemaid teateid";
+    button.setAttribute("aria-expanded", showOlder ? "true" : "false");
+  }
+
   function syncAuthChrome() {
-    if ($("notices-guest")) $("notices-guest").hidden = state.auth;
-    if ($("notices-user")) $("notices-user").hidden = !state.auth;
-    if ($("notices-title")) $("notices-title").textContent = state.auth ? "Sinu CR-V teated" : "Üldteated";
+    if ($("notices")) renderNotices();
     if ($("service-car-user")) $("service-car-user").hidden = !state.auth;
     if ($("service-plate-guest")) {
       $("service-plate-guest").hidden = state.auth;
       $("service-plate").required = !state.auth;
-    }
-    if ($("sales-lede")) {
-      $("sales-lede").textContent = state.auth
-        ? "Sinu CR-V on 2022. aastast. Uue auto proovisõit ja tagasiost on siin."
-        : "Uue Honda proovisõit või tagasiostupakkumine. Mõlemad kinnitab müügiosakond.";
     }
     if ($("trade-known")) $("trade-known").hidden = !state.auth;
     if ($("trade-other")) $("trade-other").hidden = state.auth && !state.tradeOther;
@@ -183,6 +235,7 @@
         return li;
       }));
     }
+    if ($("service-km") && state.auth && !$("service-km").dataset.touched) $("service-km").value = String(activeCar().km);
     if ($("service-car")) syncServicePlateField();
     if ($("manual-select-wrap")) syncMode();
     fillPrefill();
@@ -297,16 +350,25 @@
     return who + ": täpne juhis on Honda kasutusjuhendis, mitte selles näidisvestluses. Kui vastust pole käepärast, helista Catweesi teenindusse.";
   }
 
-  function slotsFor(kind, date) {
-    if (!date) return [];
+  function isClosedDay(kind, date) {
     const day = date.getDay();
-    if (kind === "service") {
-      if (day === 0 || day === 6) return [];
-      return ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
-    }
-    if (day === 0) return [];
-    if (day === 6) return ["10:00", "11:00", "12:00", "13:00", "14:00"];
-    return ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
+    if (kind === "service") return day === 0 || day === 6;
+    return day === 0;
+  }
+
+  function slotsFor(kind, date) {
+    if (!date || isClosedDay(kind, date)) return [];
+    const day = date.getDay();
+    const weekday = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
+    const slots = kind === "drive" && day === 6
+      ? ["10:00", "11:00", "12:00", "13:00", "14:00"]
+      : weekday;
+    if (!sameDay(date, TODAY)) return slots;
+    const now = TODAY.getHours() * 60 + TODAY.getMinutes();
+    return slots.filter((slot) => {
+      const [hour, minute] = slot.split(":").map(Number);
+      return hour * 60 + minute > now;
+    });
   }
 
   function renderTimes(container, date, kind) {
@@ -387,11 +449,12 @@
           btn.type = "button";
           btn.className = "day";
           btn.textContent = String(day);
-          const closed = kind === "service" && (date.getDay() === 0 || date.getDay() === 6);
+          const closed = isClosedDay(kind, date);
           const past = startOfDay(date) < startOfDay(TODAY);
           btn.disabled = past || closed;
+          if (closed) btn.classList.add("is-closed");
           btn.setAttribute("aria-pressed", sameDay(date, cal.selected) ? "true" : "false");
-          btn.setAttribute("aria-label", formatDate(date));
+          btn.setAttribute("aria-label", formatDate(date) + (closed ? ", suletud" : ""));
           btn.addEventListener("click", () => {
             cal.selected = date;
             delete times.dataset.value;
@@ -440,6 +503,10 @@
     if (!input.value.trim()) return fieldError(input, "E-post on puudu.");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim())) return fieldError(input, "E-post ei ole korrektne. Kontrolli aadressi.");
     return "";
+  }
+
+  function checkedLabels(name) {
+    return [...document.querySelectorAll("input[name='" + name + "']:checked")].map((el) => el.value);
   }
 
   function requirePhone(input) {
@@ -536,8 +603,10 @@
       const messages = [];
       if (!state.auth) messages.push(requireText($("service-plate"), "Autonumber on puudu. Sisesta registreerimismärk."));
       if (state.auth && $("service-car").value === "other") messages.push(requireText($("service-plate-extra"), "Muu autonumber on puudu."));
+      if ($("service-km").value === "" || Number($("service-km").value) < 0) messages.push(fieldError($("service-km"), "Läbisõit on puudu."));
       if (!serviceCal.selected) messages.push("Vali kuupäev.");
       if (!$("service-times").dataset.value) messages.push("Vali kellaaeg.");
+      if (!$("service-privacy").checked) messages.push(fieldError($("service-privacy"), "Nõusolek on puudu."));
       return messages.concat(contactErrors("service"));
     }, {
       sent() {
@@ -545,13 +614,16 @@
           ? $("service-plate").value.trim()
           : ($("service-car").value === "other" ? $("service-plate-extra").value.trim() : activeCar().plate);
         return {
-          title: "Broneering on saadetud Catweesi teenindusletile kinnitamiseks. Kirja päriselt ei saadeta.",
+          title: "Soov on saadetud. Võtame Teiega tööpäeval 12h jooksul ühendust, et aja sobivus kinnitada. Kirja päriselt ei saadeta.",
           rows: [
-            ["Auto", plate],
+            ["Esindus", $("service-branch").value],
+            ["Auto", plate + " · " + $("service-km").value.trim() + " km"],
             ["Aeg", formatDate(serviceCal.selected) + " " + $("service-times").dataset.value],
-            ["Asendusauto", $("service-loaner").checked ? "Jah" : "Ei"],
+            ["Tööd", checkedLabels("work").join(", ") || "—"],
+            ["Puhastus", checkedLabels("clean").join(", ") || "—"],
+            ["Lisateenused", checkedLabels("extra").join(", ") || "—"],
             ["Kontakt", $("service-name").value.trim() + ", " + $("service-email").value.trim() + ", " + $("service-phone").value.trim()]
-          ]
+          ].concat($("service-note").value.trim() ? [["Lisakommentaar", $("service-note").value.trim()]] : [])
         };
       }
     }));
@@ -588,6 +660,7 @@
         if ($("trade-km").value === "" || Number($("trade-km").value) < 0) messages.push(fieldError($("trade-km"), "Läbisõit kilomeetrites on puudu."));
       }
       if (!document.querySelector("input[name='condition']:checked")) messages.push("Vali seisukord.");
+      if ($("trade-price").value === "" || Number($("trade-price").value) < 0) messages.push(fieldError($("trade-price"), "Soovitud hind on puudu."));
       return messages.concat(contactErrors("trade"));
     }, {
       sent() {
@@ -596,13 +669,17 @@
           ? $("trade-plate").value.trim() + " · " + $("trade-model").value.trim() + " · " + $("trade-km").value.trim() + " km"
           : activeCar().plate + " · Honda " + activeCar().model + " · " + formatKm(activeCar().km);
         const condition = document.querySelector("input[name='condition']:checked").value;
+        const photo = $("trade-photo").files[0];
+        const rows = [
+          ["Auto", car],
+          ["Seisukord", condition],
+          ["Soovitud hind", $("trade-price").value.trim() + " €"],
+          ["Kontakt", $("trade-name").value.trim() + ", " + $("trade-email").value.trim() + ", " + $("trade-phone").value.trim()]
+        ];
+        if (photo) rows.splice(3, 0, ["Foto", photo.name]);
         return {
-          title: "Tagasiostu küsimus on saadetud Catweesi müügiosakonnale. Pakkumist siin ei arvutata.",
-          rows: [
-            ["Auto", car],
-            ["Seisukord", condition],
-            ["Kontakt", $("trade-name").value.trim() + ", " + $("trade-email").value.trim() + ", " + $("trade-phone").value.trim()]
-          ]
+          title: "Pakkumise soov on saadetud Catweesi müügiosakonnale. Pakkumist siin ei arvutata.",
+          rows: rows
         };
       }
     }));
@@ -653,6 +730,35 @@
       addMsg(state.auth ? USER.name : "Sina", text);
       addMsg("Catwees", state.mode === "claim" ? claimReply(text) : manualReply(text));
       $("chat-text").value = "";
+    });
+  }
+
+  if ($("notices-older")) {
+    $("notices-older").addEventListener("click", () => {
+      showOlder = !showOlder;
+      renderNotices();
+    });
+  }
+
+  if ($("service-km")) {
+    $("service-km").addEventListener("input", () => { $("service-km").dataset.touched = "1"; });
+  }
+
+  if ($("trade-photo")) {
+    $("trade-photo").addEventListener("change", () => {
+      const file = $("trade-photo").files[0];
+      const img = $("trade-photo-preview");
+      if (!file) {
+        img.hidden = true;
+        img.removeAttribute("src");
+        return;
+      }
+      if (img.dataset.url) URL.revokeObjectURL(img.dataset.url);
+      const url = URL.createObjectURL(file);
+      img.dataset.url = url;
+      img.src = url;
+      img.alt = "Valitud foto: " + file.name;
+      img.hidden = false;
     });
   }
 
@@ -733,13 +839,14 @@
     ];
     const ctx = driveCar.getContext("2d");
     const images = {};
+    let wake = null;
     const ensureImage = (i) => {
       if (i < 0 || i >= fleet.length) return;
       const src = fleet[i].src;
       if (images[src]) return;
       const img = new Image();
       img.decoding = "async";
-      img.onload = () => wake();
+      img.onload = () => { if (wake) wake(); };
       img.src = src;
       images[src] = img;
     };
@@ -821,31 +928,199 @@
       ctx.clearRect(0, 0, cssW, cssH);
       ctx.drawImage(img, 0, 0, cssW, cssH);
       item.wheels.forEach((wheel) => {
-        const cx = wheel[0] * cssW;
-        const cy = wheel[1] * cssH;
-        const rad = wheel[2] * cssH;
-        const sx = wheel[0] * img.naturalWidth;
-        const sy = wheel[1] * img.naturalHeight;
-        const sr = wheel[2] * img.naturalHeight;
-        const spin = rad > 0 ? travel / rad : 0;
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(cx, cy, rad, 0, Math.PI * 2);
-        ctx.clip();
-        ctx.translate(cx, cy);
-        ctx.rotate(spin);
-        ctx.drawImage(img, sx - sr, sy - sr, sr * 2, sr * 2, -rad, -rad, rad * 2, rad * 2);
-        ctx.restore();
-        const mask = archMask(img, wheel);
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(cx, cy, rad, 0, Math.PI * 2);
-        ctx.clip();
-        ctx.drawImage(mask, cx - rad, cy - rad, rad * 2, rad * 2);
-        ctx.restore();
+        try {
+          const cx = wheel[0] * cssW;
+          const cy = wheel[1] * cssH;
+          const rad = wheel[2] * cssH;
+          const sx = wheel[0] * img.naturalWidth;
+          const sy = wheel[1] * img.naturalHeight;
+          const sr = wheel[2] * img.naturalHeight;
+          const spin = rad > 0 ? travel / rad : 0;
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+          ctx.clip();
+          ctx.translate(cx, cy);
+          ctx.rotate(spin);
+          ctx.drawImage(img, sx - sr, sy - sr, sr * 2, sr * 2, -rad, -rad, rad * 2, rad * 2);
+          ctx.restore();
+          const mask = archMask(img, wheel);
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+          ctx.clip();
+          ctx.drawImage(mask, cx - rad, cy - rad, rad * 2, rad * 2);
+          ctx.restore();
+        } catch (err) {
+          ctx.restore();
+        }
       });
       ctx.setTransform(1, 0, 0, 1, 0, 0);
     };
+
+    if (window.matchMedia("(max-width: 900px)").matches) {
+      drive.classList.add("is-swipe");
+      const pin = drive.querySelector(".drive-pin");
+      const dots = document.createElement("div");
+      dots.className = "drive-dots";
+      dots.setAttribute("role", "tablist");
+      dots.setAttribute("aria-label", "Mudelid");
+      fleet.forEach((item) => {
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "drive-dot";
+        dot.setAttribute("role", "tab");
+        dot.setAttribute("aria-label", item.name);
+        dot.setAttribute("aria-selected", "false");
+        dots.append(dot);
+      });
+      pin.append(dots);
+
+      let index = 0;
+      let playing = false;
+      let entered = false;
+      const markDots = () => {
+        [...dots.children].forEach((dot, i) => {
+          dot.setAttribute("aria-selected", i === index ? "true" : "false");
+        });
+      };
+      const showCopy = (item) => {
+        const name = $("drive-name");
+        const price = $("drive-price");
+        const copy = name.parentElement;
+        name.textContent = item.name;
+        price.textContent = item.price;
+        driveCar.setAttribute("aria-label", "Honda " + item.name + ", külgvaade");
+        copy.classList.remove("is-arriving");
+        void copy.offsetWidth;
+        copy.classList.add("is-arriving");
+      };
+      let parked = null;
+      const lane = drive.querySelector(".drive-lane");
+      const metrics = (img) => {
+        const cssW = Math.min(window.innerWidth * 1.08, 680);
+        const cssH = cssW * (img.naturalHeight / img.naturalWidth);
+        return {
+          cssW: cssW,
+          cssH: cssH,
+          home: (window.innerWidth - cssW) / 2,
+          left: -cssW - 24,
+          right: window.innerWidth + 24
+        };
+      };
+      const place = (x) => {
+        driveCar.style.transform = "translate3d(0px, -50%, 0)";
+        lane.style.transform = "translate3d(" + x.toFixed(1) + "px, 0, 0)";
+      };
+      const slide = (item, from, to, done) => {
+        const img = images[item.src];
+        const box = metrics(img);
+        const distance = Math.abs(to - from);
+        try {
+          item.wheels.forEach((wheel) => archMask(img, wheel));
+        } catch (err) {}
+        paintCar(item, box.cssW, box.cssH, 0);
+        driveCar.style.width = box.cssW + "px";
+        driveCar.style.height = box.cssH + "px";
+        driveCar.style.transition = "none";
+        lane.style.transition = "none";
+        lane.getAnimations().forEach((anim) => anim.cancel());
+        place(from);
+        const motion = lane.animate(
+          [
+            { transform: "translate3d(" + from.toFixed(1) + "px, 0, 0)" },
+            { transform: "translate3d(" + to.toFixed(1) + "px, 0, 0)" }
+          ],
+          { duration: 680, easing: "cubic-bezier(0.22, 0.8, 0.2, 1)", fill: "forwards" }
+        );
+        let settled = false;
+        let spunAt = 0;
+        const started = performance.now();
+        const spin = () => {
+          if (settled) return;
+          const now = performance.now();
+          const p = Math.min(1, (now - started) / 680);
+          if (now - spunAt > 32 || p >= 1) {
+            spunAt = now;
+            paintCar(item, box.cssW, box.cssH, p * distance);
+          }
+          if (p < 1) requestAnimationFrame(spin);
+        };
+        requestAnimationFrame(spin);
+        const finish = () => {
+          if (settled) return;
+          settled = true;
+          paintCar(item, box.cssW, box.cssH, distance);
+          place(to);
+          motion.cancel();
+          done(box);
+        };
+        motion.onfinish = finish;
+        window.setTimeout(finish, 760);
+      };
+      const present = (next) => {
+        if (playing || next < 0 || next >= fleet.length) return;
+        if (entered && next === index) return;
+        const previous = parked;
+        index = next;
+        entered = true;
+        markDots();
+        ensureImage(next);
+        const item = fleet[next];
+        const img = images[item.src];
+        const enter = () => {
+          if (!img.complete || !img.naturalWidth) return;
+          showCopy(item);
+          const box = metrics(img);
+          slide(item, box.left, box.home, () => {
+            parked = item;
+            playing = false;
+          });
+        };
+        const begin = () => {
+          playing = true;
+          driveCar.classList.add("is-shown");
+          if (!previous) enter();
+          else {
+            const box = metrics(images[previous.src]);
+            slide(previous, box.home, box.right, enter);
+          }
+        };
+        if (img && img.complete && img.naturalWidth) begin();
+        else img.addEventListener("load", begin, { once: true });
+      };
+
+      const watch = new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          watch.disconnect();
+          present(0);
+        }
+      }, { threshold: 0.4 });
+      watch.observe(drive);
+
+      let originX = 0;
+      let originY = 0;
+      let tracking = false;
+      pin.addEventListener("pointerdown", (event) => {
+        if (event.target.closest("a, button")) return;
+        tracking = true;
+        originX = event.clientX;
+        originY = event.clientY;
+      });
+      pin.addEventListener("pointerup", (event) => {
+        if (!tracking) return;
+        tracking = false;
+        const dx = event.clientX - originX;
+        const dy = event.clientY - originY;
+        if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+        present(index + (dx < 0 ? 1 : -1));
+      });
+      pin.addEventListener("pointercancel", () => { tracking = false; });
+      [...dots.children].forEach((dot, i) => {
+        dot.addEventListener("click", () => present(i));
+      });
+      return;
+    }
 
     let frame = 0;
     let paintedKey = "";
@@ -908,11 +1183,12 @@
       }
       frame = (near && shown !== target) ? requestAnimationFrame(tick) : 0;
     };
-    const wake = () => {
+    wake = () => {
       if (!frame) frame = requestAnimationFrame(tick);
     };
     window.addEventListener("scroll", wake, { passive: true });
     window.addEventListener("resize", wake);
+    ensureImage(0);
     fetch("assets/wheels.json", { cache: "no-store" })
       .then((response) => response.ok ? response.json() : null)
       .then((saved) => {

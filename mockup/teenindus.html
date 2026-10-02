@@ -1,113 +1,145 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="et">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Catwees — Teenindus</title>
-  <meta name="theme-color" content="#161616">
+  <meta name="theme-color" content="#e8e6e1">
   <link rel="stylesheet" href="fonts.css?v=plex">
-  <link rel="stylesheet" href="styles.css?v=phone3">
+  <link rel="stylesheet" href="styles.css?v=rev10">
 </head>
 <body>
   <a class="skip" href="#sisu">Sisu juurde</a>
-  <header>
+    <header>
     <div class="nav-inner">
-      <div class="nav-left">
-        <a class="logo-group" href="index.html?n=4" aria-label="Catwees avaleht">
-          <img class="honda-logo logo-light" src="../catweessite2026/honda%20POD%20logo%20png%20valge.png" alt="Honda">
-          <img class="honda-logo logo-dark" src="../catweessite2026/honda%20POD%20logo%20png.png" alt="">
-          <img class="catwees-logo logo-light" src="../catweessite2026/Catwees%20logo%20png%20valge%20tekst.png" alt="Catwees">
-          <img class="catwees-logo logo-dark" src="../catweessite2026/Catwees%20logo%20png%20tumehall.png" alt="">
-        </a>
-        <nav class="site-nav" aria-label="Peamenüü">
+      <a class="logo-catwees" href="index.html?n=4" aria-label="Catwees avaleht">
+        <img class="catwees-logo" src="../catweessite2026/Catwees%20logo%20png%20tumehall.png" alt="Catwees">
+      </a>
+      <button class="stamp" type="button" id="stamp">
+        <span class="stamp-name" id="stamp-name">Sisene</span>
+      </button>
+      <nav class="site-nav" aria-label="Peamenüü">
           <a href="index.html?n=4">Teated</a>
           <a href="teenindus.html?n=4" aria-current="page">Teenindus</a>
-          <a href="assistent.html?n=4">Assistent</a>
-          <a href="muuk.html?n=4">Müük</a>
-        </nav>
-      </div>
-      <div class="nav-cta">
-        <button class="stamp" type="button" id="stamp">
-          <svg class="gmail-icon" viewBox="0 0 48 48" aria-hidden="true">
-            <path fill="#4caf50" d="M45 16.2 40 19l-5 4.7V40h7c1.7 0 3-1.3 3-3V16.2z"/>
-            <path fill="#1e88e5" d="M3 16.2 6.6 17.9 13 23.7V40H6c-1.7 0-3-1.3-3-3V16.2z"/>
-            <path fill="#e53935" d="M35 11.2 24 19.4 13 11.2l-1 5.8 12 8.5 12-8.5-1-5.8z"/>
-            <path fill="#c62828" d="M3 12.3V16.2l10 7.5V11.2L9.9 8.6C9.1 8.1 8.2 8 7.5 8 4.5 8 3 10.5 3 12.3z"/>
-            <path fill="#fbc02d" d="M45 12.3V16.2l-10 7.5V11.2l3.1-2.6c.7-.5 1.7-.6 2.4-.6 3 0 4.5 2.5 4.5 4.3z"/>
-          </svg>
-          <span class="stamp-name" id="stamp-name">Logi sisse Gmailiga</span>
-        </button>
-        <a class="nav-btn" href="proovisoit.html?n=4">Proovisõit</a>
-      </div>
+          <a href="assistent.html?n=4">Küsi nõu</a>
+          <a href="muuk.html?n=4">Autod</a>
+      </nav>
     </div>
   </header>
   <div id="status" class="vh" aria-live="polite"></div>
   <main id="sisu">
     <section class="page-hero">
       <div class="page-hero-inner">
-        <h1 class="page-title">Broneeri hooldus</h1>
-        <p class="page-sub">Aeg ei ole veel kinni. Catweesi teeninduslett kinnitab kirja peale. E–R 8:00–18:00, nädalavahetusel suletud.</p>
+        <h1 class="page-title">Broneeri hoolduse aeg</h1>
+        <p class="page-sub">Paku omale sobiv aeg. Võtame Teiega tööpäeval 12h jooksul ühendust, et aja sobivus kinnitada.</p>
       </div>
     </section>
     <section class="band">
-      <div class="split">
-        <aside class="split-side">
-          <h2>Asendusauto</h2>
-          <p>Märgi vormis, kui soovid teeninduse ajaks asendusautot. Teeninduslett kinnitab, kas auto on vaba.</p>
-          <p>Tallinn, teenindus<br><a href="tel:+3726503320">6 503 320</a></p>
-          <p>Tartu, teenindus<br><a href="tel:+3727300383">7 300 383</a></p>
-        </aside>
-        <div class="split-main">
-          <form class="form" id="form-service" novalidate>
-            <p class="summary" id="service-summary" role="alert"></p>
-            <div id="service-form-fields">
-              <div class="field" id="service-car-user" hidden>
-                <label for="service-car">Sõiduk</label>
-                <select id="service-car" name="car"></select>
-              </div>
-              <div class="field" id="service-plate-guest">
-                <label for="service-plate">Autonumber</label>
-                <input id="service-plate" name="plate" type="text" autocomplete="off" placeholder="482 MHT" required>
-              </div>
-              <div class="field" id="service-plate-other" hidden>
-                <label for="service-plate-extra">Muu autonumber</label>
-                <input id="service-plate-extra" name="plateExtra" type="text" autocomplete="off" placeholder="482 MHT">
-              </div>
-              <div class="book row">
-                <div class="field">
-                  <span id="service-date-label">Kuupäev</span>
-                  <div class="cal" id="service-cal" role="group" aria-labelledby="service-date-label"></div>
-                </div>
-                <div class="field">
-                  <span id="service-time-label">Kellaaeg</span>
-                  <div class="times" id="service-times" role="group" aria-labelledby="service-time-label"></div>
-                  <p class="hint">Teenindus E–R 8:00–18:00. Laupäev ja pühapäev suletud. Ajad on näidis.</p>
-                </div>
-              </div>
-              <label class="check">
-                <input id="service-loaner" name="loaner" type="checkbox">
-                <span>Soovin teeninduse ajaks asendusautot</span>
-              </label>
-              <div class="row two">
-                <div class="field">
-                  <label for="service-name">Nimi</label>
-                  <input id="service-name" name="name" type="text" autocomplete="name" data-prefill="name" required>
-                </div>
-                <div class="field">
-                  <label for="service-email">E-post</label>
-                  <input id="service-email" name="email" type="email" autocomplete="email" data-prefill="email" required>
-                </div>
-              </div>
-              <div class="field">
-                <label for="service-phone">Telefon</label>
-                <input id="service-phone" name="phone" type="tel" autocomplete="tel" data-prefill="phone" inputmode="tel" required>
-              </div>
-              <button class="submit" type="submit">Kinnita broneering</button>
+      <form class="form sheet" id="form-service" novalidate>
+        <p class="summary" id="service-summary" role="alert"></p>
+        <div id="service-form-fields">
+          <div class="row two">
+            <div class="field">
+              <label for="service-branch">Esindus</label>
+              <select id="service-branch" name="branch">
+                <option>Tallinn</option>
+                <option>Tartu</option>
+              </select>
             </div>
-            <div id="service-sent" hidden></div>
-          </form>
+            <div class="field">
+              <label for="service-km">Auto läbisõit</label>
+              <input id="service-km" name="km" type="number" inputmode="numeric" min="0" step="1" required>
+            </div>
+          </div>
+          <div class="field" id="service-car-user" hidden>
+            <label for="service-car">Sõiduk</label>
+            <select id="service-car" name="car"></select>
+          </div>
+          <div class="field" id="service-plate-guest">
+            <label for="service-plate">Reg nr</label>
+            <input id="service-plate" name="plate" type="text" autocomplete="off" placeholder="482 MHT" required>
+          </div>
+          <div class="field" id="service-plate-other" hidden>
+            <label for="service-plate-extra">Muu reg nr</label>
+            <input id="service-plate-extra" name="plateExtra" type="text" autocomplete="off" placeholder="482 MHT">
+          </div>
+          <div class="book row">
+            <div class="field">
+              <span id="service-date-label">Sobiv kuupäev</span>
+              <div class="cal" id="service-cal" role="group" aria-labelledby="service-date-label"></div>
+            </div>
+            <div class="field">
+              <span id="service-time-label">Kellaaeg</span>
+              <div class="times" id="service-times" role="group" aria-labelledby="service-time-label"></div>
+              <p class="hint">Teenindus E–R 8:00–18:00. Laupäev ja pühapäev on suletud ja neid valida ei saa.</p>
+            </div>
+          </div>
+          <div class="field">
+            <label for="service-note">Lisakommentaar</label>
+            <textarea id="service-note" name="note" maxlength="500" placeholder="Sisesta lisakommentaar"></textarea>
+          </div>
+          <fieldset>
+            <legend>Tellitavad tööd</legend>
+            <div class="tick-grid two">
+              <label class="tick"><input type="checkbox" name="work" value="Korraline hooldus (sh koodihooldus)"> Korraline hooldus (sh koodihooldus)</label>
+              <label class="tick"><input type="checkbox" name="work" value="Rehvide vahetus"> Rehvide vahetus</label>
+              <label class="tick"><input type="checkbox" name="work" value="8+ hoolduse 1 pakett – õlivahetus"> 8+ hoolduse 1 pakett – õlivahetus</label>
+              <label class="tick"><input type="checkbox" name="work" value="8+ hoolduse 2 pakett – õlivahetus koos pidurite hooldusega"> 8+ hoolduse 2 pakett – õlivahetus koos pidurite hooldusega</label>
+              <label class="tick"><input type="checkbox" name="work" value="8+ hoolduse 3 pakett – koodihooldus erihinnaga"> 8+ hoolduse 3 pakett – koodihooldus erihinnaga</label>
+              <label class="tick"><input type="checkbox" name="work" value="Avariijärgne kahjukäsitlus / keretööde kalkulatsioonid"> Avariijärgne kahjukäsitlus / keretööde kalkulatsioonid</label>
+              <label class="tick"><input type="checkbox" name="work" value="Muud remonttööd"> Muud remonttööd</label>
+              <label class="tick"><input type="checkbox" name="work" value="Sildade reguleerimine / sillastend"> Sildade reguleerimine / sillastend</label>
+              <label class="tick"><input type="checkbox" name="work" value="Diagnostika / elektritööd"> Diagnostika / elektritööd</label>
+              <label class="tick"><input type="checkbox" name="work" value="Kliimaseadme täitmine"> Kliimaseadme täitmine</label>
+              <label class="tick"><input type="checkbox" name="work" value="Navigatsioonikaartide uuendamine"> Navigatsioonikaartide uuendamine</label>
+              <label class="tick"><input type="checkbox" name="work" value="Kojameeste vahetus"> Kojameeste vahetus</label>
+              <label class="tick"><input type="checkbox" name="work" value="Salongifiltri vahetus"> Salongifiltri vahetus</label>
+              <label class="tick"><input type="checkbox" name="work" value="Pirnide vahetus"> Pirnide vahetus</label>
+              <label class="tick"><input type="checkbox" name="work" value="Keredetailide korrosiooni kontroll"> Keredetailide korrosiooni kontroll</label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Auto puhastus</legend>
+            <div class="tick-grid two">
+              <label class="tick"><input type="checkbox" name="clean" value="Põhjalik leotuspesu"> Põhjalik leotuspesu</label>
+              <label class="tick"><input type="checkbox" name="clean" value="Kiirpesu"> Kiirpesu</label>
+              <label class="tick"><input type="checkbox" name="clean" value="Salongi kuivpuhastus"> Salongi kuivpuhastus</label>
+              <label class="tick"><input type="checkbox" name="clean" value="Mootoripesu"> Mootoripesu</label>
+              <label class="tick"><input type="checkbox" name="clean" value="Salongi keemiline puhastus"> Salongi keemiline puhastus</label>
+              <label class="tick"><input type="checkbox" name="clean" value="Nahahooldus"> Nahahooldus</label>
+              <label class="tick"><input type="checkbox" name="clean" value="Vahatamine"> Vahatamine</label>
+              <label class="tick"><input type="checkbox" name="clean" value="Poleerimine"> Poleerimine</label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Lisateenused</legend>
+            <div class="tick-grid">
+              <label class="tick"><input type="checkbox" name="extra" value="Rendiauto"> Soovin kasutada rendiautot. Rendiauto hooldustööde ajaks (25 € / kuni 5h)</label>
+              <label class="tick"><input type="checkbox" name="extra" value="Osade kaupa"> Soovin tasuda osade kaupa 3 või 6 kuu jooksul</label>
+            </div>
+          </fieldset>
+          <div class="row two">
+            <div class="field">
+              <label for="service-name">Teie nimi</label>
+              <input id="service-name" name="name" type="text" autocomplete="name" data-prefill="name" required>
+            </div>
+            <div class="field">
+              <label for="service-phone">Telefon</label>
+              <input id="service-phone" name="phone" type="tel" autocomplete="tel" data-prefill="phone" inputmode="tel" required>
+            </div>
+          </div>
+          <div class="field">
+            <label for="service-email">E-post</label>
+            <input id="service-email" name="email" type="email" autocomplete="email" data-prefill="email" required>
+          </div>
+          <label class="tick">
+            <input id="service-privacy" name="privacy" type="checkbox" required>
+            <span>Nõustun Catwees OÜ privaatsuspoliitikas toodud põhimõtetega.</span>
+          </label>
+          <button class="submit" type="submit">Saada broneering</button>
         </div>
-      </div>
+        <div id="service-sent" hidden></div>
+      </form>
     </section>
   </main>
   <footer>
@@ -124,16 +156,16 @@
         <ul>
           <li><a href="index.html?n=4">Teated</a></li>
           <li><a href="teenindus.html?n=4">Teenindus</a></li>
-          <li><a href="assistent.html?n=4">Assistent</a></li>
+          <li><a href="assistent.html?n=4">Küsi nõu</a></li>
           <li><a href="profiil.html?n=4">Profiil</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h2>Müük</h2>
+        <h2>Autod</h2>
         <ul>
-          <li><a href="muuk.html?n=4">Mudelid</a></li>
-          <li><a href="proovisoit.html?n=4">Proovisõit</a></li>
-          <li><a href="tagasiost.html?n=4">Tagasiost</a></li>
+          <li><a href="muuk.html?n=4">Autod</a></li>
+          <li><a href="proovisoit.html?n=4">Broneeri proovisõit</a></li>
+          <li><a href="tagasiost.html?n=4">Soovin pakkumist oma autole</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -148,6 +180,6 @@
     </div>
     <div class="footer-bottom">Näidis. Mari Tamm ja auto 482 MHT ei ole päris klient. Kontaktid ja avaldatud hinnad on catwees.ee andmed 30.09.2026.</div>
   </footer>
-  <script src="app.js?v=phone3"></script>
+  <script src="app.js?v=rev13"></script>
 </body>
 </html>
