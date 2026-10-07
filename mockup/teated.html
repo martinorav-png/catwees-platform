@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="et">
 <head>
   <meta charset="utf-8">
@@ -9,7 +9,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Catwees">
-  <title>Catwees — Autod</title>
+  <title>Catwees — Teated</title>
   <meta name="theme-color" content="#e8e6e1">
   <link rel="stylesheet" href="fonts.css?v=plex">
   <link rel="stylesheet" href="styles.css?v=rev21">
@@ -26,50 +26,27 @@
       </button>
       <img class="logo-honda" src="../catweessite2026/honda%20POD%20logo%20png.png" alt="Honda">
       <nav class="site-nav" aria-label="Peamenüü">
-          <a href="teated.html?n=4">Teated</a>
+          <a href="teated.html?n=4" aria-current="page">Teated</a>
           <a href="teenindus.html?n=4">Teenindus</a>
           <a href="assistent.html?n=4">Küsi nõu</a>
-          <a href="muuk.html?n=4" aria-current="page">Autod</a>
+          <a href="muuk.html?n=4">Autod</a>
       </nav>
     </div>
   </header>
   <div id="status" class="vh" aria-live="polite"></div>
   <main id="sisu">
-    <section class="page-hero is-flush">
+    <section class="page-hero">
       <div class="page-hero-inner">
-        <h1 class="page-title">Soovin proovida uut Hondat</h1>
+        <h1 class="page-title">Teated</h1>
+        <p class="page-sub" id="notices-legend">Viimased kaks kuud. Vanemad teated on peidus.</p>
       </div>
     </section>
-    <section class="drive" id="drive" aria-label="Uued mudelid">
-      <div class="drive-pin">
-        <div class="drive-copy">
-          <h2 class="drive-name" id="drive-name">Prelude</h2>
-          <p class="drive-price" id="drive-price">alates 49 900 €</p>
-        </div>
-        <div class="drive-lane">
-          <canvas class="drive-car" id="drive-car" width="1400" height="450" aria-label="Honda Prelude, külgvaade"></canvas>
-        </div>
-        <a class="pill pill-ink drive-book" id="drive-link" href="proovisoit.html?n=4">Broneeri proovisõit</a>
-        <ul class="drive-static">
-          <li><img src="assets/cars/prelude.png" alt="Honda Prelude" loading="lazy"><span>Prelude · 49 900 €</span></li>
-          <li><img loading="lazy" src="assets/cars/crv.png" alt="Honda CR-V Hybrid"><span>CR-V Hybrid · 43 900 €</span></li>
-          <li><img loading="lazy" src="assets/cars/zrv.png" alt="Honda ZR-V"><span>ZR-V · 36 900 €</span></li>
-          <li><img loading="lazy" src="assets/cars/hrv.png" alt="Honda HR-V"><span>HR-V · 28 900 €</span></li>
-          <li><img loading="lazy" src="assets/cars/civic.png" alt="Honda Civic Hybrid"><span>Civic Hybrid · 32 900 €</span></li>
-          <li><img loading="lazy" src="assets/cars/jazz.png" alt="Honda Jazz Hybrid"><span>Jazz Hybrid · 22 900 €</span></li>
-        </ul>
+    <section class="band notices-band">
+      <div id="notices"></div>
+      <div class="older-notices">
+        <button type="button" id="notices-older" hidden>Näita vanemaid teateid</button>
       </div>
     </section>
-    <div class="paths">
-      <a class="path" href="proovisoit.html?n=4">
-        <strong>Broneeri proovisõit</strong>
-        <span>Vali mudel, kuupäev ja kellaaeg.</span>
-      </a>
-      <a class="path" href="tagasiost.html?n=4">
-        <strong>Soovin pakkumist oma autole</strong>
-        <span>Hind, seisukord ja foto. Pakkumise teeb müügiosakond.</span>
-      </a>
-    </div>
   </main>
   <footer>
     <div class="footer-top">
@@ -109,6 +86,6 @@
     </div>
     <div class="footer-bottom">Näidis. Mari Tamm ja auto 482 MHT ei ole päris klient. Kontaktid ja avaldatud hinnad on catwees.ee andmed 30.09.2026.</div>
   </footer>
-  <script src="app.js?v=rev19"></script>
+  <script src="app.js?v=rev14"></script>
 </body>
 </html>

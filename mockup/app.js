@@ -33,7 +33,6 @@
 
   const state = {
     auth: sessionStorage.getItem("catwees-auth") === "1",
-    mode: "claim",
     tradeOther: false,
     motion: !window.matchMedia("(prefers-reduced-motion: reduce)").matches
   };
@@ -85,22 +84,28 @@
 
   function paintIdentity(animate) {
     const stamp = $("stamp");
+    const enter = $("hero-enter");
+    const plate = $("plate-num");
     if (!state.auth) {
       setPlate("Sinu Honda", "Logi sisse, et näha rohkem.", "Registreerimismärk puudub.");
       $("stamp-name").textContent = "Sisene";
       stamp.setAttribute("aria-label", "Sisene");
       stamp.classList.remove("is-in");
+      if (enter) enter.hidden = false;
+      if (plate) plate.classList.remove("is-known");
       return;
     }
     const car = activeCar();
     setPlate(
+      car.model,
       car.plate,
-      "Honda " + car.model + " · " + car.year + " · " + formatKm(car.km),
-      "Registreerimismärk " + car.plate + ", Honda " + car.model + " " + car.year + ", " + formatKm(car.km) + "."
+      "Honda " + car.model + " " + car.year + ", registreerimismärk " + car.plate + ", " + formatKm(car.km) + "."
     );
     $("stamp-name").textContent = USER.name;
     stamp.setAttribute("aria-label", USER.name);
     stamp.classList.add("is-in");
+    if (enter) enter.hidden = true;
+    if (plate) plate.classList.add("is-known");
     if (animate) {
       pulse($("stamp"));
       pulse($("plate-num"));
@@ -129,15 +134,6 @@
       extra.textContent = "Sisesta muu autonumber";
       service.replaceChildren(...options, extra);
     }
-    const manual = $("manual-car-select");
-    if (manual) {
-      manual.replaceChildren(...USER.cars.map((car) => {
-        const opt = document.createElement("option");
-        opt.value = car.id;
-        opt.textContent = "Honda " + car.model + " · " + car.year + " · " + car.plate;
-        return opt;
-      }));
-    }
   }
 
   function fillModels() {
@@ -163,14 +159,12 @@
     const parts = item.iso.split("-");
     time.textContent = parts[2] + "." + parts[1] + "." + parts[0];
     const body = document.createElement("div");
-    const kind = document.createElement("span");
-    kind.className = "notice-kind";
-    kind.textContent = item.personal ? "Sulle" : "Kõigile";
     const heading = document.createElement("h3");
     heading.textContent = item.title;
     const copy = document.createElement("p");
     copy.textContent = item.body;
-    body.append(kind, heading, copy);
+    body.append(heading, copy);
+    article.setAttribute("aria-label", item.personal ? "Sinu teade" : "Avalik teade");
     const link = document.createElement("a");
     link.className = "act";
     link.href = item.href;
@@ -204,6 +198,12 @@
   }
 
   function syncAuthChrome() {
+    const legend = $("notices-legend");
+    if (legend) {
+      legend.textContent = state.auth
+        ? "Viimased kaks kuud. Punane taust on sinu teade, sinakas taust on avalik teade."
+        : "Viimased kaks kuud. Vanemad teated on peidus.";
+    }
     if ($("notices")) renderNotices();
     if ($("service-car-user")) $("service-car-user").hidden = !state.auth;
     if ($("service-plate-guest")) {
@@ -237,7 +237,6 @@
     }
     if ($("service-km") && state.auth && !$("service-km").dataset.touched) $("service-km").value = String(activeCar().km);
     if ($("service-car")) syncServicePlateField();
-    if ($("manual-select-wrap")) syncMode();
     fillPrefill();
   }
 
@@ -269,27 +268,13 @@
     if (summary) summary.replaceChildren();
   }
 
-  function syncMode() {
-    if (!$("mode-claim")) return;
-    const claim = state.mode === "claim";
-    $("mode-claim").setAttribute("aria-pressed", claim ? "true" : "false");
-    $("mode-manual").setAttribute("aria-pressed", claim ? "false" : "true");
-    $("claim-contact").hidden = !claim;
-    $("manual-car").hidden = claim;
-    $("manual-select-wrap").hidden = !state.auth || claim;
-    $("manual-guest-fields").hidden = state.auth || claim;
-    $("chat-text").placeholder = claim
-      ? "Kirjelda, mis juhtus"
-      : "Küsi funktsiooni või rikke kohta";
-    if (!$("thread").childElementCount) seedThread();
-  }
-
   function seedThread() {
     const thread = $("thread");
+    if (!thread) return;
     thread.replaceChildren();
-    addMsg("Catwees", state.mode === "claim"
-      ? "Kirjelda juhtumit. Kui keegi on viga saanud, helista 112. Vastus on näidis, kontaktid kõrval on päris."
-      : "Küsi auto funktsiooni või rikke kohta. Vastus on näidis, mitte Honda juhendi tsitaat.");
+    addMsg("Catwees", state.auth
+      ? "Kirjuta küsimus oma Honda kohta. Muude teemade kohta ma ei vasta."
+      : "Kirjuta küsimus Honda kohta. Kui mudel ja aasta pole teada, küsin need üle. Muude teemade kohta ma ei vasta.");
   }
 
   function addMsg(who, text) {
@@ -302,6 +287,7 @@
     row.append(name, body);
     $("thread").append(row);
     $("thread").scrollTop = $("thread").scrollHeight;
+    return row;
   }
 
   function claimReply(text) {
@@ -319,25 +305,55 @@
     return body + " See on näidisjuhis.";
   }
 
-  function manualCarLabel() {
-    if (state.auth) {
-      const car = USER.cars.find((item) => item.id === $("manual-car-select").value) || activeCar();
-      return "Honda " + car.model + " " + car.year;
+  let askedCar = null;
+  let pendingQuestion = null;
+
+  function parseCarSpec(text) {
+    const yearMatch = text.match(/\b(19|20)\d{2}\b/);
+    if (!yearMatch) return null;
+    const lower = text.toLowerCase();
+    const known = [
+      ["crosstar", "Crosstar Hybrid"],
+      ["cr-v", "CR-V Hybrid"],
+      ["crv", "CR-V Hybrid"],
+      ["hr-v", "HR-V Hybrid"],
+      ["hrv", "HR-V Hybrid"],
+      ["zr-v", "ZR-V Hybrid"],
+      ["zrv", "ZR-V Hybrid"],
+      ["prelude", "Prelude"],
+      ["civic", "Civic Hybrid"],
+      ["jazz", "Jazz Hybrid"],
+      ["accord", "Accord"]
+    ];
+    for (let i = 0; i < known.length; i += 1) {
+      if (lower.indexOf(known[i][0]) !== -1) return { model: known[i][1], year: yearMatch[0] };
     }
-    const make = $("manual-make").value.trim();
-    const model = $("manual-model").value.trim();
-    const year = $("manual-year").value.trim();
-    return [make, model, year].filter(Boolean).join(" ");
+    return null;
   }
 
-  function manualReady() {
-    if (state.auth) return true;
-    return $("manual-make").value.trim() && $("manual-model").value.trim() && $("manual-year").value.trim();
+  function isClaimQuestion(text) {
+    return /klaas|kivi|pragu|\bviga\b|vigast|\b112\b|avarii|kokkupõrge|õnnetus|liiklus/.test(text.toLowerCase());
+  }
+
+  function isCarQuestion(text) {
+    return /autoabi|teeabi|rehvi|rõhk|rohk|õli|oli|hooldus|tuli|hoiatus|mootor|aku|hübriid|hybriid|nupp|funktsioon|käsiraamat|juhend/.test(text.toLowerCase());
+  }
+
+  function manualCarLabel() {
+    if (state.auth) {
+      const car = activeCar();
+      return "Honda " + car.model + " " + car.year;
+    }
+    if (askedCar) return "Honda " + askedCar.model + " " + askedCar.year;
+    return "Honda";
   }
 
   function manualReply(text) {
     const who = manualCarLabel();
     const t = text.toLowerCase();
+    if (/autoabi|teeabi/.test(t)) {
+      return who + ": Honda autoabi nupp on tavaliselt esiklaasi juures või laes. Vajuta seda, kui auto jääb teele. Kui nuppu ei leia või kõne ei lähe läbi, helista Catweesi teenindusse — Tallinn 6 503 320, Tartu 7 300 383. Täpne nupu koht on selle mudeli kasutusjuhendis. See on näidisjuhis.";
+    }
     if (/rehvi|rõhk|rohk/.test(t)) {
       return who + ": rehvirõhk on juhiukse sildil ja kasutusjuhendis. Number sõltub rehvimõõdust, seepärast seda siin ei oletata. Catwees kontrollib rõhku hooldusel.";
     }
@@ -374,16 +390,21 @@
   function renderTimes(container, date, kind) {
     const selected = container.dataset.value || "";
     const slots = slotsFor(kind, date);
-    container.replaceChildren(...(slots.length ? slots : ["—"]).map((slot) => {
+    if (!date || !slots.length) {
+      container.classList.add("is-waiting");
+      delete container.dataset.value;
+      const hint = document.createElement("p");
+      hint.className = "time-empty";
+      hint.textContent = date ? "Sel päeval aegu ei ole." : "Kellaajad tulevad nähtavale pärast kuupäeva valimist.";
+      container.replaceChildren(hint);
+      return;
+    }
+    container.classList.remove("is-waiting");
+    container.replaceChildren(...slots.map((slot) => {
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "time";
       btn.textContent = slot;
-      if (!date || slot === "—") {
-        btn.disabled = true;
-        btn.textContent = date ? "Suletud" : "Vali kuupäev";
-        return btn;
-      }
       btn.setAttribute("aria-pressed", slot === selected ? "true" : "false");
       btn.addEventListener("click", () => {
         container.dataset.value = slot;
@@ -712,6 +733,54 @@
     });
   }
 
+  const chatHistory = [];
+  let asking = false;
+
+  function carContext() {
+    if (state.auth) {
+      const car = activeCar();
+      return "Honda " + car.model + " " + car.year + ", registreerimismärk " + car.plate;
+    }
+    if (askedCar) return "Honda " + askedCar.model + " " + askedCar.year;
+    return "";
+  }
+
+  async function submitQuestion(text) {
+    if (asking || !$("form-chat")) return;
+    clearFieldErrors($("form-chat"));
+    addMsg(state.auth ? USER.name : "Sina", text);
+    const spec = parseCarSpec(text);
+    if (spec) askedCar = spec;
+    chatHistory.push({ role: "user", content: text });
+    $("chat-text").value = "";
+    const pending = addMsg("Catwees", "Vaatan järele…");
+    pending.classList.add("is-pending");
+    const button = $("form-chat").querySelector("button");
+    asking = true;
+    button.disabled = true;
+    try {
+      const response = await fetch("/mockup/api/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ car: carContext(), messages: chatHistory.slice(-8) })
+      });
+      if (!response.ok) throw new Error("bad");
+      const data = await response.json();
+      const answer = (data.answer || "").trim();
+      if (!answer) throw new Error("empty");
+      pending.querySelector("p").textContent = answer;
+      chatHistory.push({ role: "assistant", content: answer });
+    } catch (err) {
+      chatHistory.pop();
+      pending.querySelector("p").textContent = "Vastust ei tulnud. Proovi hetke pärast uuesti.";
+    } finally {
+      pending.classList.remove("is-pending");
+      asking = false;
+      button.disabled = false;
+      $("thread").scrollTop = $("thread").scrollHeight;
+    }
+  }
+
   if ($("form-chat")) {
     $("form-chat").addEventListener("submit", (event) => {
       event.preventDefault();
@@ -720,16 +789,14 @@
         fieldError($("chat-text"), "Küsimus on tühi.");
         return;
       }
-      clearFieldErrors($("form-chat"));
-      if (state.mode === "manual" && !manualReady()) {
-        if (!$("manual-model").value.trim()) fieldError($("manual-model"), "Täielik mudelinimi on puudu.");
-        if (!$("manual-year").value.trim()) fieldError($("manual-year"), "Tootmisaasta on puudu.");
-        if (!$("manual-make").value.trim()) fieldError($("manual-make"), "Mark on puudu.");
-        return;
-      }
-      addMsg(state.auth ? USER.name : "Sina", text);
-      addMsg("Catwees", state.mode === "claim" ? claimReply(text) : manualReply(text));
-      $("chat-text").value = "";
+      submitQuestion(text);
+    });
+  }
+
+  if ($("sample-question")) {
+    $("sample-question").addEventListener("click", () => {
+      submitQuestion("Kuidas kasutada Honda autoabi");
+      $("thread").scrollIntoView({ block: "nearest", behavior: state.motion ? "smooth" : "auto" });
     });
   }
 
@@ -767,6 +834,10 @@
     else login();
   });
 
+  if ($("hero-enter")) {
+    $("hero-enter").addEventListener("click", () => login());
+  }
+
   if ($("logout")) $("logout").addEventListener("click", logout);
 
   if ($("trade-other-toggle")) {
@@ -796,19 +867,6 @@
     });
   }
 
-  if ($("mode-claim")) {
-    $("mode-claim").addEventListener("click", () => {
-      state.mode = "claim";
-      seedThread();
-      syncMode();
-    });
-    $("mode-manual").addEventListener("click", () => {
-      state.mode = "manual";
-      seedThread();
-      syncMode();
-    });
-  }
-
   document.querySelectorAll("[data-prefill]").forEach((input) => {
     input.addEventListener("input", () => { input.dataset.touched = "1"; });
   });
@@ -817,7 +875,7 @@
   fillModels();
   paintIdentity();
   syncAuthChrome();
-  if ($("mode-claim")) syncMode();
+  if ($("thread") && !$("thread").childElementCount) seedThread();
 
   const header = document.querySelector("header");
   if (header && header.classList.contains("is-overlay")) {
@@ -914,19 +972,21 @@
       return mask;
     };
 
-    const paintCar = (item, cssW, cssH, travel) => {
+    const paintCar = (item, cssW, cssH, travel, canvas, context) => {
       const img = images[item.src];
       if (!img) return;
+      const surface = canvas || driveCar;
+      const g = context || ctx;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const bw = Math.round(cssW * dpr);
       const bh = Math.round(cssH * dpr);
-      if (driveCar.width !== bw || driveCar.height !== bh) {
-        driveCar.width = bw;
-        driveCar.height = bh;
+      if (surface.width !== bw || surface.height !== bh) {
+        surface.width = bw;
+        surface.height = bh;
       }
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.clearRect(0, 0, cssW, cssH);
-      ctx.drawImage(img, 0, 0, cssW, cssH);
+      g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      g.clearRect(0, 0, cssW, cssH);
+      g.drawImage(img, 0, 0, cssW, cssH);
       item.wheels.forEach((wheel) => {
         try {
           const cx = wheel[0] * cssW;
@@ -936,26 +996,26 @@
           const sy = wheel[1] * img.naturalHeight;
           const sr = wheel[2] * img.naturalHeight;
           const spin = rad > 0 ? travel / rad : 0;
-          ctx.save();
-          ctx.beginPath();
-          ctx.arc(cx, cy, rad, 0, Math.PI * 2);
-          ctx.clip();
-          ctx.translate(cx, cy);
-          ctx.rotate(spin);
-          ctx.drawImage(img, sx - sr, sy - sr, sr * 2, sr * 2, -rad, -rad, rad * 2, rad * 2);
-          ctx.restore();
+          g.save();
+          g.beginPath();
+          g.arc(cx, cy, rad, 0, Math.PI * 2);
+          g.clip();
+          g.translate(cx, cy);
+          g.rotate(spin);
+          g.drawImage(img, sx - sr, sy - sr, sr * 2, sr * 2, -rad, -rad, rad * 2, rad * 2);
+          g.restore();
           const mask = archMask(img, wheel);
-          ctx.save();
-          ctx.beginPath();
-          ctx.arc(cx, cy, rad, 0, Math.PI * 2);
-          ctx.clip();
-          ctx.drawImage(mask, cx - rad, cy - rad, rad * 2, rad * 2);
-          ctx.restore();
+          g.save();
+          g.beginPath();
+          g.arc(cx, cy, rad, 0, Math.PI * 2);
+          g.clip();
+          g.drawImage(mask, cx - rad, cy - rad, rad * 2, rad * 2);
+          g.restore();
         } catch (err) {
-          ctx.restore();
+          g.restore();
         }
       });
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      g.setTransform(1, 0, 0, 1, 0, 0);
     };
 
     if (window.matchMedia("(max-width: 900px)").matches) {
@@ -977,8 +1037,8 @@
       pin.append(dots);
 
       let index = 0;
-      let playing = false;
-      let entered = false;
+      let offset = 0;
+      let settling = false;
       const markDots = () => {
         [...dots.children].forEach((dot, i) => {
           dot.setAttribute("aria-selected", i === index ? "true" : "false");
@@ -995,129 +1055,205 @@
         void copy.offsetWidth;
         copy.classList.add("is-arriving");
       };
-      let parked = null;
       const lane = drive.querySelector(".drive-lane");
+      const neighbor = document.createElement("canvas");
+      neighbor.className = "drive-car";
+      neighbor.setAttribute("aria-hidden", "true");
+      lane.append(neighbor);
+      const nctx = neighbor.getContext("2d");
+      fleet.forEach((_, i) => ensureImage(i));
+      const contentBox = (img) => {
+        if (img._box) return img._box;
+        const sample = document.createElement("canvas");
+        sample.width = img.naturalWidth;
+        sample.height = img.naturalHeight;
+        const sg = sample.getContext("2d", { willReadFrequently: true });
+        sg.drawImage(img, 0, 0);
+        const data = sg.getImageData(0, 0, sample.width, sample.height).data;
+        let minX = sample.width;
+        let maxX = 0;
+        let minY = sample.height;
+        let maxY = 0;
+        for (let y = 0; y < sample.height; y += 2) {
+          for (let x = 0; x < sample.width; x += 2) {
+            if (data[(y * sample.width + x) * 4 + 3] > 20) {
+              if (x < minX) minX = x;
+              if (x > maxX) maxX = x;
+              if (y < minY) minY = y;
+              if (y > maxY) maxY = y;
+            }
+          }
+        }
+        img._box = {
+          w: Math.max(0.5, (maxX - minX) / sample.width),
+          h: Math.max(0.2, (maxY - minY) / sample.height)
+        };
+        return img._box;
+      };
       const metrics = (img) => {
-        const cssW = Math.min(window.innerWidth * 1.08, 680);
-        const cssH = cssW * (img.naturalHeight / img.naturalWidth);
+        const laneW = lane.clientWidth || window.innerWidth;
+        const laneH = lane.clientHeight || 168;
+        const natural = img.naturalHeight / img.naturalWidth;
+        const box = contentBox(img);
+        const maxH = Math.max(112, laneH - 8);
+        const contentW = Math.min(laneW * 0.9, maxH / 0.42);
+        const cssW = contentW / box.w;
+        const cssH = cssW * natural;
         return {
           cssW: cssW,
           cssH: cssH,
-          home: (window.innerWidth - cssW) / 2,
-          left: -cssW - 24,
-          right: window.innerWidth + 24
+          home: (laneW - cssW) / 2,
+          left: -cssW - 16,
+          right: laneW + 16
         };
       };
-      const place = (x) => {
-        driveCar.style.transform = "translate3d(0px, -50%, 0)";
-        lane.style.transform = "translate3d(" + x.toFixed(1) + "px, 0, 0)";
+      const span = () => lane.clientWidth || window.innerWidth;
+      const placeCanvas = (canvas, x, box) => {
+        canvas.style.width = box.cssW + "px";
+        canvas.style.height = box.cssH + "px";
+        canvas.style.transition = "none";
+        canvas.style.transform = "translate3d(" + x.toFixed(1) + "px, -50%, 0)";
       };
-      const slide = (item, from, to, done) => {
+      const frameCars = (shift) => {
+        const item = fleet[index];
         const img = images[item.src];
+        if (!img || !img.naturalWidth) return;
         const box = metrics(img);
-        const distance = Math.abs(to - from);
-        try {
-          item.wheels.forEach((wheel) => archMask(img, wheel));
-        } catch (err) {}
-        paintCar(item, box.cssW, box.cssH, 0);
-        driveCar.style.width = box.cssW + "px";
-        driveCar.style.height = box.cssH + "px";
-        driveCar.style.transition = "none";
-        lane.style.transition = "none";
-        lane.getAnimations().forEach((anim) => anim.cancel());
-        place(from);
-        const motion = lane.animate(
-          [
-            { transform: "translate3d(" + from.toFixed(1) + "px, 0, 0)" },
-            { transform: "translate3d(" + to.toFixed(1) + "px, 0, 0)" }
-          ],
-          { duration: 680, easing: "cubic-bezier(0.22, 0.8, 0.2, 1)", fill: "forwards" }
-        );
-        let settled = false;
-        let spunAt = 0;
-        const started = performance.now();
-        const spin = () => {
-          if (settled) return;
-          const now = performance.now();
-          const p = Math.min(1, (now - started) / 680);
-          if (now - spunAt > 32 || p >= 1) {
-            spunAt = now;
-            paintCar(item, box.cssW, box.cssH, p * distance);
-          }
-          if (p < 1) requestAnimationFrame(spin);
-        };
-        requestAnimationFrame(spin);
-        const finish = () => {
-          if (settled) return;
-          settled = true;
-          paintCar(item, box.cssW, box.cssH, distance);
-          place(to);
-          motion.cancel();
-          done(box);
-        };
-        motion.onfinish = finish;
-        window.setTimeout(finish, 760);
+        const width = span();
+        placeCanvas(driveCar, box.home + shift, box);
+        paintCar(item, box.cssW, box.cssH, Math.abs(shift));
+        driveCar.classList.add("is-shown");
+        let other = -1;
+        if (shift < -0.5 && index < fleet.length - 1) other = index + 1;
+        else if (shift > 0.5 && index > 0) other = index - 1;
+        if (other < 0) {
+          neighbor.classList.remove("is-shown");
+          return;
+        }
+        const nItem = fleet[other];
+        const nImg = images[nItem.src];
+        if (!nImg || !nImg.naturalWidth) {
+          neighbor.classList.remove("is-shown");
+          return;
+        }
+        const nBox = metrics(nImg);
+        const dir = other > index ? 1 : -1;
+        placeCanvas(neighbor, nBox.home + shift + dir * width, nBox);
+        paintCar(nItem, nBox.cssW, nBox.cssH, Math.abs(shift), neighbor, nctx);
+        neighbor.classList.add("is-shown");
       };
-      const present = (next) => {
-        if (playing || next < 0 || next >= fleet.length) return;
-        if (entered && next === index) return;
-        const previous = parked;
+      const animateShift = (from, to, done) => {
+        settling = true;
+        const ms = 340;
+        const started = performance.now();
+        const step = (now) => {
+          const p = Math.min(1, (now - started) / ms);
+          const eased = 1 - Math.pow(1 - p, 3);
+          offset = from + (to - from) * eased;
+          frameCars(offset);
+          if (p < 1) requestAnimationFrame(step);
+          else {
+            settling = false;
+            if (done) done();
+          }
+        };
+        requestAnimationFrame(step);
+      };
+      const park = (next) => {
         index = next;
-        entered = true;
+        offset = 0;
         markDots();
-        ensureImage(next);
-        const item = fleet[next];
-        const img = images[item.src];
-        const enter = () => {
-          if (!img.complete || !img.naturalWidth) return;
-          showCopy(item);
-          const box = metrics(img);
-          slide(item, box.left, box.home, () => {
-            parked = item;
-            playing = false;
+        showCopy(fleet[index]);
+        frameCars(0);
+      };
+      const go = (next) => {
+        if (settling || next === index || next < 0 || next >= fleet.length) return;
+        const stepTo = index + (next > index ? 1 : -1);
+        ensureImage(stepTo);
+        const img = images[fleet[stepTo].src];
+        const run = () => {
+          const width = span();
+          const target = stepTo > index ? -width : width;
+          animateShift(offset, target, () => {
+            park(stepTo);
+            if (stepTo !== next) go(next);
           });
         };
-        const begin = () => {
-          playing = true;
-          driveCar.classList.add("is-shown");
-          if (!previous) enter();
-          else {
-            const box = metrics(images[previous.src]);
-            slide(previous, box.home, box.right, enter);
-          }
-        };
-        if (img && img.complete && img.naturalWidth) begin();
-        else img.addEventListener("load", begin, { once: true });
+        if (img && img.complete && img.naturalWidth) run();
+        else img.addEventListener("load", run, { once: true });
       };
 
       const watch = new IntersectionObserver((entries) => {
         if (entries.some((entry) => entry.isIntersecting)) {
           watch.disconnect();
-          present(0);
+          ensureImage(0);
+          const img = images[fleet[0].src];
+          const start = () => {
+            if (!img.naturalWidth) return;
+            markDots();
+            showCopy(fleet[0]);
+            animateShift(Math.min(120, span() * 0.28), 0);
+          };
+          if (img.complete && img.naturalWidth) start();
+          else img.addEventListener("load", start, { once: true });
         }
-      }, { threshold: 0.4 });
+      }, { threshold: 0.35 });
       watch.observe(drive);
 
-      let originX = 0;
-      let originY = 0;
-      let tracking = false;
+      let drag = null;
+      const follow = (dx) => {
+        if ((index <= 0 && dx > 0) || (index >= fleet.length - 1 && dx < 0)) return dx * 0.32;
+        return dx;
+      };
       pin.addEventListener("pointerdown", (event) => {
-        if (event.target.closest("a, button")) return;
-        tracking = true;
-        originX = event.clientX;
-        originY = event.clientY;
+        if (settling || event.target.closest("a, button")) return;
+        const img = images[fleet[index].src];
+        if (!img || !img.naturalWidth) return;
+        ensureImage(index - 1);
+        ensureImage(index + 1);
+        drag = { id: event.pointerId, x: event.clientX, y: event.clientY, dx: 0, active: false };
       });
-      pin.addEventListener("pointerup", (event) => {
-        if (!tracking) return;
-        tracking = false;
-        const dx = event.clientX - originX;
-        const dy = event.clientY - originY;
-        if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
-        present(index + (dx < 0 ? 1 : -1));
-      });
-      pin.addEventListener("pointercancel", () => { tracking = false; });
+      pin.addEventListener("pointermove", (event) => {
+        if (!drag || event.pointerId !== drag.id) return;
+        const dx = event.clientX - drag.x;
+        const dy = event.clientY - drag.y;
+        if (!drag.active) {
+          if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+          if (Math.abs(dx) < Math.abs(dy)) {
+            drag = null;
+            return;
+          }
+          drag.active = true;
+          try { pin.setPointerCapture(event.pointerId); } catch (err) {}
+        }
+        if (event.cancelable) event.preventDefault();
+        drag.dx = dx;
+        offset = follow(dx);
+        frameCars(offset);
+      }, { passive: false });
+      const endDrag = (event) => {
+        if (!drag || event.pointerId !== drag.id) return;
+        const active = drag.active;
+        const dx = drag.dx;
+        drag = null;
+        if (!active) return;
+        const width = span();
+        const moved = follow(dx);
+        const commit = Math.abs(dx) > Math.min(64, width * 0.16);
+        if (commit && moved < 0 && index < fleet.length - 1) {
+          animateShift(moved, -width, () => park(index + 1));
+          return;
+        }
+        if (commit && moved > 0 && index > 0) {
+          animateShift(moved, width, () => park(index - 1));
+          return;
+        }
+        animateShift(moved, 0);
+      };
+      pin.addEventListener("pointerup", endDrag);
+      pin.addEventListener("pointercancel", endDrag);
       [...dots.children].forEach((dot, i) => {
-        dot.addEventListener("click", () => present(i));
+        dot.addEventListener("click", () => go(i));
       });
       return;
     }
@@ -1203,5 +1339,26 @@
       })
       .catch(() => {});
     wake();
+  }
+
+  const heroSlides = document.querySelectorAll(".hero-photo");
+  if (heroSlides.length > 1 && state.motion) {
+    let heroIndex = 0;
+    let heroTimer = 0;
+    const advanceHero = () => {
+      heroSlides[heroIndex].classList.remove("is-on");
+      heroIndex = (heroIndex + 1) % heroSlides.length;
+      heroSlides[heroIndex].classList.add("is-on");
+    };
+    const armHero = () => {
+      if (!heroTimer) heroTimer = window.setInterval(advanceHero, 5200);
+    };
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        window.clearInterval(heroTimer);
+        heroTimer = 0;
+      } else armHero();
+    });
+    armHero();
   }
 })();

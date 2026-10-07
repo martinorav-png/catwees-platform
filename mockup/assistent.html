@@ -3,10 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="assets/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Catwees">
   <title>Catwees — Küsi nõu</title>
   <meta name="theme-color" content="#e8e6e1">
   <link rel="stylesheet" href="fonts.css?v=plex">
-  <link rel="stylesheet" href="styles.css?v=rev10">
+  <link rel="stylesheet" href="styles.css?v=rev21">
 </head>
 <body>
   <a class="skip" href="#sisu">Sisu juurde</a>
@@ -18,8 +24,9 @@
       <button class="stamp" type="button" id="stamp">
         <span class="stamp-name" id="stamp-name">Sisene</span>
       </button>
+      <img class="logo-honda" src="../catweessite2026/honda%20POD%20logo%20png.png" alt="Honda">
       <nav class="site-nav" aria-label="Peamenüü">
-          <a href="index.html?n=4">Teated</a>
+          <a href="teated.html?n=4">Teated</a>
           <a href="teenindus.html?n=4">Teenindus</a>
           <a href="assistent.html?n=4" aria-current="page">Küsi nõu</a>
           <a href="muuk.html?n=4">Autod</a>
@@ -32,41 +39,16 @@
       <div class="page-hero-inner">
         <h1 class="page-title">Küsi nõu</h1>
         <p class="page-sub page-lead">Olen Catweesi AI abiline. Kui soovid rohkem teavet oma Honda kohta, juhiseid kindlustusjuhtumi vormistamiseks või otsid Catweesist õige inimese kontakti, siis kirjuta oma küsimus siia aknasse ja leian kiiresti vastuse.</p>
+        <button class="sample-q" type="button" id="sample-question">Näidisküsimus: Kuidas kasutada Honda autoabi</button>
       </div>
     </section>
     <section class="band">
-      <div class="switch" role="group" aria-label="Küsi nõu režiim">
-        <button type="button" id="mode-claim" aria-pressed="true">Kahjujuhtum</button>
-        <button type="button" id="mode-manual" aria-pressed="false">Käsiraamat ja rikked</button>
-      </div>
       <div class="assist">
         <div class="thread-col">
-          <div id="manual-car">
-            <div class="field" id="manual-select-wrap" hidden>
-              <label for="manual-car-select">Sõiduk</label>
-              <select id="manual-car-select"></select>
-            </div>
-            <div id="manual-guest-fields">
-              <div class="row two">
-                <div class="field">
-                  <label for="manual-make">Mark</label>
-                  <input id="manual-make" type="text" value="Honda" required>
-                </div>
-                <div class="field">
-                  <label for="manual-year">Tootmisaasta</label>
-                  <input id="manual-year" type="number" inputmode="numeric" min="1990" max="2026" placeholder="2022" required>
-                </div>
-              </div>
-              <div class="field">
-                <label for="manual-model">Täielik mudelinimi</label>
-                <input id="manual-model" type="text" placeholder="CR-V Hybrid" required>
-              </div>
-            </div>
-          </div>
           <div class="thread" id="thread" aria-live="polite"></div>
           <form class="composer" id="form-chat">
             <label class="vh" for="chat-text">Küsimus</label>
-            <textarea id="chat-text" placeholder="Kirjelda juhtumit või küsi funktsiooni kohta"></textarea>
+            <textarea id="chat-text" placeholder="Kirjuta oma küsimus"></textarea>
             <button class="submit" type="submit">Saada</button>
           </form>
         </div>
@@ -102,7 +84,7 @@
       <div class="footer-col">
         <h2>Omanik</h2>
         <ul>
-          <li><a href="index.html?n=4">Teated</a></li>
+          <li><a href="teated.html?n=4">Teated</a></li>
           <li><a href="teenindus.html?n=4">Teenindus</a></li>
           <li><a href="assistent.html?n=4">Küsi nõu</a></li>
           <li><a href="profiil.html?n=4">Profiil</a></li>
@@ -128,6 +110,6 @@
     </div>
     <div class="footer-bottom">Näidis. Mari Tamm ja auto 482 MHT ei ole päris klient. Kontaktid ja avaldatud hinnad on catwees.ee andmed 30.09.2026.</div>
   </footer>
-  <script src="app.js?v=rev13"></script>
+  <script src="app.js?v=rev19"></script>
 </body>
 </html>

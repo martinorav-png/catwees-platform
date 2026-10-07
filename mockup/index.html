@@ -3,13 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="assets/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Catwees">
   <title>Catwees — Avaleht</title>
   <meta name="theme-color" content="#e8e6e1">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <link rel="stylesheet" href="fonts.css?v=plex">
-  <link rel="stylesheet" href="styles.css?v=rev10">
+  <link rel="stylesheet" href="styles.css?v=rev21">
 </head>
-<body>
+<body class="is-home">
   <a class="skip" href="#sisu">Sisu juurde</a>
     <header>
     <div class="nav-inner">
@@ -19,38 +25,31 @@
       <button class="stamp" type="button" id="stamp">
         <span class="stamp-name" id="stamp-name">Sisene</span>
       </button>
-      <nav class="site-nav" aria-label="Peamenüü">
-          <a href="index.html?n=4" aria-current="page">Teated</a>
-          <a href="teenindus.html?n=4">Teenindus</a>
-          <a href="assistent.html?n=4">Küsi nõu</a>
-          <a href="muuk.html?n=4">Autod</a>
-      </nav>
+      <img class="logo-honda" src="../catweessite2026/honda%20POD%20logo%20png.png" alt="Honda">
     </div>
   </header>
   <div id="status" class="vh" aria-live="polite"></div>
   <main id="sisu">
     <section class="hero">
-      <picture>
-        <source media="(max-width: 900px)" srcset="assets/hero-crv-phone.jpg">
-        <img class="hero-photo" src="../catweessite2026/hero-crv-2026.jpg" alt="Honda CR-V maanteel">
-      </picture>
+      <div class="hero-slides" aria-hidden="true">
+        <img class="hero-photo is-on" src="../catweessite2026/honda-hero-crv.jpg" alt="">
+        <img class="hero-photo" src="assets/heroes/crv-coast.jpg" alt="">
+        <img class="hero-photo" src="../catweessite2026/honda-hero-zrv.jpg" alt="">
+        <img class="hero-photo" src="../catweessite2026/honda-hero-jazz.jpg" alt="">
+        <img class="hero-photo" src="../catweessite2026/honda-hero-hrv.jpg" alt="">
+      </div>
       <div class="hero-copy">
         <h1 class="hero-headline" id="plate-num"><span class="vh" id="plate-sr">Registreerimismärk puudub. </span><span id="plate-glyphs">Sinu Honda.</span></h1>
-        <p class="hero-sub" id="plate-meta">Logi sisse, et näha rohkem.</p>
-        <div class="hero-ctas">
-          <a class="pill pill-fill" href="teenindus.html?n=4">Broneeri hooldus</a>
-          <a class="pill pill-ghost" href="muuk.html?n=4">Autod</a>
+        <div class="hero-login">
+          <p class="hero-sub" id="plate-meta">Logi sisse, et näha rohkem.</p>
+          <button class="hero-enter" type="button" id="hero-enter">Sisene</button>
         </div>
-      </div>
-    </section>
-    <section class="band">
-      <div class="section-header-row">
-        <h2 id="notices-title">Teated</h2>
-        <p class="lede">Viimased kaks kuud. Vanemad teated on peidus.</p>
-      </div>
-      <div id="notices"></div>
-      <div class="older-notices">
-        <button type="button" id="notices-older" hidden>Näita vanemaid teateid</button>
+        <nav class="home-actions" aria-label="Teemad">
+          <a href="teated.html?n=4">Teated</a>
+          <a href="teenindus.html?n=4">Teenindus</a>
+          <a href="assistent.html?n=4">Küsi nõu</a>
+          <a href="muuk.html?n=4">Autod</a>
+        </nav>
       </div>
     </section>
   </main>
@@ -66,7 +65,7 @@
       <div class="footer-col">
         <h2>Omanik</h2>
         <ul>
-          <li><a href="index.html?n=4">Teated</a></li>
+          <li><a href="teated.html?n=4">Teated</a></li>
           <li><a href="teenindus.html?n=4">Teenindus</a></li>
           <li><a href="assistent.html?n=4">Küsi nõu</a></li>
           <li><a href="profiil.html?n=4">Profiil</a></li>
@@ -92,6 +91,6 @@
     </div>
     <div class="footer-bottom">Näidis. Mari Tamm ja auto 482 MHT ei ole päris klient. Kontaktid ja avaldatud hinnad on catwees.ee andmed 30.09.2026.</div>
   </footer>
-  <script src="app.js?v=rev13"></script>
+  <script src="app.js?v=rev18"></script>
 </body>
 </html>
