@@ -884,6 +884,7 @@ footer {
   .logo-catwees { min-width: 0; }
   .catwees-logo { height: 52px; }
   .logo-honda { height: 30px; }
+  .stamp:not(.is-in) { display: none; }
   .stamp { min-height: 44px; padding: 0 14px; }
   .stamp-name { font-size: 15px; }
   .site-nav { justify-content: space-between; gap: 0; }
