@@ -457,6 +457,7 @@ header.is-overlay:not(.is-solid) .nav-btn:hover { background: var(--red); color:
 .band > h2,
 .page-title {
   margin: 0;
+  overflow-wrap: break-word;
   font-size: clamp(2.4rem, 5vw, 4.2rem);
   font-weight: 500;
   letter-spacing: -0.04em;
@@ -552,15 +553,17 @@ header.is-overlay:not(.is-solid) .nav-btn:hover { background: var(--red); color:
 .crumb a { color: var(--ink); text-decoration: none; }
 
 .split {
+  width: 100%;
   max-width: 1200px;
   margin: 48px auto 80px;
   display: grid;
-  grid-template-columns: 0.78fr 1.22fr;
+  grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
   gap: 32px;
   align-items: start;
   padding: 0 28px;
 }
 .split-side {
+  min-width: 0;
   background: var(--paper);
   border-radius: 20px;
   padding: 32px;
@@ -576,17 +579,19 @@ header.is-overlay:not(.is-solid) .nav-btn:hover { background: var(--red); color:
 .split-side a[href^="tel:"],
 .split-side a[href^="mailto:"] { color: var(--red); text-underline-offset: 3px; }
 .split-main {
+  min-width: 0;
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: 20px;
   padding: 32px;
 }
 
-.form { display: grid; }
+.form { display: grid; min-width: 0; }
 .field {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 0;
   padding: 0 0 20px;
 }
 .field > label,
@@ -599,6 +604,9 @@ fieldset legend {
 .field select,
 .field textarea,
 .composer textarea {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   min-height: 46px;
   padding: 10px 14px;
   border: 1px solid var(--line);
@@ -612,7 +620,7 @@ fieldset legend {
 .field select:focus,
 .field textarea:focus,
 .composer textarea:focus { border-color: var(--red); background: var(--white); caret-color: var(--red); }
-.row.two, .book { display: grid; gap: 28px; align-items: start; }
+.row.two, .book { display: grid; gap: 28px; align-items: start; min-width: 0; }
 .field-error, .summary { color: var(--red-deep); font-weight: 600; }
 .summary:empty { display: none; }
 .check {
@@ -629,11 +637,13 @@ fieldset { margin: 8px 0; padding: 0; border: 0; }
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
   min-height: 48px;
-  padding: 0 14px;
+  padding: 8px 14px;
   border: 1px solid var(--line);
   border-radius: 999px;
   background: var(--paper);
+  line-height: 1.3;
 }
 .choice:has(input:checked) { background: var(--red); color: var(--white); border-color: var(--red); }
 .hint { color: var(--muted); font-size: 14px; }
@@ -679,7 +689,7 @@ fieldset { margin: 8px 0; padding: 0; border: 0; }
 .submit:hover { background: var(--red-deep); color: var(--white); }
 .submit:disabled { background: var(--sand); color: var(--muted); }
 
-.cal { margin-top: 8px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.cal { margin-top: 8px; min-width: 0; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
 .cal-bar {
   display: flex;
   align-items: center;
@@ -689,8 +699,9 @@ fieldset { margin: 8px 0; padding: 0; border: 0; }
   color: var(--white);
 }
 .icon-btn { width: 44px; height: 44px; border: 0; border-radius: 999px; background: transparent; color: inherit; }
-.week, .days { display: grid; grid-template-columns: repeat(7, 1fr); }
+.week, .days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); min-width: 0; }
 .week span, .day, .time {
+  min-width: 0;
   min-height: 44px;
   display: grid;
   place-items: center;
@@ -908,7 +919,7 @@ footer {
   .is-home .hero { min-height: calc(100svh - 78px); }
   .is-home .hero-copy { padding: 20px 16px; }
   .home-actions { width: min(78vw, 300px); }
-  .lineup, .split, .paths, .assist, .choices.three { grid-template-columns: 1fr; }
+  .lineup, .split, .paths, .assist, .choices.three { grid-template-columns: minmax(0, 1fr); }
   .switch { grid-template-columns: 1fr 1fr; gap: 8px; }
   .switch button {
     white-space: normal;
