@@ -1,4 +1,4 @@
-const base = require("../notices.json");
+const base = require("./base-notices.json");
 
 const CUTOFF = "2026-07-30";
 

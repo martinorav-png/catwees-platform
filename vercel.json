@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/**/*.js": {
-      "includeFiles": "api/notices.json"
+      "includeFiles": "api/lib/base-notices.json"
     }
   },
   "redirects": [
