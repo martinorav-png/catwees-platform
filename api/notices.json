@@ -1,0 +1,66 @@
+[
+  {
+    "iso": "2026-09-30",
+    "personal": false,
+    "title": "Teenindus on avatud",
+    "body": "Tallinn ja Tartu, esmaspäevast reedeni 8:00–18:00. Laupäev ja pühapäev on teenindus suletud.",
+    "href": "teenindus.html?n=4",
+    "act": "Broneeri hooldus"
+  },
+  {
+    "iso": "2026-09-28",
+    "personal": true,
+    "title": "Kutsume autot vahetama",
+    "body": "Sinu CR-V on 2022. aastast. Uue CR-V Hybridiga saab sõita Tallinnas ja Tartus.",
+    "href": "muuk.html?n=4",
+    "act": "Vaata autosid"
+  },
+  {
+    "iso": "2026-09-22",
+    "personal": true,
+    "title": "Tehas kutsub garantiitööd tegema",
+    "body": "Honda on märkinud sinu CR-V-le garantiikontrolli. Aja kinnitab teeninduslett.",
+    "href": "teenindus.html?n=4",
+    "act": "Broneeri hooldus"
+  },
+  {
+    "iso": "2026-09-18",
+    "personal": false,
+    "title": "Talverehvide hooaeg",
+    "body": "Rehvivahetuse aja saab jätta Catweesi teenindusse. Hinda kinnitab teeninduslett.",
+    "href": "teenindus.html?n=4",
+    "act": "Broneeri hooldus"
+  },
+  {
+    "iso": "2026-09-12",
+    "personal": true,
+    "title": "Kutsume keregarantii kontrolli",
+    "body": "Keregarantii kontroll on sinu Honda jaoks avatud Tallinnas ja Tartus.",
+    "href": "teenindus.html?n=4",
+    "act": "Broneeri hooldus"
+  },
+  {
+    "iso": "2026-09-02",
+    "personal": false,
+    "title": "Uus Prelude",
+    "body": "catwees.ee avaldab hinna: alates 49 900 €. Proovisõidu kinnitab müügiosakond.",
+    "href": "proovisoit.html?n=4",
+    "act": "Broneeri proovisõit"
+  },
+  {
+    "iso": "2026-06-20",
+    "personal": false,
+    "title": "Jaanipüha lahtiolekuajad",
+    "body": "Jaanipüha teenindus oli suletud. See teade on vanem kui kaks kuud.",
+    "href": "teenindus.html?n=4",
+    "act": "Teenindus"
+  },
+  {
+    "iso": "2020-12-20",
+    "personal": false,
+    "title": "2020. aasta pühade lahtiolekuajad",
+    "body": "Vana pühadeteade. Catwees saab selle oma adminkeskkonnas kustutada, siin seda vaikimisi ei näidata.",
+    "href": "teenindus.html?n=4",
+    "act": "Teenindus"
+  }
+]

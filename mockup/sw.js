@@ -28,6 +28,7 @@ self.addEventListener("push", (event) => {
   }
   const title = payload.title || "Catwees";
   const unread = Number(payload.unread) || 0;
+  const ids = Array.isArray(payload.unreadIds) ? payload.unreadIds : [];
   const target = new URL(payload.url || "teated.html?n=4", self.registration.scope).href;
   event.waitUntil(Promise.all([
     self.registration.showNotification(title, {
@@ -36,7 +37,13 @@ self.addEventListener("push", (event) => {
       tag: "catwees-teated",
       data: { url: target }
     }),
-    badgeCount(unread)
+    badgeCount(unread),
+    caches.open("catwees-teated").then((cache) => cache.put("/__pushed", new Response(JSON.stringify({ ids: ids }), {
+      headers: { "Content-Type": "application/json" }
+    }))).catch(() => {}),
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
+      for (const client of clients) client.postMessage({ type: "teated" });
+    })
   ]));
 });
 

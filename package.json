@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "scripts": {
+    "test": "node --test api/lib/teated.test.js"
+  },
+  "dependencies": {
+    "@vercel/blob": "^2.0.0",
+    "web-push": "^3.6.7"
+  }
+}

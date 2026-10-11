@@ -19,7 +19,7 @@
     ["CR-V Hybrid", "43 900"],
     ["Prelude", "49 900"]
   ];
-  const NOTICES = [
+  let NOTICES = [
     { iso: "2026-09-30", personal: false, title: "Teenindus on avatud", body: "Tallinn ja Tartu, esmaspäevast reedeni 8:00–18:00. Laupäev ja pühapäev on teenindus suletud.", href: "teenindus.html?n=4", act: "Broneeri hooldus" },
     { iso: "2026-09-28", personal: true, title: "Kutsume autot vahetama", body: "Sinu CR-V on 2022. aastast. Uue CR-V Hybridiga saab sõita Tallinnas ja Tartus.", href: "muuk.html?n=4", act: "Vaata autosid" },
     { iso: "2026-09-22", personal: true, title: "Tehas kutsub garantiitööd tegema", body: "Honda on märkinud sinu CR-V-le garantiikontrolli. Aja kinnitab teeninduslett.", href: "teenindus.html?n=4", act: "Broneeri hooldus" },
@@ -832,7 +832,67 @@
   }
 
   function noticeId(item) {
-    return item.iso + "|" + item.title;
+    return item.id || (item.iso + "|" + item.title);
+  }
+
+  function urlBase64ToUint8Array(value) {
+    const padding = "=".repeat((4 - (value.length % 4)) % 4);
+    const base64 = (value + padding).replace(/-/g, "+").replace(/_/g, "/");
+    const raw = atob(base64);
+    const output = new Uint8Array(raw.length);
+    for (let i = 0; i < raw.length; i += 1) output[i] = raw.charCodeAt(i);
+    return output;
+  }
+
+  async function loadRemoteNotices() {
+    try {
+      const response = await fetch("/api/notices");
+      if (!response.ok) return;
+      const data = await response.json();
+      if (!Array.isArray(data.notices) || !data.notices.length) return;
+      NOTICES = data.notices;
+      if ($("notices")) renderNotices();
+    } catch (err) {}
+  }
+
+  async function pushedSignature() {
+    try {
+      const cache = await caches.open("catwees-teated");
+      const hit = await cache.match("/__pushed");
+      if (!hit) return "";
+      const data = await hit.json();
+      return Array.isArray(data.ids) ? data.ids.join("\n") : "";
+    } catch (err) {
+      return "";
+    }
+  }
+
+  async function syncPushSubscription() {
+    if (!("serviceWorker" in navigator) || !("PushManager" in window)) return;
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+    try {
+      const keyResponse = await fetch("/api/vapid");
+      if (!keyResponse.ok) return;
+      const keyData = await keyResponse.json();
+      if (!keyData.publicKey) return;
+      const reg = await navigator.serviceWorker.ready;
+      let subscription = await reg.pushManager.getSubscription();
+      if (!subscription) {
+        subscription = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(keyData.publicKey)
+        });
+      }
+      await fetch("/api/push", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          subscription: subscription.toJSON(),
+          signedIn: state.auth,
+          seen: Array.from(readSeen())
+        })
+      });
+    } catch (err) {}
   }
 
   function recentNotices() {
@@ -922,13 +982,13 @@
     let previous = "";
     try { previous = localStorage.getItem("catwees-notified-signature") || ""; } catch (err) {}
     const signature = items.map(noticeId).join("\n");
-    if (items.length && (forceNotice || signature !== previous)) {
-      await showTeadeNotice(items);
-      try { localStorage.setItem("catwees-notified-signature", signature); } catch (err) {}
-    }
-    if (!items.length) {
-      try { localStorage.removeItem("catwees-notified-signature"); } catch (err) {}
-    }
+    const pushed = signature && signature === await pushedSignature();
+    if (items.length && !pushed && (forceNotice || signature !== previous)) await showTeadeNotice(items);
+    try {
+      if (items.length) localStorage.setItem("catwees-notified-signature", signature);
+      else localStorage.removeItem("catwees-notified-signature");
+    } catch (err) {}
+    syncPushSubscription();
     renderPushAsk();
   }
 
@@ -973,6 +1033,7 @@
         let result = "denied";
         try { result = await Notification.requestPermission(); } catch (err) { result = "denied"; }
         if (result === "granted") {
+          await syncPushSubscription();
           await syncTeatedBadge(true);
           const left = unreadNotices().length;
           say(left ? "Teated on sees. " + teadeWord(left) + " on lugemata." : "Teated on sees.");
@@ -1014,10 +1075,17 @@
     const registering = ("serviceWorker" in navigator)
       ? navigator.serviceWorker.register("sw.js").then(() => navigator.serviceWorker.ready).catch(() => {})
       : Promise.resolve();
-    registering.then(() => syncTeatedBadge(false));
+    registering.then(() => loadRemoteNotices().then(() => syncTeatedBadge(false)));
     document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "visible") syncTeatedBadge(false);
+      if (document.visibilityState !== "visible") return;
+      loadRemoteNotices().then(() => syncTeatedBadge(false));
     });
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.addEventListener("message", (event) => {
+        if (!event.data || event.data.type !== "teated") return;
+        loadRemoteNotices().then(() => syncTeatedBadge(false));
+      });
+    }
   }
 
   $("stamp").addEventListener("click", () => {
