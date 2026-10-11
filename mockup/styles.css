@@ -517,6 +517,33 @@ header.is-overlay:not(.is-solid) .nav-btn:hover { background: var(--red); color:
   background: var(--white);
   font-weight: 600;
 }
+.push-ask {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 20px;
+  padding: 14px 28px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+.push-ask p { margin: 0; max-width: 62ch; }
+.push-actions { display: flex; flex: none; gap: 8px; }
+.push-ask button {
+  min-height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--white);
+  font-weight: 600;
+}
+.push-ask button:hover { background: var(--red); }
+.push-ask .push-later {
+  background: var(--white);
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.push-ask .push-later:hover { background: var(--white); color: var(--red); border-color: var(--red); }
 .notice time { font-variant-numeric: tabular-nums; font-size: 14px; }
 .notice h3 { margin: 0 0 4px; font-size: 22px; font-weight: 560; letter-spacing: -0.03em; }
 .notice p { margin: 0; max-width: 62ch; }
@@ -906,6 +933,7 @@ footer {
     font-size: 14px;
   }
   .page-hero { padding: 28px 0 32px; }
+  .push-ask { flex-wrap: wrap; padding: 14px 16px; }
   .section-header-row { padding-top: 40px; }
   .sheet { margin-left: 16px; margin-right: 16px; }
   .split, .assist { margin-top: 20px; margin-bottom: 40px; }

@@ -30,6 +30,7 @@
     { iso: "2020-12-20", personal: false, title: "2020. aasta pühade lahtiolekuajad", body: "Vana pühadeteade. Catwees saab selle oma adminkeskkonnas kustutada, siin seda vaikimisi ei näidata.", href: "teenindus.html?n=4", act: "Teenindus" }
   ];
   let showOlder = false;
+  let pushReady = false;
 
   const state = {
     auth: sessionStorage.getItem("catwees-auth") === "1",
@@ -238,6 +239,7 @@
     if ($("service-km") && state.auth && !$("service-km").dataset.touched) $("service-km").value = String(activeCar().km);
     if ($("service-car")) syncServicePlateField();
     fillPrefill();
+    if (pushReady) syncTeatedBadge(false);
   }
 
   function syncServicePlateField() {
@@ -829,6 +831,195 @@
     });
   }
 
+  function noticeId(item) {
+    return item.iso + "|" + item.title;
+  }
+
+  function recentNotices() {
+    const cutoff = new Date(TODAY.getFullYear(), TODAY.getMonth() - 2, TODAY.getDate());
+    return NOTICES.filter((item) => {
+      if (!state.auth && item.personal) return false;
+      return new Date(item.iso + "T00:00:00") >= cutoff;
+    });
+  }
+
+  function readSeen() {
+    try {
+      const raw = JSON.parse(localStorage.getItem("catwees-seen-notices") || "[]");
+      return new Set(Array.isArray(raw) ? raw : []);
+    } catch (err) {
+      return new Set();
+    }
+  }
+
+  function writeSeen(seen) {
+    try {
+      localStorage.setItem("catwees-seen-notices", JSON.stringify(Array.from(seen)));
+    } catch (err) {}
+  }
+
+  function unreadNotices() {
+    const seen = readSeen();
+    return recentNotices()
+      .filter((item) => !seen.has(noticeId(item)))
+      .sort((a, b) => (a.iso < b.iso ? 1 : a.iso > b.iso ? -1 : 0));
+  }
+
+  function onTeatedPage() {
+    return /teated\.html$/.test(location.pathname);
+  }
+
+  function acknowledgeTeated() {
+    if (!onTeatedPage()) return;
+    const seen = readSeen();
+    recentNotices().forEach((item) => seen.add(noticeId(item)));
+    writeSeen(seen);
+  }
+
+  function iosDevice() {
+    const ua = navigator.userAgent;
+    return /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  }
+
+  function standaloneApp() {
+    return window.navigator.standalone === true || window.matchMedia("(display-mode: standalone)").matches;
+  }
+
+  function teadeWord(count) {
+    return count === 1 ? "1 teade" : count + " teadet";
+  }
+
+  async function applyBadge(count) {
+    try {
+      if (count > 0 && navigator.setAppBadge) await navigator.setAppBadge(count);
+      else if (navigator.clearAppBadge) await navigator.clearAppBadge();
+    } catch (err) {}
+    const worker = navigator.serviceWorker && navigator.serviceWorker.controller;
+    if (worker) worker.postMessage({ type: "badge", count: count });
+  }
+
+  async function showTeadeNotice(items) {
+    if (!items.length || !("Notification" in window) || Notification.permission !== "granted") return;
+    if (!("serviceWorker" in navigator)) return;
+    const reg = await navigator.serviceWorker.getRegistration();
+    if (!reg) return;
+    const newest = items[0];
+    const count = items.length;
+    try {
+      await reg.showNotification(count === 1 ? newest.title : teadeWord(count), {
+        body: count === 1 ? newest.body : newest.title,
+        icon: "assets/icon-192.png",
+        tag: "catwees-teated",
+        data: { url: "teated.html?n=4" }
+      });
+    } catch (err) {}
+  }
+
+  async function syncTeatedBadge(forceNotice) {
+    acknowledgeTeated();
+    const items = unreadNotices();
+    await applyBadge(items.length);
+    let previous = "";
+    try { previous = localStorage.getItem("catwees-notified-signature") || ""; } catch (err) {}
+    const signature = items.map(noticeId).join("\n");
+    if (items.length && (forceNotice || signature !== previous)) {
+      await showTeadeNotice(items);
+      try { localStorage.setItem("catwees-notified-signature", signature); } catch (err) {}
+    }
+    if (!items.length) {
+      try { localStorage.removeItem("catwees-notified-signature"); } catch (err) {}
+    }
+    renderPushAsk();
+  }
+
+  function renderPushAsk() {
+    const host = document.getElementById("push-ask");
+    if (!host) return;
+    const permission = ("Notification" in window) ? Notification.permission : "unsupported";
+    if (permission === "granted") {
+      host.hidden = true;
+      host.replaceChildren();
+      return;
+    }
+    const teated = onTeatedPage();
+    const installed = standaloneApp();
+    let dismissed = false;
+    try { dismissed = localStorage.getItem("catwees-push-ask") === "later"; } catch (err) {}
+    if (!teated && !(installed && !dismissed)) {
+      host.hidden = true;
+      return;
+    }
+    const ios = iosDevice();
+    host.hidden = false;
+    host.replaceChildren();
+    const copy = document.createElement("p");
+    const actions = document.createElement("div");
+    actions.className = "push-actions";
+    if (ios && !installed) {
+      copy.textContent = "iPhone'is tulevad teated ja punane number siis, kui lisad Catweesi avakuvale. Vajuta Jaga, siis Lisa avakuvale.";
+    } else if (permission === "denied") {
+      copy.textContent = ios
+        ? "Teated on keelatud. Ava Seaded, siis Teavitused, siis Catwees."
+        : "Teated on selles brauseris keelatud.";
+    } else if (!("Notification" in window)) {
+      copy.textContent = "See brauser ei näita teateid.";
+    } else {
+      copy.textContent = "Luba teated, et avakuval oleks punane number lugemata teadete järgi.";
+      const allow = document.createElement("button");
+      allow.type = "button";
+      allow.textContent = "Luba teated";
+      allow.addEventListener("click", async () => {
+        allow.disabled = true;
+        let result = "denied";
+        try { result = await Notification.requestPermission(); } catch (err) { result = "denied"; }
+        if (result === "granted") {
+          await syncTeatedBadge(true);
+          const left = unreadNotices().length;
+          say(left ? "Teated on sees. " + teadeWord(left) + " on lugemata." : "Teated on sees.");
+        } else {
+          say("Teateid ei lubatud.");
+          renderPushAsk();
+        }
+        allow.disabled = false;
+      });
+      actions.append(allow);
+    }
+    if (!teated) {
+      const later = document.createElement("button");
+      later.type = "button";
+      later.className = "push-later";
+      later.textContent = "Mitte praegu";
+      later.addEventListener("click", () => {
+        try { localStorage.setItem("catwees-push-ask", "later"); } catch (err) {}
+        host.hidden = true;
+      });
+      actions.append(later);
+    }
+    host.append(copy);
+    if (actions.childElementCount) host.append(actions);
+  }
+
+  function setupTeatedPush() {
+    const header = document.querySelector("header");
+    if (header && !document.getElementById("push-ask")) {
+      const bar = document.createElement("div");
+      bar.id = "push-ask";
+      bar.className = "push-ask";
+      bar.hidden = true;
+      bar.setAttribute("role", "region");
+      bar.setAttribute("aria-label", "Teated telefonis");
+      header.insertAdjacentElement("afterend", bar);
+    }
+    pushReady = true;
+    const registering = ("serviceWorker" in navigator)
+      ? navigator.serviceWorker.register("sw.js").then(() => navigator.serviceWorker.ready).catch(() => {})
+      : Promise.resolve();
+    registering.then(() => syncTeatedBadge(false));
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") syncTeatedBadge(false);
+    });
+  }
+
   $("stamp").addEventListener("click", () => {
     if (state.auth) location.href = "profiil.html?n=4";
     else login();
@@ -875,6 +1066,7 @@
   fillModels();
   paintIdentity();
   syncAuthChrome();
+  setupTeatedPush();
   if ($("thread") && !$("thread").childElementCount) seedThread();
 
   const header = document.querySelector("header");
